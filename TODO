@@ -1,0 +1,14 @@
++++enhance log
++++add some timers for error case
++++theme for cursor
+++Make a very simple theme, to make a new theme easily
+++Catch more Pam error on login (too many wrong password ...)
++Make a theme switcher on the fly with preview
++multisession
++authentification with fingerprint and others
++support Xephyr
+Study possibility to use it with wayland so we can have transition when switching from one terminal to another.
+white and black users list
+virtual keyboard support
+
+

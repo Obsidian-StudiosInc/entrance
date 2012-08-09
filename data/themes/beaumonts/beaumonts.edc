@@ -1,0 +1,942 @@
+/*
+ * Beaumonts theme for Elsa
+ * By Philippe Caseiro, Michael Bouchaud
+ * Licence CC-By-Sa
+ * Photo by Philippe Caseiro
+ * Licence CC-By-Sa
+ */
+
+externals {
+    external: "elm";
+}
+
+collections {
+   group {
+      name : "entrance";
+      
+      images {
+         image: "entrance_background.jpg" LOSSY 90;
+         image: "login_box.png" COMP;
+         image: "logo_b.png" COMP;
+         image: "user.png" COMP;
+         image: "password.png" COMP;
+         image: "xsession.png" COMP;
+         image: "box_login.png" COMP;
+         image: "box_login_shine.png" COMP;
+         image: "check.png" COMP;
+         image: "arrow_left.png" COMP;
+      }
+
+      script { 
+         public valid;
+      }
+
+      parts {
+         part {
+            name: "background";
+            mouse_events: 0;
+            type: IMAGE;
+            description {
+               min: 1024 600;
+               state: "default" 0.0;
+               image.normal: "entrance_background.jpg";
+               visible: 1;
+            }
+         }
+
+         part { name: "welcome";
+            type: TEXT;
+            mouse_events: 0;
+            effect:  SHADOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               rel1.relative: 0.5 0.0;
+               rel1.offset: 0 150;
+               rel2.relative: 0.5 0.0;
+               rel2.offset: 0 150;
+               text {
+                  text: "Welcome on board";
+                  font: "Sans";
+                  size: 18;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+            }
+         }
+         part { name: "clip";
+            type: RECT;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+
+
+         part {
+            name: "box_login";
+            type: RECT;
+            clip_to: "clip";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1.relative: 0.1 0.1;
+               rel1.to: "background";
+               max: 400 400;
+               rel2.relative: 0.9 0.9;
+               rel2.to: "background";
+               visible: 1;
+            }
+         }
+
+         part { name: "clip_password";
+            type: RECT;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               rel1.to_x: "bg_box_login";
+               rel1.to_y: "hostname";
+               rel1.offset: 30 1;
+               rel1.relative: 0.0 1.0;
+               rel2.to: "bg_box_login";
+               rel2.offset: -31 -31;
+            }
+         }
+         part { name: "clip_xsession";
+            type: RECT;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               rel1.to_x: "bg_box_login";
+               rel1.to_y: "password";
+               rel1.offset: 0 1;
+               rel1.relative: 0.0 1.0;
+               rel2.to: "bg_box_login";
+            }
+         }
+         part { name: "clip_button";
+            type: RECT;
+            clip_to: "clip";
+            description { state: "default" 0.0;
+               rel1.to_x: "bg_box_login";
+               rel1.to_y: "xsessions";
+               rel1.relative: 0.0 1.0;
+               rel2.to: "bg_box_login";
+            }
+         }
+
+         part {
+            name: "bg_box_login";
+            type: IMAGE;
+            clip_to: "clip";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "login_box.png";
+               rel1.to: "box_login";
+               rel2.to: "box_login";
+               aspect : 1.0 1.0;
+               aspect_preference : BOTH;
+               visible: 1;
+            }
+         }
+
+         part {
+            name: "logo";
+            type: IMAGE;
+            clip_to: "box_login";
+            description {
+               state: "default" 0.0;
+               image.normal: "logo_b.png";
+               max: 90 90;
+               rel1.to: "box_login";
+               /*rel1.relative: 0.1 0.1;*/
+               rel2.to: "box_login";
+               /*rel2.relative: 0.9 0.35;*/
+               align: 0.5 0.25;
+               aspect: 1.0 1.0;
+               aspect_preference: BOTH;
+            }
+         }
+         part { name: "entrance_users";
+            type: EXTERNAL;
+            clip_to: "clip_password";
+//            source: "elm/list";
+//            source: "elm/genlist";
+            source: "elm/gengrid";
+            description { state: "default" 0.0;
+               rel1.to: "clip_password";
+               rel2.to: "clip_password";
+               visible: 1;
+               params {
+                  bool: "horizontal" 0;
+                  double: "vertical page relative" 0.0;
+                  int: "horizontal item size" 96;
+                  int: "vertical item size" 120;
+               }
+            }
+            description { state: "auth" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 0.0 1.0;
+               rel2.relative: 1.0 2.0;
+            }
+         }
+
+
+         part { name: "button_valid";
+            clip_to: "clip_button";
+            type: IMAGE;
+            description { state: "default" 0.0;
+               rel1.to: "valid";
+               rel1.offset: -5 -10;
+               rel2.to: "valid";
+               rel2.offset: 4 4;
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+
+         part { name: "valid";
+            clip_to: "clip_button";
+            type: IMAGE;
+            repeat_events: 0;
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1.to: "background_xsession";
+               rel2.to: "background_xsession";
+               align: 0.9 1.0;
+               image.normal: "check.png";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel2.offset: 0 28;
+            }
+         }
+
+
+         part { name: "button_cancel";
+            type: IMAGE;
+            clip_to: "clip_button";
+            description { state: "default" 0.0;
+               rel1.to: "cancel";
+               rel1.offset: -5 -10;
+               rel2.to: "cancel";
+               rel2.offset: 4 4;
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+
+         part { name: "cancel";
+            type: IMAGE;
+            clip_to: "clip_button";
+            repeat_events: 0;
+            description { state: "default" 0.0;
+               min: 32 32;
+               max: 32 32;
+               rel1.to: "background_xsession";
+               rel2.to: "background_xsession";
+               align: 0.1 1.0;
+               image.normal: "arrow_left.png";
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel2.offset: -6 28;
+            }
+         }
+
+
+
+         part { name: "background_xsession";
+            type: IMAGE;
+            clip_to: "clip_xsession";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to_y: "xsessions";
+                  to_x: "box_login";
+                  offset: 50 -7;
+               }
+               rel2 {
+                  to_y: "xsessions";
+                  to_x: "box_login";
+                  offset: -51 7;
+               }
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+
+
+         part { name: "background_xsession_shine";
+            type: IMAGE;
+            clip_to: "clip_xsession";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "background_xsession";
+                  relative: 0.0 0.0;
+                  offset: 7 3;
+               }
+               rel2 {
+                  to: "background_xsession";
+                  relative: 1.0 1.0;
+                  offset: -4 -6;
+               }
+               image {
+                  normal: "box_login_shine.png";
+                  border: 8 8 8 0;
+               }
+            }
+         }
+
+         part { name: "xsessions";
+            type: EXTERNAL;
+            clip_to: "clip_xsession";
+            repeat_events: 0;
+            source: "elm/hoversel";
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 140 30;
+               rel1.to_y: "hostname";
+               rel1.relative: 0.5 1.0;
+               rel2.to_y: "hostname";
+               rel2.relative: 0.5 1.0;
+               align: 0.5 1.0;
+               visible: 1;
+            }
+            description { state: "auth" 0.0;
+               visible: 1;
+               min: 140 30;
+               rel1.to_y: "hostname";
+               rel2.to_y: "hostname";
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 2.0;
+               rel2.relative: 0.5 2.0;
+               rel1.offset: 0 20;
+               rel2.offset: -1 21;
+               align: 0.5 0.0;
+               visible: 1;
+            }
+            description { state: "auth" 0.1;
+               inherit: "auth" 0.0;
+               rel1.offset: 0 13;
+               rel2.offset: -1 14;
+            }
+            description { state: "auth" 0.2;
+               inherit: "auth" 0.0;
+            }
+            description { state: "auth" 0.3;
+               inherit: "auth" 0.0;
+               rel1.offset: 0 16;
+               rel2.offset: -1 17;
+            }
+            description { state: "auth" 0.4;
+               inherit: "auth" 0.0;
+            }
+            description { state: "auth" 0.5;
+               inherit: "auth" 0.0;
+               rel1.offset: 0 18;
+               rel2.offset: -1 19;
+            }
+            description { state: "auth" 0.6;
+               inherit: "auth" 0.0;
+            }
+         }
+         part {
+            name: "logo_xsession";
+            type: IMAGE;
+            clip_to: "clip_xsession";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "xsession.png";
+               max: 29 29;
+               rel1.to: "xsessions";
+               rel2.to: "xsessions";
+               rel1.offset: -35 0;
+               align: 0.0 0.5;
+               visible: 1;
+            }
+         }
+
+
+         part { name: "background_password";
+            type: IMAGE;
+            clip_to: "clip_password";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to_y: "password";
+                  to_x: "box_login";
+                  offset: 50 -7;
+               }
+               rel2 {
+                  to_y: "password";
+                  to_x: "box_login";
+                  offset: -51 7;
+               }
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+
+         part { name: "background_password_shine";
+            type: IMAGE;
+            clip_to: "clip_password";
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "background_password";
+                  relative: 0.0 0.0;
+                  offset: 7 3;
+               }
+               rel2 {
+                  to: "background_password";
+                  relative: 1.0 1.0;
+                  offset: -4 -6;
+               }
+               image {
+                  normal: "box_login_shine.png";
+                  border: 8 8 8 0;
+               }
+            }
+         }
+
+         part {
+            name: "password";
+            clip_to: "clip_password";
+            type: EXTERNAL;
+            repeat_events: 0;
+            source: "elm/entry";
+            description {
+               state: "default" 0.0;
+               min: 140 30;
+               rel1.to_y: "hostname";
+               rel1.relative: 0.5 0.9;
+               rel2.to_y: "hostname";
+               rel2.relative: 0.5 0.9;
+               align: 0.5 1.0;
+               visible: 1;
+               params {
+                  bool: "single line" 1;
+                  bool: "editable" 1;
+                  bool: "password" 1;
+                  bool: "scrollable" 1;
+               }
+            }
+            description { state: "auth" 0.0;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 10;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 11;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.1;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 3;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 4;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.2;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 10;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 11;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.3;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 5;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 6;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.4;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 10;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 11;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.5;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 7;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 8;
+               align: 0.5 0.0;
+            }
+            description { state: "auth" 0.6;
+               inherit: "default" 0.0;
+               rel1.relative: 0.5 1.0;
+               rel1.offset: 0 10;
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 11;
+               align: 0.5 0.0;
+            }
+         }
+
+         part {
+            name: "logo_password";
+            clip_to: "clip_password";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "password.png";
+               max: 29 29;
+               rel1.to: "password";
+               rel2.to: "password";
+               rel1.offset: -35 0;
+               align: 0.0 0.5;
+               visible: 1;
+            }
+         }
+
+         part { name: "background_login";
+            clip_to: "clip";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to_y: "hostname";
+                  to_x: "box_login";
+                  offset: 50 -7;
+               }
+               rel2 {
+                  to_y: "hostname";
+                  to_x: "box_login";
+                  offset: -51 7;
+               }
+               image {
+                  normal: "box_login.png";
+                  border: 15 15 15 15;
+               }
+               fill.smooth: 0;
+            }
+         }
+
+         part { name: "background_login_shine";
+            clip_to: "clip";
+            type: IMAGE;
+            mouse_events: 0;
+            description { state: "default" 0.0;
+               rel1 {
+                  to: "background_login";
+                  relative: 0.0 0.0;
+                  offset: 7 3;
+               }
+               rel2 {
+                  to: "background_login";
+                  relative: 1.0 1.0;
+                  offset: -4 -6;
+               }
+               image {
+                  normal: "box_login_shine.png";
+                  border: 8 8 8 0;
+               }
+            }
+         }
+
+         part {
+            name: "hostname";
+            clip_to: "clip";
+            type: EXTERNAL;
+            repeat_events: 0;
+            source: "elm/entry";
+            description {
+               state: "default" 0.0;
+               min: 140 0;
+//               max: 140 30;
+               align: 0.5 0.0;
+               rel1.to_y: "logo";
+               rel1.relative: 0.5 1.0;
+               rel2.to_y: "logo";
+               rel2.relative: 0.5 1.0;
+               rel2.offset: -1 0;
+//               rel1.offset: 28 20;
+               visible: 1;
+               params {
+                  bool: "single line" 1;
+                  bool: "editable" 1;
+                  bool: "scrollable" 1;
+               }
+            }
+         }
+
+         part {
+            name: "logo_login";
+            type: IMAGE;
+            clip_to: "clip";
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image.normal: "user.png";
+               max: 29 29;
+               rel1.to: "hostname";
+               rel2.to: "hostname";
+               rel1.offset: -35 0;
+               align: 0.0 0.5;
+               visible: 1;
+            }
+         }
+
+         part { name: "actions";
+            type: EXTERNAL;
+            repeat_events: 0;
+            source: "elm/hoversel";
+            description { state: "default" 0.0;
+               visible: 0;
+               min: 140 30;
+               max: 140 30;
+               align: 0.75 1.0;
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part {
+            name: "clock";
+            type: EXTERNAL;
+            source: "elm/clock";
+            mouse_events: 0;
+            description {
+               min: 40 10;
+               max: 80 20;
+               align: 0.5 0.90;
+               params {
+                  bool: "show seconds" "1";
+               }
+            }
+         }
+
+         part { name: "error";
+            type: TEXT;
+            mouse_events: 0;
+            effect: SOFT_SHADOW;
+            scale: 1;
+            description { state: "default" 0.0;
+               color: 255 255 255 0;
+               fixed: 1 1;
+               rel1.to: "box_login";
+               rel1.relative: 0.5 1.0;
+               rel2.to: "box_login";
+               rel2.relative: 0.5 1.0;
+               text {
+                  text: "Error on login ! Maybee wrong password ?";
+                  font: "Sans";
+                  size: 18;
+                  min: 1 1;
+                  align: 0.5 0.5;
+               }
+            }
+            description { state: "visible" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 0 50;
+               rel2.offset: 0 50;
+               color: 255 255 255 255;
+            }
+         }
+      }
+
+      /* 
+       * 
+       * PROGRAMS 
+       *
+       */
+
+      programs {
+         program { 
+            name: "init";
+            signal: "load";
+            source: "";
+            script {
+               set_int(valid, 0);
+            }
+         }
+         program { 
+            name: "show";
+            signal: "show";
+            source: "";
+            action: STATE_SET "visible" 0.0;
+            transition: LINEAR 0.8;
+            target: "clip";
+         }
+         program { 
+            name: "login_error";
+            signal: "entrance.auth.error";
+            source: "";
+            action: STATE_SET "visible" 0.0;
+            transition: DECELERATE 0.2;
+            target: "error";
+         }
+         program { 
+            name: "login_change";
+            signal: "entrance.auth.change";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "error";
+         }
+         program { 
+            name: "go_to_auth";
+            signal: "entrance.auth.enable";
+            source: "";
+            action: STATE_SET "auth" 0.0;
+            transition: ACCELERATE 0.4444;
+            target: "password";
+            after: "go_to_auth1";
+            after: "init";
+            after: "show_cancel";
+            after: "hide_valid_script";
+         }
+         program { name: "go_to_auth1";
+            action: STATE_SET "auth" 0.1;
+            transition: SINUSOIDAL 0.22;
+            target: "password";
+            after: "go_to_auth2";
+         }
+         program { name: "go_to_auth2";
+            action: STATE_SET "auth" 0.2;
+            transition: ACCELERATE 0.17;
+            target: "password";
+            after: "go_to_auth3";
+         }
+         program { name: "go_to_auth3";
+            action: STATE_SET "auth" 0.3;
+            transition: SINUSOIDAL 0.15;
+            target: "password";
+            after: "go_to_auth4";
+         }
+         program { name: "go_to_auth4";
+            action: STATE_SET "auth" 0.4;
+            transition: ACCELERATE 0.13;
+            target: "password";
+            after: "go_to_auth5";
+         }
+         program { name: "go_to_auth5";
+            action: STATE_SET "auth" 0.5;
+            transition: SINUSOIDAL 0.11;
+            target: "password";
+            after: "go_to_auth6";
+         }
+         program { name: "go_to_auth6";
+            action: STATE_SET "auth" 0.6;
+            transition: ACCELERATE 0.1;
+            target: "password";
+         }
+         program {
+            name: "go1_to_auth";
+            signal: "entrance.auth.enable";
+            source: "";
+            action: STATE_SET "auth" 0.0;
+            transition: ACCELERATE 0.8;
+            target: "xsessions";
+            target: "entrance_users";
+            after: "go1_to_auth1";
+         }
+         program { name: "go1_to_auth1";
+            action: STATE_SET "auth" 0.1;
+            transition: SINUSOIDAL 0.3;
+            target: "xsessions";
+            after: "go1_to_auth2";
+         }
+         program { name: "go1_to_auth2";
+            action: STATE_SET "auth" 0.2;
+            transition: ACCELERATE 0.2;
+            target: "xsessions";
+            after: "go1_to_auth3";
+         }
+         program { name: "go1_to_auth3";
+            action: STATE_SET "auth" 0.3;
+            transition: SINUSOIDAL 0.17;
+            target: "xsessions";
+            after: "go1_to_auth4";
+         }
+         program { name: "go1_to_auth4";
+            action: STATE_SET "auth" 0.4;
+            transition: ACCELERATE 0.13;
+            target: "xsessions";
+            after: "go1_to_auth5";
+         }
+         program { name: "go1_to_auth5";
+            action: STATE_SET "auth" 0.5;
+            transition: SINUSOIDAL 0.11;
+            target: "xsessions";
+            after: "go1_to_auth6";
+         }
+         program { name: "go1_to_auth6";
+            action: STATE_SET "auth" 0.6;
+            transition: ACCELERATE 0.1;
+            target: "xsessions";
+         }
+         program { 
+            name: "go_to_start";
+            signal: "entrance.auth.disable";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.5;
+//            target: "hostname";
+            target: "password";
+            target: "xsessions";
+            target: "entrance_users";
+            after: "hide_cancel";
+            after: "hide_valid_script";
+         }
+         program { 
+            name: "login";
+            signal: "entrance.auth.valid";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.7;
+            target: "clip";
+         }
+         program { 
+            name: "show_cancel";
+            action: STATE_SET "visible" 0.0;
+            transition: SINUSOIDAL 0.6;
+            target: "cancel";
+         }
+         program { 
+            name: "hide_cancel";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "cancel";
+         }
+         program { 
+            name: "login_cancel";
+            signal: "mouse,down,*";
+            source: "cancel";
+            action: SIGNAL_EMIT "entrance.auth.cancel" "";
+            after: "hide_cancel";
+         }
+         program { 
+            name: "show_valid_script";
+            signal: "cursor,changed";
+            source: "*";
+            script {
+               new val;
+               val = get_int(valid);
+               if (val == 0) {
+                  run_program(PROGRAM:"show_valid");
+                  set_int(valid, 1);
+               }
+            }
+         }
+         program { name: "hide_valid_script";
+            script {
+               set_int(valid, 0);
+               run_program(PROGRAM:"hide_valid");
+            }
+         }
+         program { 
+            name: "show_valid";
+            action: STATE_SET "visible" 0.0;
+            transition: SINUSOIDAL 0.8;
+            target: "valid";
+         }
+         program { 
+            name: "hide_valid";
+            action: STATE_SET "default" 0.0;
+            transition: ACCELERATE 0.4;
+            target: "valid";
+         }
+         program { 
+            name: "login_valid";
+            signal: "mouse,down,*";
+            source: "valid";
+            action: SIGNAL_EMIT "entrance.auth.request" "";
+         }
+
+         program { 
+            name: "xsession_enabled";
+            signal: "entrance.xsession.enabled";
+            source: "";
+            action: STATE_SET "enabled" 0.0;
+            target: "xsessions";
+         }
+         program { 
+            name: "xsession_disabled";
+            signal: "entrance.xsession.disabled";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "xsessions";
+         }
+         program { 
+            name: "action_enabled";
+            signal: "entrance.action.enabled";
+            source: "";
+            action: STATE_SET "enabled" 0.0;
+            target: "actions";
+         }
+         program { 
+            name: "action_disabled";
+            signal: "entrance.action.disabled";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "actions";
+         }
+         program { 
+            name: "user_enabled";
+            signal: "entrance.users.enabled";
+            source: "";
+            action: STATE_SET "enabled" 0.0;
+            target: "entrance_users";
+         }
+         program { 
+            name: "user_disabled";
+            signal: "entrance.users.disabled";
+            source: "";
+            action: STATE_SET "default" 0.0;
+            target: "entrance_users";
+         }
+      }
+   }
+
+   group { name: "entrance/user/default";
+      images {
+         image: "silhouette.png" COMP;
+      }
+
+      parts {
+         part {
+            name: "icon";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               image {
+                  normal: "silhouette.png";
+                  scale_hint: STATIC;
+               }
+               aspect : 1.0 1.0;
+               aspect_preference : BOTH;
+            }
+         }
+      }
+   }
+}
+
