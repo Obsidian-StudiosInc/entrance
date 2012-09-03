@@ -124,12 +124,9 @@ entrance_server_init()
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
-   fprintf(stderr, PACKAGE": server init\n");
    _entrance_server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM,
                                         "entrance", 42, NULL);
-   if (_entrance_server)
-     fprintf(stderr, PACKAGE": server init ok\n");
-   else
+   if (!_entrance_server)
      fprintf(stderr, PACKAGE": server init fail\n");
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
@@ -147,7 +144,6 @@ void
 entrance_server_shutdown()
 {
    Ecore_Event_Handler *h;
-   fprintf(stderr, PACKAGE": server shutdown\n");
    if (_entrance_server)
      ecore_con_server_del(_entrance_server);
    EINA_LIST_FREE(_handlers, h)

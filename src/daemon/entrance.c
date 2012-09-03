@@ -382,7 +382,7 @@ main (int argc, char ** argv)
    free(dname);
    if (entrance_session_logged_get())
      {
-        PT("Bye, see you. Now go to code !\n");
+        PT("Bye user logged, see you.");
         entrance_close_log();
         _entrance_wait();
      }

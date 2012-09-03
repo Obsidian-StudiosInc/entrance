@@ -18,7 +18,6 @@ static Eina_Bool _history_update = EINA_FALSE;
 void
 entrance_history_init()
 {
-   fprintf(stderr, PACKAGE": history init\n");
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc, eddcl;
    // TODO add idler to load history and thread stuff
@@ -44,7 +43,6 @@ Eina_List *entrance_history_get()
 void
 entrance_history_shutdown()
 {
-   fprintf(stderr, PACKAGE": history shutdown\n");
    _entrance_history_write();
    _entrance_user_shutdown();
 }
