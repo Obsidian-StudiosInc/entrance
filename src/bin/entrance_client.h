@@ -13,6 +13,7 @@
 #include "entrance_connect.h"
 #include "entrance_client.h"
 #include "entrance_gui.h"
+#include "entrance_fill.h"
 #include "../event/entrance_event.h"
 
 int entrance_client_main();

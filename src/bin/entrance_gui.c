@@ -5,7 +5,6 @@
 
 typedef struct Entrance_Gui_ Entrance_Gui;
 typedef struct Entrance_Screen_ Entrance_Screen;
-typedef struct Entrance_Gui_Item_ Entrance_Gui_Item;
 
 struct Entrance_Gui_
 {
@@ -26,34 +25,22 @@ struct Entrance_Screen_
    Eina_Bool managed:1;
 };
 
-typedef char *(*EntranceItemLabelGetFunc) (void *data, Evas_Object *obj, const char *part);
-typedef Evas_Object *(*EntranceItemIconGetFunc) (void *data, Evas_Object *obj, const char *part);
-typedef Eina_Bool (*EntranceItemStateGetFunc) (void *data, Evas_Object *obj, const char *part);
-typedef void (*EntranceItemDelFunc) (void *data, Evas_Object *obj);
-
-struct Entrance_Gui_Item_
-{
-   const char *item_style; //maybee need to be provided by theme ?
-   struct
-     {
-        EntranceItemLabelGetFunc text_get;
-        EntranceItemIconGetFunc  content_get;
-        EntranceItemStateGetFunc state_get;
-        EntranceItemDelFunc      del;
-     } func;
-};
-
 static Evas_Object *_entrance_gui_theme_get(Evas_Object *win, const char *group, const char *theme);
 static void _entrance_gui_hostname_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_password_activated_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_shutdown(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_focus(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_session_update(Entrance_Xsession *xsession);
-static void _entrance_gui_users_list_set(Evas_Object *obj, Eina_List *users);
-static void _entrance_gui_users_genlist_set(Evas_Object *obj, Eina_List *users);
-static void _entrance_gui_users_gengrid_set(Evas_Object *obj, Eina_List *users);
+
+static void _entrance_gui_actions_populate();
+
 static void _entrance_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_user_sel(Entrance_User *ou);
+static char *_entrance_gui_user_text_get(void *data, Evas_Object *obj, const char *part);
+static Evas_Object *_entrance_gui_user_content_get(void *data, Evas_Object *obj, const char *part);
+static Eina_Bool _entrance_gui_user_state_get(void *data, Evas_Object *obj, const char *part);
+static void _entrance_gui_user_del(void *data, Evas_Object *obj);
+
 static Eina_Bool _entrance_gui_auth_enable(void *data);
 
 static Eina_Bool _entrance_gui_cb_window_property(void *data, int type, void *event_info);
@@ -177,7 +164,7 @@ _entrance_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__
 static Eina_Bool
 _entrance_gui_login_timeout(void *data)
 {
-   Evas_Object *popup, *o;
+   Evas_Object *popup, *o, *vbx, *bx;
    Entrance_Screen *screen;
    Eina_List *l;
 
@@ -186,7 +173,22 @@ _entrance_gui_login_timeout(void *data)
         popup = elm_popup_add(screen->win);
         evas_object_size_hint_weight_set(popup,
                                          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_object_text_set(popup, "Something wrong hapened ...");
+        elm_object_text_set(popup, "something wrong happened... No window manager detected after a lapse of time. See your debug below.");
+
+        bx = elm_box_add(popup);
+        elm_object_content_set(popup, bx);
+        evas_object_show(bx);
+
+        o = elm_entry_add(popup);
+        elm_entry_scrollable_set(o, EINA_TRUE);
+        elm_object_text_set(o, "Test !!!!!");
+        elm_box_pack_end(bx, o);
+        evas_object_show(o);
+
+        o = evas_object_rectangle_add(evas_object_evas_get(popup));
+        evas_object_size_hint_min_set(o, 0, 260);
+        elm_box_pack_end(bx, o);
+
 
         o = elm_button_add(popup);
         elm_object_text_set(o, "Close");
@@ -215,9 +217,6 @@ _entrance_gui_login(Entrance_Screen *screen)
                   entrance_connect_auth_send(h, s, _gui->selected_session->name);
              else
                   entrance_connect_auth_send(h, s, NULL);
-             _gui_login_timeout = ecore_timer_add(10.0,
-                                                  _entrance_gui_login_timeout,
-                                                  screen);
           }
      }
    free(h);
@@ -304,10 +303,10 @@ _entrance_gui_session_update(Entrance_Xsession *xsession)
    Entrance_Screen *screen;
 
    if (!xsession) return;
+   _gui->selected_session = xsession;
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         o = ENTRANCE_GUI_GET(screen->edj, "xsessions");
-        _gui->selected_session = xsession;
         elm_object_text_set(o, _gui->selected_session->name);
         icon = elm_icon_add(screen->win);
         elm_image_file_set(icon, _gui->selected_session->icon, NULL);
@@ -339,29 +338,6 @@ _entrance_gui_sessions_populate()
      }
    if (_gui->xsessions)
      _entrance_gui_session_update(_gui->xsessions->data);
-}
-
-static void
-_entrance_gui_actions_populate()
-{
-   Evas_Object *o;
-
-   Entrance_Action *action;
-   Eina_List *l, *ll;
-   Entrance_Screen *screen;
-
-   EINA_LIST_FOREACH(_gui->screens, ll, screen)
-     {
-        o = ENTRANCE_GUI_GET(screen->edj, "actions");
-        EINA_LIST_FOREACH(_gui->actions, l, action)
-          {
-             elm_hoversel_item_add(o, action->label, NULL,
-                                   ELM_ICON_FILE,
-                                   _entrance_gui_action_clicked_cb, action);
-          }
-        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
-                                "entrance.action.enabled", "");
-     }
 }
 
 static Eina_Bool
@@ -552,9 +528,6 @@ entrance_gui_auth_wait()
    ecore_timer_add(5.0, _entrance_gui_auth_enable, NULL);
 }
 
-
-
-
 void
 entrance_gui_auth_valid()
 {
@@ -565,36 +538,36 @@ entrance_gui_auth_valid()
         edje_object_signal_emit(elm_layout_edje_get(screen->edj),
                                 "entrance.auth.valid", "");
      }
+   _gui_login_timeout = ecore_timer_add(10.0,
+                                        _entrance_gui_login_timeout,
+                                        screen);
 }
+
+///////////////////////////////////////////////////
 ///////////////// USER ////////////////////////////
+///////////////////////////////////////////////////
 void
 entrance_gui_users_set(Eina_List *users)
 {
    Evas_Object *ol;
-   const char *type;
    Entrance_Screen *screen;
    Eina_List *l;
 
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
+        Entrance_Fill *ef;
         ol = ENTRANCE_GUI_GET(screen->edj, "entrance_users");
-        if ((ol) && ((type = elm_object_widget_type_get(ol))))
-          {
-             if (!strcmp(type, "list"))
-               _entrance_gui_users_list_set(ol, users);
-             else if (!strcmp(type, "genlist"))
-               _entrance_gui_users_genlist_set(ol, users);
-             else if (!strcmp(type, "gengrid"))
-               _entrance_gui_users_gengrid_set(ol, users);
-
-             edje_object_signal_emit(elm_layout_edje_get(screen->edj),
-                                     "entrance.users.enabled", "");
-             _gui->users = users;
-          }
+        ef = entrance_fill_new("default",
+                               _entrance_gui_user_text_get,
+                               _entrance_gui_user_content_get,
+                               _entrance_gui_user_state_get,
+                               _entrance_gui_user_del);
+        entrance_fill(ol, ef, users, _entrance_gui_user_sel_cb);
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "entrance.users.enabled", "");
+        _gui->users = users;
      }
 }
-
-
 
 static void
 _entrance_gui_user_sel(Entrance_User *eu)
@@ -677,130 +650,36 @@ _entrance_gui_user_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 {
 }
 
-///////////////// LIST ///////////////////////////////
-static void
-_entrance_gui_users_list_set(Evas_Object *obj, Eina_List *users)
+///////////////////////////////////////////////////
+///////////////// ACTION //////////////////////////
+///////////////////////////////////////////////////
+
+static char *
+_entrance_gui_action_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
 {
-   Entrance_User *eu;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_list_item_append(obj, eu->login, NULL, NULL,
-                           _entrance_gui_user_sel_cb, eu);
-   elm_list_go(obj);
-}
-
-///////////////// USER GENLIST /////////////////////////////
-static Elm_Genlist_Item_Class _entrance_glc;
-static void
-_entrance_gui_users_genlist_set(Evas_Object *obj, Eina_List *users)
-{
-   Entrance_User *eu;
-   Eina_List *l;
-
-   _entrance_glc.item_style = "default";
-   _entrance_glc.func.text_get = _entrance_gui_user_text_get;
-   _entrance_glc.func.content_get = _entrance_gui_user_content_get;
-   _entrance_glc.func.state_get = _entrance_gui_user_state_get;
-   _entrance_glc.func.del = _entrance_gui_user_del;
-
-
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_genlist_item_append(obj, &_entrance_glc,
-                              eu, NULL, ELM_GENLIST_ITEM_NONE,
-                              _entrance_gui_user_sel_cb, eu);
-}
-
-///////////////// USER GENGRID /////////////////////////////
-static Elm_Gengrid_Item_Class _entrance_ggc;
-static void
-_entrance_gui_users_gengrid_set(Evas_Object *obj, Eina_List *users)
-{
-   Entrance_User *eu;
-   Eina_List *l;
-
-   _entrance_ggc.item_style = "default";
-   _entrance_ggc.func.text_get = _entrance_gui_user_text_get;
-   _entrance_ggc.func.content_get = _entrance_gui_user_content_get;
-   _entrance_ggc.func.state_get = _entrance_gui_user_state_get;
-   _entrance_ggc.func.del = _entrance_gui_user_del;
-
-   evas_object_size_hint_weight_set(obj, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_gengrid_item_append(obj, &_entrance_ggc,
-                              eu, _entrance_gui_user_sel_cb, eu);
-   evas_object_show(obj);
-
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-///////////////// LIST ///////////////////////////////
-static void
-_entrance_gui_list_fill(Evas_Object *obj, Entrance_Gui_Item egi, Eina_List *users, Evas_Smart_Cb func, void *data)
-{
-   Entrance_User *eu;
-   Eina_List *l;
-
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_list_item_append(obj, egi.func.text_get(eu, NULL, NULL), NULL, NULL,
-                           func, data);
-   elm_list_go(obj);
-}
-
-///////////////// GENLIST /////////////////////////////
-static void
-_entrance_gui_genlist_fill(Evas_Object *obj, Entrance_Gui_Item egi, Eina_List *users, Evas_Smart_Cb func, void *data)
-{
-   Entrance_User *eu;
-   Eina_List *l;
-   Elm_Genlist_Item_Class glc;
-
-   glc.item_style = egi.item_style;
-   glc.func.text_get = egi.func.text_get;
-   glc.func.content_get = egi.func.content_get;
-   glc.func.state_get = egi.func.state_get;
-   glc.func.del = egi.func.del;
-
-
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_genlist_item_append(obj, &glc,
-                              eu, NULL, ELM_GENLIST_ITEM_NONE,
-                              func, data);
-}
-
-///////////////// GENGRID /////////////////////////////
-static void
-_entrance_gui_gengrid_fill(Evas_Object *obj, Entrance_Gui_Item egi, Eina_List *users, Evas_Smart_Cb func, void *data)
-{
-   Entrance_User *eu;
-   Eina_List *l;
-   Elm_Gengrid_Item_Class ggc;
-
-   ggc.item_style = egi.item_style;
-   ggc.func.text_get = egi.func.text_get;
-   ggc.func.content_get = egi.func.content_get;
-   ggc.func.state_get = egi.func.state_get;
-   ggc.func.del = egi.func.del;
-
-   EINA_LIST_FOREACH(users, l, eu)
-      elm_gengrid_item_append(obj, &ggc,
-                              eu, func, data);
+   Entrance_Action *ea;
+   ea = data;
+   return strdup(ea->label);
 }
 
 static void
-_entrance_gui_cont_fill(Evas_Object *obj, Entrance_Gui_Item egi, Eina_List *users, Evas_Smart_Cb func, void *data)
+_entrance_gui_actions_populate()
 {
-   const char *type;
-   if ((type = elm_object_widget_type_get(obj)))
+   Evas_Object *o;
+
+   Entrance_Action *action;
+   Eina_List *l, *ll;
+   Entrance_Screen *screen;
+
+   EINA_LIST_FOREACH(_gui->screens, ll, screen)
      {
-        if (!strcmp(type, "list"))
-          _entrance_gui_list_fill(obj, egi, users, func, data);
-        else if (!strcmp(type, "genlist"))
-          _entrance_gui_genlist_fill(obj, egi, users, func, data);
-        else if (!strcmp(type, "gengrid"))
-          _entrance_gui_gengrid_fill(obj, egi, users, func, data);
+        Entrance_Fill *ef;
+        ef = entrance_fill_new(NULL, _entrance_gui_action_text_get,
+                               NULL, NULL, NULL);
+        o = ENTRANCE_GUI_GET(screen->edj, "actions");
+        entrance_fill(o, ef, _gui->actions, _entrance_gui_action_clicked_cb);
+        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+                                "entrance.action.enabled", "");
      }
 }
 

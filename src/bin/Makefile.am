@@ -18,6 +18,8 @@ entrance_client.h         \
 entrance_client.c         \
 entrance_connect.h        \
 entrance_connect.c        \
+entrance_fill.h           \
+entrance_fill.c           \
 entrance_gui.h            \
 entrance_gui.c
 
