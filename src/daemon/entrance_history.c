@@ -161,6 +161,7 @@ _entrance_user_init()
              if (uid > 500 && uid < 3000)
                lu = eina_list_append(lu, eina_stringshare_add(user));
           }
+        fclose(f);
      }
    EINA_LIST_FREE(lu, user)
      {
