@@ -7,6 +7,16 @@
 
 #define ENTRANCE_DISPLAY ":0.0"
 
+#define PT(x)                                                   \
+{                                                               \
+   ct = time(NULL);                                             \
+   lc = localtime(&ct);                                         \
+   memset(entrance_time_d, 0, sizeof(entrance_time_d));         \
+   strftime(entrance_time_d, sizeof(entrance_time_d),           \
+            "%b %_2d %T", lc);                                  \
+   fprintf(stderr, "(%s) "PACKAGE": %s\n", entrance_time_d, x); \
+}
+
 
 static Eina_Bool _open_log();
 static int _entrance_main(const char *dname);
@@ -108,7 +118,6 @@ static Eina_Bool
 _open_log()
 {
    FILE *elog;
-   if (_testing) return EINA_TRUE;
    elog = fopen(entrance_config->logfile, "a");
    if (!elog)
      {
@@ -129,7 +138,6 @@ _open_log()
 void
 entrance_close_log()
 {
-   if (!_testing)
    {
       fclose(stderr);
       fclose(stdout);
@@ -211,6 +219,10 @@ main (int argc, char ** argv)
    char *entrance_user = NULL;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
+   time_t ct;
+   struct tm *lc;
+   char entrance_time_d[4096];
+
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
@@ -233,7 +245,7 @@ main (int argc, char ** argv)
    if (quit_option)
      return 0;
 
-   if(getuid() != 0 && !_testing)
+   if (getuid() != 0)
      {
         fprintf(stderr, "Only root can run this program\n");
         return 1;
@@ -265,18 +277,18 @@ main (int argc, char ** argv)
           }
      }
 
-   if (!_open_log())
-     {
-        fprintf(stderr, PACKAGE": Can't open log file !!!!\n");
-        quit_option = EINA_TRUE;
-     }
-
    if (quit_option)
      {
         entrance_config_shutdown();
-        entrance_close_log();
         exit(1);
      }
+   if (!_open_log())
+     {
+        fprintf(stderr, PACKAGE": Can't open log file !!!!\n");
+        entrance_config_shutdown();
+        exit(1);
+     }
+
 
    entrance_user = getenv("ENTRANCE_USER");
 #ifdef HAVE_PAM
@@ -291,18 +303,18 @@ main (int argc, char ** argv)
         quit = getenv("ENTRANCE_QUIT");
         if (quit)
           {
-             entrance_history_init();
              unsetenv("ENTRANCE_QUIT");
              _remove_lock();
              entrance_config_shutdown();
-             fprintf(stderr, PACKAGE": Good bye\n");
+             PT("Good bye");
+             entrance_close_log();
              exit(0);
           }
-//             entrance_history_autolog();
-             entrance_history_shutdown();
+        entrance_close_log();
+        PT("Nice to see you again.");
         exit(1);
      }
-   fprintf(stderr, "\n"PACKAGE": Welcome\n");
+   PT("Welcome");
    ecore_init();
    /* Initialise event handler */
 
@@ -315,63 +327,69 @@ main (int argc, char ** argv)
    signal(SIGALRM, _signal_cb);
    signal(SIGUSR2, _signal_log);
 
-   fprintf(stderr, PACKAGE": session init\n");
+   PT("session init");
    entrance_session_init(entrance_config->command.xauth_file);
-   fprintf(stderr, PACKAGE": xserver init\n");
+   PT("xserver init");
    pid = entrance_xserver_init(_entrance_main, dname);
-
+   PT("history init");
    entrance_history_init();
    if (entrance_config->autologin && !entrance_user)
      {
+        PT("autologin init");
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(dname, NULL);
+        PT("main loop begin");
         ecore_main_loop_begin();
+        PT("auth user");
 #ifdef HAVE_PAM
         entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER, entrance_config->userlogin);
 #endif
+        PT("login user");
         entrance_session_login(entrance_config->command.session_login, EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
      }
    else
      {
-        fprintf(stderr, PACKAGE": action init\n");
+        PT("action init");
         entrance_action_init();
-        fprintf(stderr, PACKAGE": server init\n");
+        PT("server init");
         entrance_server_init();
-        fprintf(stderr, PACKAGE": starting main loop\n");
+        PT("starting main loop");
         ecore_main_loop_begin();
-        fprintf(stderr, PACKAGE": main loop end\n");
+        PT("main loop end");
         entrance_server_shutdown();
-        fprintf(stderr, PACKAGE": server shutdown\n");
+        PT("server shutdown");
         entrance_action_shutdown();
-        fprintf(stderr, PACKAGE": action shutdown\n");
+        PT("action shutdown");
      }
    entrance_history_shutdown();
+   PT("history shutdown");
    entrance_xserver_shutdown();
-   fprintf(stderr, PACKAGE": xserver shutdown\n");
+   PT("xserver shutdown");
 #ifdef HAVE_PAM
    entrance_pam_shutdown();
-   fprintf(stderr, PACKAGE": pam shutdown\n");
+   PT("pam shutdown");
 #endif
    ecore_shutdown();
+   PT("ecore shutdown");
    entrance_config_shutdown();
-   fprintf(stderr, PACKAGE": config shutdown\n");
+   PT("config shutdown");
    entrance_session_shutdown();
-   fprintf(stderr, PACKAGE": session shutdown\n");
+   PT("session shutdown");
    eet_shutdown();
+   PT("eet shutdown");
    free(dname);
    if (entrance_session_logged_get())
      {
-        fprintf(stderr, PACKAGE": close log\n");
+        PT("Bye, see you. Now go to code !\n");
         entrance_close_log();
-        fprintf(stderr, PACKAGE": wait session \n");
         _entrance_wait();
      }
-   fprintf(stderr, PACKAGE": ending xserver\n");
+   PT("ending xserver");
    kill(pid, SIGTERM);
    entrance_xserver_end();
-   fprintf(stderr, PACKAGE": close log\n");
+   PT("Bye, see you.\n");
    entrance_close_log();
    return 0;
 }
