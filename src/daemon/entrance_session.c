@@ -173,22 +173,6 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 //        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.entrance_session.log", pwd->pw_dir);
         remove(buf);
-          {
-             Eina_List *files;
-             char *exec_file;
-             char exec_buff[PATH_MAX];
-             files = ecore_file_ls("/etc/profile.d/");
-             EINA_LIST_FREE(files, exec_file)
-               {
-                  snprintf(exec_buff, sizeof(exec_buff), "%s /etc/profile.d/%s",
-                           pwd->pw_shell, exec_file);
-                  if (-1 == system(exec_buff))
-                    fprintf(stderr, PACKAGE": error on executing %s\n",
-                            exec_buff);
-                  free(exec_file);
-               }
-          }
-
 
 #ifdef HAVE_CONSOLEKIT
         snprintf(buf, sizeof(buf), PACKAGE_BIN_DIR"/entrance_ck_launch %s > %s/.entrance_session.log 2>&1",
