@@ -646,7 +646,7 @@ collections {
                rel2.to: "box_login";
                rel2.relative: 0.5 1.0;
                text {
-                  text: "Error on login ! Maybee wrong password ?";
+                  text: "Error on login ! Maybe wrong password ?";
                   font: "Sans";
                   size: 18;
                   min: 1 1;
