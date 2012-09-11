@@ -25,6 +25,7 @@
 #include "../event/entrance_event.h"
 
 #define PT(x)                                                   \
+do                                                              \
 {                                                               \
    current_time = time(NULL);                                   \
    local_time = localtime(&current_time);                       \
@@ -32,7 +33,7 @@
    strftime(entrance_time_d, sizeof(entrance_time_d),           \
             "%b %_2d %T", local_time);                          \
    fprintf(stderr, "(%s) "PACKAGE": %s", entrance_time_d, x); \
-}
+} while (0)
 
 extern   time_t current_time;
 extern   struct tm *local_time;

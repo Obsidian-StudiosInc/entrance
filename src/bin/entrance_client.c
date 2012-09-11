@@ -3,6 +3,10 @@
 #include <Ecore_X.h>
 #include <Ecore_Getopt.h>
 
+time_t current_time;
+struct tm *local_time;
+char entrance_time_d[4096];
+
 static const Ecore_Getopt options =
 {
    "entrance_client",
@@ -26,13 +30,13 @@ static const Ecore_Getopt options =
 int
 entrance_client_main(const char *theme)
 {
-   fprintf(stderr, PACKAGE"_client: client init\n");
+   PT("client init\n");
    if (entrance_gui_init(theme)) return EXIT_FAILURE;
-   fprintf(stderr, PACKAGE"_client: client run\n");
+   PT("client run\n");
    entrance_connect_init();
    elm_run();
    entrance_connect_shutdown();
-   fprintf(stderr, PACKAGE"_client: client shutdown\n");
+   PT("_client: client shutdown\n");
    entrance_gui_shutdown();
    return EXIT_SUCCESS;
 }
@@ -61,7 +65,7 @@ main(int argc, char **argv)
      return EXIT_SUCCESS;
    if (!display)
      {
-        printf("A display is required!\n");
+        fprintf(stderr, "A display is required!\n");
         return EXIT_FAILURE;
      }
    eina_init();

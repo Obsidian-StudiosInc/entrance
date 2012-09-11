@@ -61,8 +61,11 @@ _entrance_gui_theme_get (Evas_Object *win, const char *group, const char *theme)
         snprintf(buf, sizeof(buf), PACKAGE_DATA_DIR"/themes/%s.edj", theme);
         if (!elm_layout_file_set(edje, buf, group))
           {
-             fprintf(stderr, PACKAGE": can't load %s theme fallback to default\n", theme);
-             elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj", group);
+             snprintf(buf, sizeof(buf),
+                      "can't load %s theme fallback to default\n", theme);
+             PT(buf);
+             elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj",
+                                 group);
           }
      }
    else
@@ -112,7 +115,7 @@ static void
 _entrance_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
    elm_exit();
-   printf("shutdown cb\n");
+   PT("shutdown cb\n");
 }
 
 static Eina_Bool
@@ -162,9 +165,9 @@ _entrance_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__
 }
 
 static Eina_Bool
-_entrance_gui_login_timeout(void *data)
+_entrance_gui_login_timeout(void *data __UNUSED__)
 {
-   Evas_Object *popup, *o, *vbx, *bx;
+   Evas_Object *popup, *o, *bx;
    Entrance_Screen *screen;
    Eina_List *l;
 
@@ -173,7 +176,9 @@ _entrance_gui_login_timeout(void *data)
         popup = elm_popup_add(screen->win);
         evas_object_size_hint_weight_set(popup,
                                          EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        elm_object_text_set(popup, "something wrong happened... No window manager detected after a lapse of time. See your debug below.");
+        elm_object_text_set(popup, "Something wrong happened ... "
+                            "No window manager detected after a lapse of time. "
+                            "See your debug below.");
 
         bx = elm_box_add(popup);
         elm_object_content_set(popup, bx);
@@ -370,7 +375,7 @@ void
 entrance_gui_actions_set(Eina_List *actions)
 {
    if (!actions) return;
-   fprintf(stderr, PACKAGE": Action set\n");
+   PT("Action set\n");
    _gui->actions = actions;
    _entrance_gui_actions_populate();
 }
@@ -384,11 +389,11 @@ entrance_gui_init(const char *theme)
    int ii, i;
    int x, y, w, h;
 
-   fprintf(stderr, PACKAGE": client Gui init\n");
+   PT("Gui init\n");
    _gui = calloc(1, sizeof(Entrance_Gui));
    if (!_gui)
      {
-        fprintf(stderr, PACKAGE": client Not Enough memory\n");
+        PT("Not Enough memory\n");
         return 1;
      }
 
@@ -396,7 +401,8 @@ entrance_gui_init(const char *theme)
    char *tmp = getenv("DISPLAY");
    if (tmp && *tmp)
      {
-        fprintf(stderr, PACKAGE": client Using display name %s", tmp);
+        PT("client Using display name");
+        fprintf(stderr, " %s\n", tmp);
      }
 #endif
 
@@ -419,7 +425,7 @@ entrance_gui_init(const char *theme)
 
         if (!screen->edj)
           {
-             fprintf(stderr, PACKAGE": client Tut Tut Tut no theme\n");
+             PT("Tut Tut Tut no theme\n");
              return 2;
           }
         evas_object_size_hint_weight_set(screen->edj,
@@ -457,7 +463,7 @@ entrance_gui_shutdown()
    Entrance_Xsession *xsession;
    Entrance_Screen *screen;
    Ecore_Event_Handler *h;
-   fprintf(stderr, PACKAGE": Gui shutdown\n");
+   PT("Gui shutdown\n");
    EINA_LIST_FREE(_gui->screens, screen)
      {
         evas_object_del(screen->win);
@@ -666,12 +672,10 @@ static void
 _entrance_gui_actions_populate()
 {
    Evas_Object *o;
-
-   Entrance_Action *action;
-   Eina_List *l, *ll;
+   Eina_List *l;
    Entrance_Screen *screen;
 
-   EINA_LIST_FOREACH(_gui->screens, ll, screen)
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         Entrance_Fill *ef;
         ef = entrance_fill_new(NULL, _entrance_gui_action_text_get,

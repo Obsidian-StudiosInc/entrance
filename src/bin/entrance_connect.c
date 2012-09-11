@@ -15,7 +15,7 @@ _entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Add *ev;
    ev = event;
-   fprintf(stderr, PACKAGE": client connected\n");
+   PT("connected\n");
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -25,7 +25,7 @@ _entrance_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Del *ev;
    ev = event;
-   fprintf(stderr, PACKAGE": client disconnected\n");
+   PT("disconnected\n");
    _entrance_connect = NULL;
 
    return ECORE_CALLBACK_RENEW;
@@ -57,7 +57,7 @@ _entrance_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
         else if (eev->type == ENTRANCE_EVENT_ACTIONS)
           entrance_gui_actions_set(eev->event.actions.actions);
         else
-          fprintf(stderr, PACKAGE": unknow signal\n");
+          PT("unknow signal\n");
      }
    return ECORE_CALLBACK_RENEW;
 }
@@ -98,9 +98,9 @@ entrance_connect_init()
    _entrance_connect = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
                                             "entrance", 42, NULL);
    if (_entrance_connect)
-     printf(PACKAGE": client server init ok\n");
+     PT("client server init ok\n");
    else
-     printf(PACKAGE": client server init fail\n");
+     PT("client server init fail\n");
    h = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
                                _entrance_connect_add, NULL);
    _handlers = eina_list_append(_handlers, h);
@@ -116,7 +116,7 @@ void
 entrance_connect_shutdown()
 {
    Ecore_Event_Handler *h;
-   printf(PACKAGE": client server shutdown\n");
+   PT("client server shutdown\n");
    EINA_LIST_FREE(_handlers, h)
       ecore_event_handler_del(h);
    ecore_con_shutdown();
