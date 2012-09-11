@@ -6,8 +6,6 @@
 #include <crypt.h>
 #endif
 
-#include <Ecore_File.h>
-#include <Efreet.h>
 #include "entrance.h"
 
 #define HAVE_SHADOW 1
@@ -50,13 +48,18 @@ _entrance_session_cookie_add(const char *mcookie, const char *display,
 
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
-    fprintf(stderr, PACKAGE": write auth '%s'\n", buf);
+    PT("write auth");
     cmd = popen(buf, "w");
-    if (!cmd) return 1;
+    if (!cmd)
+      {
+         fprintf(stderr, " fail !\n");
+         return 1;
+      }
     fprintf(cmd, "remove %s\n", display);
     fprintf(cmd, "add %s . %s\n", display, mcookie);
     fprintf(cmd, "exit\n");
     pclose(cmd);
+    fprintf(stderr, " done\n");
     return 0;
 }
 
@@ -65,26 +68,26 @@ _entrance_session_userid_set(struct passwd *pwd)
 {
    if (!pwd)
      {
-        fprintf(stderr, PACKAGE": no passwd !\n");
+        PT("no passwd !\n");
         return 1;
      }
    if (initgroups(pwd->pw_name, pwd->pw_gid) != 0)
      {
-        fprintf(stderr, PACKAGE": can't init group\n");
+        PT("can't init group\n");
         return 1;
      }
    if (setgid(pwd->pw_gid) != 0)
      {
-        fprintf(stderr, PACKAGE": can't set gid\n");
+        PT("can't set gid\n");
         return 1;
      }
    if (setuid(pwd->pw_uid) != 0)
      {
-        fprintf(stderr, PACKAGE": can't set uid\n");
+        PT("can't set uid\n");
         return 1;
      }
 
-/*   fprintf(stderr, PACKAGE": name -> %s, gid -> %d, uid -> %d\n",
+/*   PT("name -> %s, gid -> %d, uid -> %d\n",
            pwd->pw_name, pwd->pw_gid, pwd->pw_uid); */
    return 0;
 }
@@ -92,7 +95,7 @@ _entrance_session_userid_set(struct passwd *pwd)
 static Eina_Bool
 _entrance_session_begin(struct passwd *pwd, const char *cookie)
 {
-   fprintf(stderr, PACKAGE": Session Init\n");
+   PT("Session Init\n");
    if (pwd->pw_shell[0] == '\0')
      {
         setusershell();
@@ -125,7 +128,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
    if (pid == 0)
      {
 
-        fprintf(stderr, PACKAGE": Session Run\n");
+        PT("Session Run\n");
 #ifdef HAVE_PAM
         env = entrance_pam_env_list_get();
         entrance_pam_end();
@@ -161,16 +164,16 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
                  entrance_config->command.session_start,
                  pwd->pw_name);
         if (-1 == system(buf))
-          fprintf(stderr, PACKAGE": Error on session start command %s\n", buf);
+          PT("Error on session start command\n");
         if(_entrance_session_userid_set(pwd)) return;
         _entrance_session_cookie_add(_mcookie, ":0",
                                  entrance_config->command.xauth_path, cookie);
         if (chdir(pwd->pw_dir))
           {
-             fprintf(stderr, PACKAGE": change directory for user fail\n");
+             PT("change directory for user fail");
              return;
           }
-//        fprintf(stderr, PACKAGE": Open %s`s session\n", pwd->pw_name);
+//        PT("Open %s`s session\n", pwd->pw_name);
         snprintf(buf, sizeof(buf), "%s/.entrance_session.log", pwd->pw_dir);
         remove(buf);
 
@@ -182,7 +185,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
                  cmd, pwd->pw_dir);
 #endif
         execle(pwd->pw_shell, pwd->pw_shell, "-c", buf, NULL, env);
-        fprintf(stderr, PACKAGE": The Xsessions are not launched :(\n");
+        PT("The Xsessions are not launched :(\n");
      }
 }
 
@@ -193,7 +196,7 @@ entrance_session_end(const char *user)
    snprintf(buf, sizeof(buf),
             "%s %s ", entrance_config->command.session_stop, user);
    if (-1 == system(buf))
-     fprintf(stderr, PACKAGE": Error on session stop command %s", buf);
+     PT("Error on session stop command\n");
 #ifdef HAVE_PAM
    entrance_pam_close_session();
    entrance_pam_end();
@@ -224,7 +227,7 @@ entrance_session_init(const char *file)
    int i;
    char buf[PATH_MAX];
 
-   fprintf(stderr, PACKAGE": Session init '%s'\n", file);
+   PT("Session init\n");
 
    _mcookie = calloc(33, sizeof(char));
    _mcookie[0] = 'a';
@@ -240,10 +243,10 @@ entrance_session_init(const char *file)
         _mcookie[i+2] = dig[hi & 0x0f];
         _mcookie[i+3] = dig[hi >> 4];
      }
-   remove(file);
+//   remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
    putenv(strdup(buf));
-   //fprintf(stderr, PACKAGE": cookie %s \n", _mcookie);
+   //PT("cookie %s \n", _mcookie);
    _entrance_session_cookie_add(_mcookie, ":0",
                             entrance_config->command.xauth_path, file);
    _entrance_session_desktops_init();
@@ -325,7 +328,8 @@ entrance_session_login(const char *session, Eina_Bool push)
      }
    if (push) entrance_history_push(pwd->pw_name, session);
    cmd = _entrance_session_find_command(pwd->pw_dir, session);
-   fprintf(stderr, PACKAGE": launching %s for user %s\n", cmd, _login);
+   PT("launching session for user ");
+   fprintf(stderr, "%s\n", _login);
    _entrance_session_run(pwd, cmd, buf);
    return ECORE_CALLBACK_CANCEL;
 }
@@ -385,8 +389,8 @@ _entrance_session_desktops_init()
    xsession->icon = eina_stringshare_add("entrance/system");
    _xsessions = eina_list_append(_xsessions, xsession);
 
-   efreet_init();
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
+   PT("scanning directory: ");
    /* Maybee need to scan other directories ?
     * _entrance_session_desktops_scan("/etc/share/xsessions");
     */
@@ -399,7 +403,8 @@ _entrance_session_desktops_init()
         snprintf(buf, sizeof(buf), "%s/xsessions", path);
         _entrance_session_desktops_scan(buf);
      }
-   efreet_shutdown();
+   fprintf(stderr, "\n");
+   PT("scan directory end\n");
 }
 
 static void
@@ -411,7 +416,7 @@ _entrance_session_desktops_scan(const char *dir)
 
    if (ecore_file_is_dir(dir))
      {
-        fprintf(stderr, PACKAGE": scanning directory %s\n", dir);
+        fprintf(stderr, "%s", dir);
         files = ecore_file_ls(dir);
         EINA_LIST_FREE(files, filename)
           {
@@ -452,7 +457,6 @@ _entrance_session_desktops_scan_file(const char *path)
         xsession->name = eina_stringshare_add(desktop->name);
         if (desktop->icon) xsession->icon = eina_stringshare_add(desktop->icon);
         _xsessions = eina_list_append(_xsessions, xsession);
-        fprintf(stderr, PACKAGE": client find sessions %s\n", desktop->name);
      }
    EINA_LIST_FREE(commands, command)
      free(command);

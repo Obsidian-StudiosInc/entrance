@@ -172,7 +172,7 @@ _entrance_action_grub2_get(void)
    char *s;
    int i;
 
-   fprintf(stderr, PACKAGE": trying to open "GRUB2_FILE);
+   PT("trying to open "GRUB2_FILE);
    f = eina_file_open(GRUB2_FILE, EINA_FALSE);
    if (!f) return ;
    fprintf(stderr, " o");
@@ -211,7 +211,7 @@ _entrance_action_grub2_get(void)
         if (!grub2_ok)
           {
              grub2_ok = 1;
-             fprintf(stderr, PACKAGE": GRUB2 save mode found \n");
+             PT("GRUB2 save mode found \n");
           }
         else
           {
@@ -238,7 +238,7 @@ _entrance_action_grub2_get(void)
              if (!action) goto end_line;
 
              sprintf(action, "Reboot on %s", local);
-             fprintf(stderr, PACKAGE": GRUB2 '%s'\n", action);
+             PT("GRUB2 '%s'\n", action);
              _entrance_actions =
                 eina_list_append(_entrance_actions,
                                  _entrance_action_add(action,

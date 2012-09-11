@@ -11,6 +11,7 @@
 #include <Eet.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
+#include <Efreet.h>
 
 #include "entrance_session.h"
 #ifdef HAVE_PAM
@@ -22,6 +23,20 @@
 #include "entrance_history.h"
 #include "entrance_action.h"
 #include "../event/entrance_event.h"
+
+#define PT(x)                                                   \
+{                                                               \
+   current_time = time(NULL);                                   \
+   local_time = localtime(&current_time);                       \
+   memset(entrance_time_d, 0, sizeof(entrance_time_d));         \
+   strftime(entrance_time_d, sizeof(entrance_time_d),           \
+            "%b %_2d %T", local_time);                          \
+   fprintf(stderr, "(%s) "PACKAGE": %s", entrance_time_d, x); \
+}
+
+extern   time_t current_time;
+extern   struct tm *local_time;
+extern   char entrance_time_d[4096];
 
 void entrance_close_log();
 

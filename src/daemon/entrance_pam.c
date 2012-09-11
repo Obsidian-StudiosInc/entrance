@@ -44,25 +44,26 @@ _entrance_pam_conv(int num_msg, const struct pam_message **msg,
          switch(msg[i]->msg_style){
             case PAM_PROMPT_ECHO_ON:
                  // We assume PAM is asking for the username
-                 fprintf(stderr, PACKAGE": echo on\n");
+                 PT("echo on\n");
                  resp[i]->resp = _login;
                  break;
 
             case PAM_PROMPT_ECHO_OFF:
-                 fprintf(stderr, PACKAGE": echo off\n");
+                 PT("echo off\n");
                  resp[i]->resp = _passwd;
                  _passwd = NULL;
                  break;
             case PAM_ERROR_MSG:
-                 fprintf(stderr, PACKAGE": error msg\n");
+                 PT("error msg\n");
             case PAM_TEXT_INFO:
-                 fprintf(stderr, PACKAGE": info %s\n", msg[i]->msg);
+                 PT("info ");
+                 fprintf(stderr, "%s\n", msg[i]->msg);
                  break;
             case PAM_SUCCESS:
-                 fprintf(stderr, PACKAGE": success :)\n");
+                 PT("success :)\n");
                  break;
             default:
-                 fprintf(stderr, PACKAGE": default\n");
+                 PT("default\n");
 
          }
          if (result != PAM_SUCCESS) break;
@@ -99,14 +100,14 @@ entrance_pam_open_session()
      {
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
-         fprintf(stderr, PACKAGE": PAM user unknow\n");
+         PT("PAM user unknow\n");
          return 1;
       case PAM_AUTH_ERR:
       case PAM_PERM_DENIED:
-         fprintf(stderr, PACKAGE": PAM error on login password\n");
+         PT("PAM error on login password\n");
          return 1;
       default:
-         fprintf(stderr, PACKAGE": PAM open warning unknow error\n");
+         PT("PAM open warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -126,7 +127,7 @@ entrance_pam_open_session()
 
 void
 entrance_pam_close_session() {
-   fprintf(stderr, PACKAGE": PAM close session\n");
+   PT("PAM close session\n");
    last_result = pam_close_session(_pam_handle, PAM_SILENT);
    switch (last_result) {
       default:
@@ -166,24 +167,24 @@ entrance_pam_authenticate()
      {
       case PAM_ABORT:
       case PAM_AUTHINFO_UNAVAIL:
-         fprintf(stderr, PACKAGE": PAM error !\n");
+         PT("PAM error !\n");
          entrance_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         fprintf(stderr, PACKAGE": PAM user unknow error !\n");
+         PT("PAM user unknow error !\n");
          return 1;
       case PAM_MAXTRIES:
-         fprintf(stderr, PACKAGE": PAM max tries error !\n");
+         PT("PAM max tries error !\n");
          entrance_server_client_wait();
          return 1;
       case PAM_CRED_INSUFFICIENT:
-         fprintf(stderr, PACKAGE": PAM %s don't have sufficient credential to authenticate !\n", PACKAGE);
+         PT("PAM don't have sufficient credential to authenticate !\n");
          return 1;
       case PAM_AUTH_ERR:
-         fprintf(stderr, PACKAGE": PAM authenticate error !\n");
+         PT("PAM authenticate error !\n");
          return 1;
       default:
-         fprintf(stderr, PACKAGE": PAM auth warning unknow error\n");
+         PT("PAM auth warning unknow error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -218,8 +219,6 @@ entrance_pam_init(const char *service, const char *display, const char *user) {
    _pam_conversation.conv = _entrance_pam_conv;
    _pam_conversation.appdata_ptr = NULL;
 
-
-   fprintf(stderr, PACKAGE": Pam init with name %s\n", service);
    if (_pam_handle) entrance_pam_end();
    status = pam_start(service, user, &_pam_conversation, &_pam_handle);
 
@@ -233,17 +232,22 @@ entrance_pam_init(const char *service, const char *display, const char *user) {
    return 0;
 
 pam_error:
-   fprintf(stderr, PACKAGE": PAM error !!!\n");
+   PT("PAM error !!!\n");
    return 1;
 }
 
 int
-entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value) {
+entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value)
+{
+   char buf[4096];
+
    last_result = pam_set_item(_pam_handle, type, value);
    if (last_result == PAM_SUCCESS) {
       return 0;
    }
-   fprintf(stderr, PACKAGE": PAM error: %d on %d", last_result, type);
+
+   snprintf(buf, sizeof(buf), "PAM error: %d on %d", last_result, type);
+   PT(buf);
    return 1;
 }
 
@@ -255,7 +259,7 @@ entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type) {
       default:
       case PAM_SYSTEM_ERR:
          entrance_pam_end();
-         fprintf(stderr, PACKAGE": error on pam item get\n");
+         PT("error on pam item get\n");
       case PAM_PERM_DENIED: /* Here data was NULL */
       case PAM_SUCCESS:
          break;
@@ -290,7 +294,6 @@ entrance_pam_env_list_get() {
 
 void
 entrance_pam_shutdown() {
-   fprintf(stderr, PACKAGE": Pam shutdown\n");
 }
 
 int

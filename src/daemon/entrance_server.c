@@ -52,7 +52,7 @@ _entrance_server_add(void *data __UNUSED__, int type __UNUSED__, void *event)
    void *enc;
    int size;
 
-   fprintf(stderr, PACKAGE": server client connected\n");
+   PT("server client connected\n");
    eeu.type = ENTRANCE_EVENT_USERS;
    eeu.event.users.users = entrance_history_get();
    enc = entrance_event_encode(&eeu, &size);
@@ -77,7 +77,7 @@ _entrance_server_del(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Client_Del *ev;
    ev = event;
-   fprintf(stderr, PACKAGE": server client disconnected\n");
+   PT("server client disconnected\n");
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -101,12 +101,12 @@ _entrance_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
           {
              entrance_session_login(eev->event.auth.session, EINA_TRUE);
              neev.event.status.granted = EINA_TRUE;
-             fprintf(stderr, PACKAGE": server authenticate granted\n");
+             PT("server authenticate granted\n");
           }
         else
           {
              neev.event.status.granted = EINA_FALSE;
-             fprintf(stderr, PACKAGE": server authenticate error\n");
+             PT("server authenticate error\n");
           }
         enc = entrance_event_encode(&neev, &size);
         ecore_con_client_send(ev->client, enc, size);
@@ -114,7 +114,7 @@ _entrance_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    else if (eev->type == ENTRANCE_EVENT_ACTION)
      entrance_action_run(eev->event.action.action);
    else
-     fprintf(stderr, PACKAGE": UNKNOW signal server\n");
+     PT("UNKNOW signal server\n");
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -127,7 +127,7 @@ entrance_server_init()
    _entrance_server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM,
                                         "entrance", 42, NULL);
    if (!_entrance_server)
-     fprintf(stderr, PACKAGE": server init fail\n");
+     PT("server init fail\n");
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
                                _entrance_server_add, NULL);

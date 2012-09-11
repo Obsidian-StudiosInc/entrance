@@ -56,7 +56,7 @@ _entrance_history_read()
                  EET_FILE_MODE_READ_WRITE);
    if (!(ef) || !(_entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY)))
      {
-        fprintf(stderr, PACKAGE": Error on reading last session login\n");
+        PT("Error on reading last session login\n");
         _entrance_history = calloc(1, sizeof(Entrance_History));
      }
    eet_close(ef);
@@ -71,7 +71,7 @@ _entrance_history_write()
 
    if (_history_update)
      {
-        fprintf(stderr, PACKAGE": writing history file\n");
+        PT("writing history file\n");
         ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
                       EET_FILE_MODE_READ_WRITE);
         if (!ef)
@@ -79,7 +79,7 @@ _entrance_history_write()
                         EET_FILE_MODE_WRITE);
 
         if (!eet_data_write(ef, _eddh, ENTRANCE_SESSION_KEY, _entrance_history, 1))
-          fprintf(stderr, PACKAGE": Error on updating last session login\n");
+          PT("Error on updating last session login\n");
 
         eet_close(ef);
      }
