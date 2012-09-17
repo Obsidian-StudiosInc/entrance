@@ -384,6 +384,7 @@ main (int argc, char ** argv)
    entrance_xserver_end();
    PT("Bye, see you.\n\n");
    entrance_close_log();
+   _remove_lock();
    return 0;
 }
 
