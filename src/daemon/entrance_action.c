@@ -211,13 +211,14 @@ _entrance_action_grub2_get(void)
         if (!grub2_ok)
           {
              grub2_ok = 1;
-             PT("GRUB2 save mode found \n");
+             PT("GRUB2 save mode found\n");
           }
         else
           {
              char *action;
              char *local;
              char *tmp;
+             char *buf;
 
              r2 += 10;
              size -= 10;
@@ -237,8 +238,11 @@ _entrance_action_grub2_get(void)
              action = malloc((tmp - r2 + 1 + 11) * sizeof (char));
              if (!action) goto end_line;
 
+             buf = alloca((tmp - r2 + 1 + 11 + 10) * sizeof (char));
+
              sprintf(action, "Reboot on %s", local);
-             PT("GRUB2 '%s'\n", action);
+             sprintf(buf, "GRUB2 '%s'\n", action);
+             PT(buf);
              _entrance_actions =
                 eina_list_append(_entrance_actions,
                                  _entrance_action_add(action,

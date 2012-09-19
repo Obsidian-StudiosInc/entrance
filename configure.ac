@@ -47,7 +47,7 @@ AC_MSG_RESULT([${enable_pam}])
 
 # Grub2
 AC_ARG_ENABLE([grub2],
-   [AC_HELP_STRING([--enable-gru2b], [enable grub2 support. @<:@default=disabled@:>@])],
+   [AC_HELP_STRING([--enable-grub2], [enable grub2 support. @<:@default=disabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        enable_grub2="yes"
@@ -80,7 +80,7 @@ AC_MSG_RESULT([${enable_consolekit}])
 
 # Set edje_cc path
 AC_ARG_WITH([edje-cc],
-   [AC_HELP_STRING([ --with-edje-cc=PATH], [specify a specific path to edje_cc])],
+   [AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc])],
    [
     v=$withval;
     edje_cc=$v
