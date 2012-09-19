@@ -308,6 +308,7 @@ collections {
             repeat_events: 0;
             source: "elm/hoversel";
             description { state: "default" 0.0;
+               fixed: 1 1;
                visible: 0;
                min: 140 30;
                rel1.to_y: "hostname";
@@ -318,6 +319,7 @@ collections {
                visible: 1;
             }
             description { state: "auth" 0.0;
+               fixed: 1 1;
                visible: 1;
                min: 140 30;
                rel1.to_y: "hostname";
@@ -426,7 +428,9 @@ collections {
             source: "elm/entry";
             description {
                state: "default" 0.0;
-               min: 140 30;
+               fixed: 1 1;
+               min: 140 0;
+               max: 0 0;
                rel1.to_y: "hostname";
                rel1.relative: 0.5 0.9;
                rel2.to_y: "hostname";
@@ -568,15 +572,14 @@ collections {
             source: "elm/entry";
             description {
                state: "default" 0.0;
+               fixed: 1 1;
                min: 140 0;
-//               max: 140 30;
                align: 0.5 0.0;
                rel1.to_y: "logo";
                rel1.relative: 0.5 1.0;
                rel2.to_y: "logo";
                rel2.relative: 0.5 1.0;
                rel2.offset: -1 0;
-//               rel1.offset: 28 20;
                visible: 1;
                params {
                   bool: "single line" 1;
