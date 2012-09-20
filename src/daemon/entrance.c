@@ -366,6 +366,20 @@ main (int argc, char ** argv)
    efreet_shutdown();
    ecore_shutdown();
    PT("ecore shutdown\n");
+   if (entrance_session_logged_get())
+     {
+        entrance_config_shutdown();
+        PT("config shutdown\n");
+        entrance_session_shutdown();
+        PT("session shutdown\n");
+        eet_shutdown();
+        PT("eet shutdown\n");
+        free(dname);
+        PT("Bye user logged, see you.\n");
+        entrance_close_log();
+        _entrance_wait();
+     }
+   _remove_lock();
    entrance_config_shutdown();
    PT("config shutdown\n");
    entrance_session_shutdown();
@@ -373,18 +387,11 @@ main (int argc, char ** argv)
    eet_shutdown();
    PT("eet shutdown\n");
    free(dname);
-   if (entrance_session_logged_get())
-     {
-        PT("Bye user logged, see you.\n");
-        entrance_close_log();
-        _entrance_wait();
-     }
    PT("ending xserver\n");
    kill(pid, SIGTERM);
    entrance_xserver_end();
    PT("Bye, see you.\n\n");
    entrance_close_log();
-   _remove_lock();
    return 0;
 }
 

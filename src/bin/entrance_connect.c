@@ -11,20 +11,16 @@ static Eina_Bool _entrance_connect_data(void *data, int type, void *event);
 
 
 static Eina_Bool
-_entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   Ecore_Con_Event_Server_Add *ev;
-   ev = event;
    PT("connected\n");
 
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-_entrance_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
-   Ecore_Con_Event_Server_Del *ev;
-   ev = event;
    PT("disconnected\n");
    _entrance_connect = NULL;
 
