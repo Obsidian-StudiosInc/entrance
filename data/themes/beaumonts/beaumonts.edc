@@ -365,7 +365,8 @@ collections {
             description {
                state: "default" 0.0;
                image.normal: "xsession.png";
-               max: 29 29;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
                rel1.to: "xsessions";
                rel2.to: "xsessions";
                rel1.offset: -35 0;
@@ -510,7 +511,8 @@ collections {
             description {
                state: "default" 0.0;
                image.normal: "password.png";
-               max: 29 29;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
                rel1.to: "password";
                rel2.to: "password";
                rel1.offset: -35 0;
@@ -597,7 +599,8 @@ collections {
             description {
                state: "default" 0.0;
                image.normal: "user.png";
-               max: 29 29;
+               aspect_preference: BOTH;
+               aspect: 1.0 1.0;
                rel1.to: "hostname";
                rel2.to: "hostname";
                rel1.offset: -35 0;
