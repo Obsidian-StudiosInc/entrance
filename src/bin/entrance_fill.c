@@ -22,8 +22,11 @@ _entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Ev
    void *content;
 
    EINA_LIST_FOREACH(contents, l, content)
-      elm_list_item_append(obj, ef->func.text_get(content, NULL, NULL), NULL,
-                           NULL, func, content);
+     {
+        if (ef->func.text_get)
+          elm_list_item_append(obj, ef->func.text_get(content, NULL, NULL), NULL,
+                               NULL, func, content);
+     }
    elm_list_go(obj);
 }
 
@@ -81,7 +84,7 @@ _entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
                               content, func, content);
 }
 
-///////////////// GENGRID /////////////////////////////
+///////////////// HOVERSEL /////////////////////////////
 static void
 _entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
 {
@@ -103,7 +106,7 @@ Entrance_Fill *
 entrance_fill_new(const char *item_style, EntranceFillTextGetFunc text_get, EntranceFillContentGetFunc content_get, EntranceFillStateGetFunc state_get, EntranceFillDelFunc del_func)
 {
    Entrance_Fill *ef;
-   ef = (Entrance_Fill *)malloc(sizeof(Entrance_Fill));
+   ef = calloc(1, sizeof(Entrance_Fill));
    ef->item_style = eina_stringshare_add(item_style);
    ef->func.text_get = text_get;
    ef->func.content_get = content_get;
