@@ -17,22 +17,22 @@
 #ifdef HAVE_PAM
 #include "entrance_pam.h"
 #endif
+#include "../event/entrance_event.h"
 #include "entrance_config.h"
 #include "entrance_xserver.h"
 #include "entrance_server.h"
 #include "entrance_history.h"
 #include "entrance_action.h"
-#include "../event/entrance_event.h"
 
-#define PT(x)                                                   \
-do                                                              \
-{                                                               \
-   current_time = time(NULL);                                   \
-   local_time = localtime(&current_time);                       \
-   memset(entrance_time_d, 0, sizeof(entrance_time_d));         \
-   strftime(entrance_time_d, sizeof(entrance_time_d),           \
-            "%b %_2d %T", local_time);                          \
-   fprintf(stderr, "(%s) "PACKAGE": %s", entrance_time_d, x); \
+#define PT(f, x...)                                                     \
+do                                                                   \
+{                                                                    \
+   current_time = time(NULL);                                        \
+   local_time = localtime(&current_time);                            \
+   memset(entrance_time_d, 0, sizeof(entrance_time_d));              \
+   strftime(entrance_time_d, sizeof(entrance_time_d),                \
+            "%b %_2d %T", local_time);                               \
+   fprintf(stderr, "(%s) "PACKAGE": "f, entrance_time_d, ##x); \
 } while (0)
 
 extern   time_t current_time;

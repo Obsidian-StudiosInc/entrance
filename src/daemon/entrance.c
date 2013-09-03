@@ -6,12 +6,13 @@
 #include <xcb/xcb.h>
 
 #define ENTRANCE_DISPLAY ":0.0"
+#define ENTRANCE_XEPHYR ":1.0"
 time_t current_time;
 struct tm *local_time;
 char entrance_time_d[4096];
 
 static Eina_Bool _open_log();
-static int _entrance_main(const char *dname);
+static Eina_Bool _entrance_main(const char *dname);
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
@@ -26,16 +27,12 @@ static Ecore_Exe *_entrance_client = NULL;
 static void
 _signal_cb(int sig)
 {
-   char buf[1024];
-   snprintf(buf, sizeof(buf), "signal %d received\n", sig);
-   PT(buf);
+   PT("signal %d received\n", sig);
    //FIXME  if I don't have main loop at this time ?
-   if (_entrance_client) ecore_exe_terminate(_entrance_client);
-   /*
-   entrance_session_shutdown();
-   entrance_xserver_shutdown();
-   exit(1);
-   */
+   if (_entrance_client)
+     ecore_exe_terminate(_entrance_client);
+   else
+     ecore_main_loop_quit();
 }
 
 static void
@@ -145,9 +142,10 @@ _entrance_wait()
    _exit(1);
 }
 
-static int
+static Eina_Bool
 _entrance_main(const char *dname)
 {
+   PT("starting...\n");
    if (!entrance_config->autologin)
      {
         if (!_entrance_client)
@@ -155,16 +153,18 @@ _entrance_main(const char *dname)
              char buf[PATH_MAX];
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
-             PT("Exec entrance_client\n");
+             PT("Exec entrance_client: ");
              snprintf(buf, sizeof(buf),
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
+             printf("%s\n", buf);
+
              _entrance_client = ecore_exe_run(buf, NULL);
           }
      }
    else
      ecore_main_loop_quit();
-   return 0;
+   return ECORE_CALLBACK_CANCEL;
 }
 
 static Eina_Bool
@@ -175,9 +175,9 @@ _entrance_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
    ev = event;
    if (ev->exe != _entrance_client)
      return ECORE_CALLBACK_PASS_ON;
+   PT("client have terminated\n");
    ecore_main_loop_quit();
    _entrance_client = NULL;
-   PT("client have terminated\n");
 
    return ECORE_CALLBACK_DONE;
 }
@@ -208,8 +208,8 @@ int
 main (int argc, char ** argv)
 {
    int args;
-   int pid;
-   char *dname = strdup(ENTRANCE_DISPLAY);
+   int pid = -1;
+   char *dname;
    char *entrance_user = NULL;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
@@ -238,15 +238,36 @@ main (int argc, char ** argv)
 
    if (getuid() != 0)
      {
-        fprintf(stderr, "Only root can run this program\n");
+        fprintf(stderr, "Sorry, only root can run this program!\n");
         return 1;
      }
+   if (!_xephyr && getenv("ENTRANCE_XEPHYR"))
+     _xephyr = EINA_TRUE;
+
+   if (_xephyr)
+     {
+        _testing = EINA_TRUE;
+        dname = strdup(ENTRANCE_XEPHYR);
+        putenv(strdup("ENTRANCE_XEPHYR=1"));
+     }
+   else
+     dname = strdup(ENTRANCE_DISPLAY);
+   if (!_testing && getenv("ENTRANCE_TESTING"))
+     _testing = EINA_TRUE;
 
    if (_testing)
-     nodaemon = EINA_TRUE;
+     {
+        putenv(strdup("ENTRANCE_TESTING=1"));
+        nodaemon = EINA_TRUE;
+     }
 
    eet_init();
    entrance_config_init();
+   if (!entrance_config)
+     {
+        PT("No config loaded, sorry must quit ...");
+        exit(1);
+     }
    if (!_testing && !_get_lock())
      {
         exit(1);
@@ -273,7 +294,7 @@ main (int argc, char ** argv)
         entrance_config_shutdown();
         exit(1);
      }
-   if (!_open_log())
+   if (!_testing && !_open_log())
      {
         PT("Can't open log file !!!!\n");
         entrance_config_shutdown();
@@ -297,7 +318,7 @@ main (int argc, char ** argv)
              unsetenv("ENTRANCE_QUIT");
              _remove_lock();
              entrance_config_shutdown();
-             PT("Good bye\n");
+             PT("Bye, see you.\n\n");
              entrance_close_log();
              exit(0);
           }
@@ -320,9 +341,14 @@ main (int argc, char ** argv)
    signal(SIGUSR2, _signal_log);
 
    PT("session init\n");
-   entrance_session_init(entrance_config->command.xauth_file);
-   PT("xserver init\n");
-   pid = entrance_xserver_init(_entrance_main, dname);
+   entrance_session_init(dname);
+   if (!_xephyr)
+     {
+        PT("xserver init\n");
+        pid = entrance_xserver_init(_entrance_main, dname);
+     }
+   else
+     _entrance_main(dname);
    PT("history init\n");
    entrance_history_init();
    if (entrance_config->autologin && !entrance_user)
@@ -357,40 +383,46 @@ main (int argc, char ** argv)
      }
    entrance_history_shutdown();
    PT("history shutdown\n");
-   entrance_xserver_shutdown();
-   PT("xserver shutdown\n");
+   if (_xephyr)
+     {
+        //ecore_exe_terminate(xephyr);
+        PT("Xephyr shutdown\n");
+     }
+   else
+     {
+        entrance_xserver_shutdown();
+        PT("xserver shutdown\n");
+     }
 #ifdef HAVE_PAM
    entrance_pam_shutdown();
    PT("pam shutdown\n");
 #endif
    efreet_shutdown();
-   ecore_shutdown();
    PT("ecore shutdown\n");
+   ecore_shutdown();
+   PT("session shutdown\n");
+   entrance_session_shutdown();
+   free(dname);
    if (entrance_session_logged_get())
      {
-        entrance_config_shutdown();
-        PT("config shutdown\n");
-        entrance_session_shutdown();
-        PT("session shutdown\n");
-        eet_shutdown();
-        PT("eet shutdown\n");
-        free(dname);
-        PT("Bye user logged, see you.\n");
-        entrance_close_log();
+        PT("user logged, waiting...\n");
         _entrance_wait();
+        /* no more running here */
      }
    _remove_lock();
-   entrance_config_shutdown();
    PT("config shutdown\n");
-   entrance_session_shutdown();
-   PT("session shutdown\n");
-   eet_shutdown();
+   entrance_config_shutdown();
    PT("eet shutdown\n");
+   eet_shutdown();
    free(dname);
-   PT("ending xserver\n");
-   kill(pid, SIGTERM);
-   entrance_xserver_end();
-   PT("Bye, see you.\n\n");
+   if (!_xephyr)
+     {
+        PT("ending xserver\n");
+        kill(pid, SIGTERM);
+        entrance_xserver_end();
+     }
+   else
+     PT("No session to wait, exiting\n");
    entrance_close_log();
    return 0;
 }

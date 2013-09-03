@@ -9,14 +9,16 @@
 
 #include <Elementary.h>
 
+#include "../event/entrance_event.h"
 #include "entrance_gui.h"
+#include "entrance_conf.h"
 #include "entrance_connect.h"
 #include "entrance_client.h"
 #include "entrance_gui.h"
 #include "entrance_fill.h"
-#include "../event/entrance_event.h"
+#include "entrance_login.h"
 
-#define PT(x)                                                        \
+#define PT(f, x...)                                                     \
 do                                                                   \
 {                                                                    \
    current_time = time(NULL);                                        \
@@ -24,7 +26,7 @@ do                                                                   \
    memset(entrance_time_d, 0, sizeof(entrance_time_d));              \
    strftime(entrance_time_d, sizeof(entrance_time_d),                \
             "%b %_2d %T", local_time);                               \
-   fprintf(stderr, "(%s) "PACKAGE"_client: %s", entrance_time_d, x); \
+   fprintf(stderr, "(%s) "PACKAGE"_client: "f, entrance_time_d, ##x); \
 } while (0)
 
 extern   time_t current_time;

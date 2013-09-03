@@ -16,14 +16,13 @@ static Eina_List *_entrance_actions = NULL;
 
 typedef struct Entrance_Action_Data__
 {
-   int id;
+   unsigned char id;
    const char *label;
    Entrance_Action_Cb func;
    void *data;
 } Entrance_Action_Data;
 
 static Ecore_Exe *_action_exe = NULL;
-static Ecore_Event_Handler *_handle = NULL;
 
 static Entrance_Action_Data *
 _entrance_action_add(const char *label, Entrance_Action_Cb func, void *data)
@@ -33,9 +32,9 @@ _entrance_action_add(const char *label, Entrance_Action_Cb func, void *data)
    ead->label = eina_stringshare_add(label);
    ead->func = func;
    ead->data = data;
-   ead->id = _entrance_actions ? (eina_list_count(_entrance_actions)) : 0;
-   _handle = ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                     _entrance_action_exe_event_del_cb, NULL);
+   ead->id = (unsigned char)eina_list_count(_entrance_actions);
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
+                           _entrance_action_exe_event_del_cb, NULL);
    return ead;
 }
 
@@ -96,6 +95,7 @@ entrance_action_run(int action)
 static void
 _entrance_action_suspend(void *data __UNUSED__)
 {
+   PT("Suspend");
    _action_exe = NULL;
    ecore_exe_run(entrance_config->command.suspend, NULL);
 }
@@ -103,12 +103,14 @@ _entrance_action_suspend(void *data __UNUSED__)
 static void
 _entrance_action_shutdown(void *data __UNUSED__)
 {
+   PT("Shutdown");
    _action_exe = ecore_exe_run(entrance_config->command.shutdown, NULL);
 }
 
 static void
 _entrance_action_reboot(void *data __UNUSED__)
 {
+   PT("Reboot\n");
    _action_exe = ecore_exe_run(entrance_config->command.reboot, NULL);
 }
 
@@ -118,8 +120,10 @@ _entrance_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, vo
    Ecore_Exe_Event_Del *ev;
    Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
    ev = event;
+   if (!ev->exe) return ret;
    if (ev->exe == _action_exe)
      {
+        PT("action quit requested by user\n");
         ecore_main_loop_quit();
         ret = ECORE_CALLBACK_DONE;
      }
@@ -131,12 +135,12 @@ _entrance_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, vo
 static void
 _entrance_action_grub2(void *data)
 {
-   intptr_t i = 0;
+   size_t i = 0;
    char buf[PATH_MAX];
-   i = (intptr_t)data;
+   i = (size_t)data;
 
    snprintf(buf, sizeof(buf),
-            "grub-reboot %ld && %s", i, entrance_config->command.reboot);
+            "grub-reboot %d && %s", i, entrance_config->command.reboot);
    _action_exe = ecore_exe_run(buf, NULL);
 
 }
@@ -166,7 +170,7 @@ _entrance_action_grub2_get(void)
 {
    Eina_File *f;
    unsigned char grub2_ok = 0;
-   intptr_t menuentry = 0;
+   size_t menuentry = 0;
    char *data;
    char *r, *r2;
    char *s;
@@ -238,11 +242,8 @@ _entrance_action_grub2_get(void)
              action = malloc((tmp - r2 + 1 + 11) * sizeof (char));
              if (!action) goto end_line;
 
-             buf = alloca((tmp - r2 + 1 + 11 + 10) * sizeof (char));
-
              sprintf(action, "Reboot on %s", local);
-             sprintf(buf, "GRUB2 '%s'\n", action);
-             PT(buf);
+             PT("GRUB2 '%s'\n", action);
              _entrance_actions =
                 eina_list_append(_entrance_actions,
                                  _entrance_action_add(action,

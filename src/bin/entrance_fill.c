@@ -5,10 +5,12 @@ struct Entrance_Fill_
    const char *item_style; //maybee need to be provided by theme ?
    struct
      {
-        EntranceFillTextGetFunc   text_get;
+        EntranceFillTextGetFunc text_get;
         EntranceFillContentGetFunc content_get;
-        EntranceFillStateGetFunc   state_get;
-        EntranceFillDelFunc        del;
+        EntranceFillStateGetFunc state_get;
+        EntranceFillDelFunc del;
+        Evas_Smart_Cb sel;
+        void *data;
      } func;
    Elm_Genlist_Item_Class *glc;
    Elm_Gengrid_Item_Class *ggc;
@@ -16,23 +18,26 @@ struct Entrance_Fill_
 
 ///////////////// LIST ///////////////////////////////
 static void
-_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
+_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    void *content;
 
    EINA_LIST_FOREACH(contents, l, content)
      {
+        Elm_Object_Item *it = NULL;
         if (ef->func.text_get)
-          elm_list_item_append(obj, ef->func.text_get(content, NULL, NULL), NULL,
-                               NULL, func, content);
+          it = elm_list_item_append(obj, ef->func.text_get(content, NULL, NULL), NULL,
+                                    NULL, func, data);
+        if (it)
+          elm_object_item_data_set(it, content);
      }
    elm_list_go(obj);
 }
 
 ///////////////// GENLIST /////////////////////////////
 static void
-_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
+_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    Elm_Genlist_Item_Class *glc;
@@ -53,14 +58,18 @@ _entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
 
 
    EINA_LIST_FOREACH(contents, l, content)
-      elm_genlist_item_append(obj, glc,
-                              content, NULL, ELM_GENLIST_ITEM_NONE,
-                              func, content);
+     {
+        Elm_Object_Item *it;
+        it = elm_genlist_item_append(obj, glc,
+                                     content, NULL, ELM_GENLIST_ITEM_NONE,
+                                     func, data);
+        elm_object_item_data_set(it, content);
+     }
 }
 
 ///////////////// GENGRID /////////////////////////////
 static void
-_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
+_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    Elm_Gengrid_Item_Class *ggc;
@@ -80,28 +89,61 @@ _entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
    ggc->func.del = ef->func.del;
 
    EINA_LIST_FOREACH(contents, l, content)
-      elm_gengrid_item_append(obj, ggc,
-                              content, func, content);
+     {
+        Elm_Object_Item *it;
+        it = elm_gengrid_item_append(obj, ggc,
+                                     content, func, data);
+        elm_object_item_data_set(it, content);
+     }
 }
 
 ///////////////// HOVERSEL /////////////////////////////
 static void
-_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
+_entrance_fill_hoversell_func_cb(void *data, Evas_Object *obj, void *event_info)
+{
+   Entrance_Fill *ef;
+
+   ef = evas_object_data_get(obj, "fill_data");
+   if (!ef) return;
+   if (ef->func.sel)
+     ef->func.sel(ef->func.data, obj, event_info);
+}
+
+static void
+_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
-   char *str = NULL;
    void *content;
+   char *str = NULL;
+   char *ic = NULL;
 
+   if (!ef->func.text_get) return;
+   ef->func.sel = func;
+   ef->func.data = data;
    EINA_LIST_FOREACH(contents, l, content)
      {
-        if (ef->func.text_get)
-          str = ef->func.text_get(content, obj, NULL);
-        elm_hoversel_item_add(obj, str, NULL,
-                              ELM_ICON_FILE, func, content);
-        free(str);
+        Elm_Object_Item *it;
+        str = ef->func.text_get(content, obj, NULL);
+        ic = ef->func.text_get(content, obj, "icon");
+        it = elm_hoversel_item_add(obj, str, ic,
+                                   ELM_ICON_FILE,
+                                   _entrance_fill_hoversell_func_cb, NULL);
+        elm_object_item_data_set(it, content);
+        evas_object_data_set(elm_object_item_widget_get(it), "fill_data", ef);
+        if (ic)
+          {
+             free(ic);
+             ic = NULL;
+          }
+        if (str)
+          {
+             free(str);
+             str = NULL;
+          }
      }
 }
 
+///////////////// MAIN /////////////////////////////
 Entrance_Fill *
 entrance_fill_new(const char *item_style, EntranceFillTextGetFunc text_get, EntranceFillContentGetFunc content_get, EntranceFillStateGetFunc state_get, EntranceFillDelFunc del_func)
 {
@@ -123,20 +165,25 @@ entrance_fill_del(Entrance_Fill *ef)
 }
 
 void
-entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func)
+entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
 {
    const char *type;
    if (!obj) return;
    if ((type = elm_object_widget_type_get(obj)))
      {
         if (!strcmp(type, "elm_list"))
-          _entrance_fill_list(obj, ef, contents, func);
+          _entrance_fill_list(obj, ef, contents, func, data);
         else if (!strcmp(type, "elm_genlist"))
-          _entrance_fill_genlist(obj, ef, contents, func);
+          _entrance_fill_genlist(obj, ef, contents, func, data);
         else if (!strcmp(type, "elm_gengrid"))
-          _entrance_fill_gengrid(obj, ef, contents, func);
+          _entrance_fill_gengrid(obj, ef, contents, func, data);
         else if (!strcmp(type, "elm_hoversel"))
-          _entrance_fill_hoversell(obj, ef, contents, func);
+          _entrance_fill_hoversell(obj, ef, contents, func, data);
+        else
+          {
+             PT("Unknow object type to fill ");
+             fprintf(stderr, "%s\n", type);
+          }
      }
 }
 

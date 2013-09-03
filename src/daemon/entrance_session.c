@@ -10,7 +10,8 @@
 
 #define HAVE_SHADOW 1
 
-static char *_mcookie;
+static char *_mcookie = NULL;
+static const char *_dname = NULL;
 static char **env;
 static char *_login = NULL;
 static unsigned char _logged = 0;
@@ -48,7 +49,8 @@ _entrance_session_cookie_add(const char *mcookie, const char *display,
 
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
-    PT("write auth");
+    PT("write auth on ");
+    fprintf(stderr, "display %s with file %s\n", display, auth_file);
     cmd = popen(buf, "w");
     if (!cmd)
       {
@@ -110,7 +112,7 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
    entrance_pam_env_set("USER", pwd->pw_name);
    entrance_pam_env_set("LOGNAME", pwd->pw_name);
    entrance_pam_env_set("PATH", entrance_config->session_path);
-   entrance_pam_env_set("DISPLAY", ":0.0");
+   entrance_pam_env_set("DISPLAY", _dname);//":0.0");
    entrance_pam_env_set("MAIL", "");
    entrance_pam_env_set("XAUTHORITY", cookie);
    entrance_pam_env_set("XDG_SESSION_CLASS", "greeter");
@@ -151,7 +153,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "PATH=%s", entrance_config->session_path);
         env[n++]=strdup(buf);
-        snprintf(buf, sizeof(buf), "DISPLAY=%s", ":0.0");
+        snprintf(buf, sizeof(buf), "DISPLAY=%s", _dname);//":0.0");
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "MAIL=");
         env[n++]=strdup(buf);
@@ -166,7 +168,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         if (-1 == system(buf))
           PT("Error on session start command\n");
         if(_entrance_session_userid_set(pwd)) return;
-        _entrance_session_cookie_add(_mcookie, ":0",
+        _entrance_session_cookie_add(_mcookie, _dname,//":0",
                                  entrance_config->command.xauth_path, cookie);
         if (chdir(pwd->pw_dir))
           {
@@ -220,14 +222,12 @@ entrance_session_pid_get()
 static const char *dig = "0123456789abcdef";
 
 void
-entrance_session_init(const char *file)
+entrance_session_init(const char *dname)
 {
    uint16_t word;
    uint8_t hi, lo;
    int i;
    char buf[PATH_MAX];
-
-   PT("Session init\n");
 
    _mcookie = calloc(33, sizeof(char));
    _mcookie[0] = 'a';
@@ -244,12 +244,15 @@ entrance_session_init(const char *file)
         _mcookie[i+3] = dig[hi >> 4];
      }
 //   remove(file);
-   snprintf(buf, sizeof(buf), "XAUTHORITY=%s", file);
+   snprintf(buf, sizeof(buf), "XAUTHORITY=%s",
+            entrance_config->command.xauth_file);
    putenv(strdup(buf));
    //PT("cookie %s \n", _mcookie);
-   _entrance_session_cookie_add(_mcookie, ":0",
-                            entrance_config->command.xauth_path, file);
+   _entrance_session_cookie_add(_mcookie, dname,
+                            entrance_config->command.xauth_path,
+                            entrance_config->command.xauth_file);
    _entrance_session_desktops_init();
+   _dname = dname;
 }
 
 void
@@ -269,10 +272,11 @@ entrance_session_shutdown()
 Eina_Bool
 entrance_session_authenticate(const char *login, const char *passwd)
 {
+   Eina_Bool auth;
    _login = strdup(login);
 #ifdef HAVE_PAM
-   return (!entrance_pam_auth_set(login, passwd)
-           && !entrance_pam_authenticate());
+   auth = !!(!entrance_pam_auth_set(login, passwd)
+             && !entrance_pam_authenticate());
 #else
    char *enc, *v;
    struct passwd *pwd;
@@ -293,8 +297,11 @@ entrance_session_authenticate(const char *login, const char *passwd)
    if(!v || *v == '\0')
      return EINA_TRUE;
    enc = crypt(passwd, v);
-   return !strcmp(enc, v);
+   auth = !strcmp(enc, v);
 #endif
+   eina_stringshare_del(passwd);
+   memset((char *)passwd, 0, strlen(passwd));
+   return auth;
 }
 
 static struct passwd *
@@ -328,8 +335,8 @@ entrance_session_login(const char *session, Eina_Bool push)
      }
    if (push) entrance_history_push(pwd->pw_name, session);
    cmd = _entrance_session_find_command(pwd->pw_dir, session);
-   PT("launching session for user ");
-   fprintf(stderr, "%s\n", _login);
+   PT("launching session ");
+   fprintf(stderr, "%s for user %s\n", session, _login);
    _entrance_session_run(pwd, cmd, buf);
    return ECORE_CALLBACK_CANCEL;
 }
@@ -391,9 +398,8 @@ _entrance_session_desktops_init()
 
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
    PT("scanning directory: ");
-   /* Maybee need to scan other directories ?
-    * _entrance_session_desktops_scan("/etc/share/xsessions");
-    */
+   /* Maybee need to scan other directories ? */
+   _entrance_session_desktops_scan("/etc/share/xsessions");
    _entrance_session_desktops_scan("/etc/X11/dm/Sessions");
    snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
    _entrance_session_desktops_scan(buf);
@@ -416,7 +422,7 @@ _entrance_session_desktops_scan(const char *dir)
 
    if (ecore_file_is_dir(dir))
      {
-        fprintf(stderr, "%s", dir);
+        fprintf(stderr, " %s", dir);
         files = ecore_file_ls(dir);
         EINA_LIST_FREE(files, filename)
           {

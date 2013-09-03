@@ -239,15 +239,12 @@ pam_error:
 int
 entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value)
 {
-   char buf[4096];
-
    last_result = pam_set_item(_pam_handle, type, value);
    if (last_result == PAM_SUCCESS) {
       return 0;
    }
 
-   snprintf(buf, sizeof(buf), "PAM error: %d on %d", last_result, type);
-   PT(buf);
+   PT("PAM error: %d on %d", last_result, type);
    return 1;
 }
 

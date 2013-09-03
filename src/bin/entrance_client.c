@@ -28,20 +28,6 @@ static const Ecore_Getopt options =
 };
 
 int
-entrance_client_main(const char *theme)
-{
-   PT("client init\n");
-   if (entrance_gui_init(theme)) return EXIT_FAILURE;
-   PT("client run\n");
-   entrance_connect_init();
-   elm_run();
-   entrance_connect_shutdown();
-   PT("_client: client shutdown\n");
-   entrance_gui_shutdown();
-   return EXIT_SUCCESS;
-}
-
-int
 main(int argc, char **argv)
 {
    int args;
@@ -70,12 +56,23 @@ main(int argc, char **argv)
      }
    eina_init();
    ecore_init();
-   ecore_x_init(NULL);
+   ecore_x_init(display);
    elm_init(argc, argv);
-   entrance_client_main(theme);
+   PT("login init\n");
+   entrance_login_init();
+   PT("client init\n");
+   if (!entrance_gui_init(theme)) return EXIT_FAILURE;
+   PT("client run\n");
+   entrance_connect_init();
+   elm_run();
+   entrance_connect_shutdown();
+   PT("_client: client shutdown\n");
+   entrance_gui_shutdown();
+   entrance_login_shutdown();
    elm_shutdown();
    ecore_x_shutdown();
    ecore_shutdown();
    eina_shutdown();
    return EXIT_SUCCESS;
 }
+

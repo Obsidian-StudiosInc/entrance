@@ -35,6 +35,7 @@ _xserver_start()
    char **args = NULL;
    pid_t pid;
 
+   PT("Launching xserver\n");
    pid = fork();
    if (!pid)
      {
@@ -109,13 +110,13 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
    sigset_t newset;
    sigemptyset(&newset);
 
-   PT("xserver init\n");
    _xserver = calloc(1, sizeof(Entrance_Xserver));
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    pid = _xserver_start();
    snprintf(buf, sizeof(buf), "ENTRANCE_XPID=%d", pid);
    putenv(strdup(buf));
+   PT("xserver adding signal user handler\n");
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);

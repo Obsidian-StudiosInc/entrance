@@ -9,7 +9,7 @@ typedef Eina_Bool (*EntranceFillStateGetFunc) (void *data, Evas_Object *obj, con
 typedef void (*EntranceFillDelFunc) (void *data, Evas_Object *obj);
 
 Entrance_Fill *entrance_fill_new(const char *item_style, EntranceFillTextGetFunc label_get, EntranceFillContentGetFunc content_get, EntranceFillStateGetFunc state_get, EntranceFillDelFunc del_func);
-void entrance_fill(Evas_Object *obj, Entrance_Fill *egf, Eina_List *contents, Evas_Smart_Cb func);
+void entrance_fill(Evas_Object *obj, Entrance_Fill *egf, Eina_List *contents, Evas_Smart_Cb func, void *data);
 void entrance_fill_del(Entrance_Fill *ef);
 
 

@@ -16,10 +16,14 @@ entrance_client_SOURCES = \
 ../event/entrance_event.c \
 entrance_client.h         \
 entrance_client.c         \
+entrance_conf.h           \
+entrance_conf.c           \
 entrance_connect.h        \
 entrance_connect.c        \
 entrance_fill.h           \
 entrance_fill.c           \
+entrance_login.h          \
+entrance_login.c          \
 entrance_gui.h            \
 entrance_gui.c
 

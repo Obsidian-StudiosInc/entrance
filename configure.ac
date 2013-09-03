@@ -47,21 +47,32 @@ AC_MSG_RESULT([${enable_pam}])
 
 # Grub2
 AC_ARG_ENABLE([grub2],
-   [AC_HELP_STRING([--enable-grub2], [enable grub2 support. @<:@default=disabled@:>@])],
+   [AC_HELP_STRING([--disable-grub2], [disable grub2 support. @<:@default=enabled@:>@])],
    [
-    if test "x${enableval}" = "xyes" ; then
-       enable_grub2="yes"
-    else
+    if test "x${disableval}" = "xyes" ; then
        enable_grub2="no"
+    else
+       enable_grub2="yes"
     fi
    ],
-   [enable_grub2="no"])
+   [enable_grub2="yes"])
 AC_MSG_CHECKING([whether to support grub2 reboot features])
 AC_MSG_RESULT([${enable_grub2}])
 
-if test "x${enable_grub2}" = "xyes" ; then
-   AC_DEFINE([HAVE_GRUB2], [1], [Set to 1 if grub is enabled.])
-fi
+
+# Ekbd
+AC_ARG_ENABLE([ekbd],
+   [AC_HELP_STRING([--disable-ekbd], [disable virtual keyboard. @<:@default=enabled@:>@])],
+   [
+    if test "x${disableval}" = "xyes" ; then
+       enable_ekbd="no"
+    else
+       enable_ekbd="yes"
+    fi
+   ],
+   [enable_ekbd="yes"])
+AC_MSG_CHECKING([whether to support virtual keyboard features])
+AC_MSG_RESULT([${enable_grub2}])
 
 # consolekit
 AC_ARG_ENABLE([consolekit],
@@ -104,6 +115,21 @@ AC_C___ATTRIBUTE__
 
 PKG_CHECK_MODULES([ENTRANCE], [efreet >= 1.0.0 eina >= 1.0.0 eet >= 1.4.0 ecore-con >= 1.0.0 ecore >= 1.0.0 ecore-file >= 1.0.0 xcb >= 1.0.0])
 PKG_CHECK_MODULES([ENTRANCE_CLIENT], [eet >= 1.4.0 edje >= 1.0.0 elementary >= 0.5.0.0 ecore-evas >= 1.0.0 evas >= 1.0.0 ecore-con >= 1.0.0 ecore >= 1.0.0 ecore-x >= 1.0.0 eina >= 1.0.0])
+
+# Grub2
+if test "x${enable_grub2}" = "xyes" ; then
+   AC_DEFINE([HAVE_GRUB2], [1], [Set to 1 if grub is enabled.])
+fi
+
+# Ekbd
+if test "x${enable_consolekit}" = "xyes" ; then
+   PKG_CHECK_MODULES([ENTRANCE_EKBD], [ekbd], [enable_ekbd="yes"], [enable_ekbd="no"])
+fi
+
+AM_CONDITIONAL(HAVE_CONSOLEKIT, [test "x${enable_ekbd}" = "xyes"])
+if test "x${enable_ekbd}" = "xyes" ; then
+   AC_DEFINE([HAVE_EKBD], [1], [Set to 1 if ekbd is enabled.])
+fi
 
 # Consolekit
 if test "x${enable_consolekit}" = "xyes" ; then
@@ -161,8 +187,10 @@ src/bin/Makefile
 src/daemon/Makefile
 data/Makefile
 data/themes/Makefile
-data/themes/old/Makefile
 data/themes/beaumonts/Makefile
+data/themes/default/Makefile
+data/themes/fade/Makefile
+data/themes/old/Makefile
 ])
 
 
@@ -180,6 +208,7 @@ echo "Configuration Options Summary:"
 echo
 echo "  pam..................: ${have_pam}"
 echo "  grub2................: ${enable_grub2}"
+echo "  ekbd.................: ${enable_ekbd}"
 echo "  consolekit...........: ${enable_consolekit}"
 echo
 echo "  edje_cc..............: ${edje_cc}"

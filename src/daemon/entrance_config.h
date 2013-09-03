@@ -21,18 +21,27 @@ struct _Entrance_Config
         const char *reboot;
         const char *suspend;
      } command;
-   Eina_Bool daemonize;// :1;
-   Eina_Bool numlock;// :1;
-   Eina_Bool xsessions;
-   Eina_Bool autologin;
    const char *userlogin;
    const char *lockfile;
    const char *logfile;
    const char *theme;
+   const char *elm_profile;
+   struct
+     {
+        const char *path;
+        const char *group;
+     } bg;
+   Eina_Bool daemonize;
+   Eina_Bool numlock;
+   Eina_Bool xsessions;
+   Eina_Bool autologin;
+   Eina_Bool custom_conf;
+   Eina_Bool vkbd_enabled;
 };
 
 void entrance_config_init();
 void entrance_config_shutdown();
+void entrance_config_set(const Entrance_Conf_Gui_Event *conf);
 
 Entrance_Config *entrance_config;
 

@@ -6,7 +6,9 @@
 static void _defaults_set(Entrance_Config *config);
 static void _users_get();
 static void _config_free(Entrance_Config *config);
-static Entrance_Config *_cache_get(Eet_Data_Descriptor *edd);
+static Entrance_Config *_cache_get();
+
+static Eet_Data_Descriptor *_entrance_config_descriptor;
 
 static void
 _defaults_set(Entrance_Config *config)
@@ -26,6 +28,7 @@ _defaults_set(Entrance_Config *config)
    config->numlock = EINA_FALSE;
    config->xsessions = EINA_FALSE;
    config->autologin = EINA_FALSE;
+   config->custom_conf = EINA_FALSE;
    config->userlogin = eina_stringshare_add("mylogintouse");
    config->lockfile = eina_stringshare_add("/var/run/entrance.pid");
    config->logfile = eina_stringshare_add("/var/log/entrance.log");
@@ -83,21 +86,25 @@ _users_get()
 }
 
 static Entrance_Config *
-_cache_get(Eet_Data_Descriptor *edd)
+_cache_get()
 {
    Entrance_Config *config = NULL;
    Eet_File *file;
 
-   if (!ecore_file_is_dir("/var/cache/"PACKAGE))
-     ecore_file_mkdir("/var/cache/"PACKAGE);
    file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
                    EET_FILE_MODE_READ);
+   if (!file)
+     {
+        PT("Error!!! On read /var/cache"PACKAGE"/"ENTRANCE_CONFIG_FILE);
+        return NULL;
+     }
 
-   config = eet_data_read(file, edd, ENTRANCE_CONFIG_KEY);
+   config = eet_data_read(file, _entrance_config_descriptor,
+                          ENTRANCE_CONFIG_KEY);
    if (!config)
      {
-        fprintf(stderr, PACKAGE": Warning no configuration found! This must \
-                not append, we will go back to default configuration\n");
+        PT(": Warning no configuration found! This must "
+           "not append, we will go back to default configuration\n");
         config = (Entrance_Config *) calloc(1, sizeof(Entrance_Config));
         _defaults_set(config);
      }
@@ -110,6 +117,7 @@ _cache_get(Eet_Data_Descriptor *edd)
 static void
 _config_free(Entrance_Config *config)
 {
+   PT("Config free\n");
    eina_stringshare_del(config->session_path);
    eina_stringshare_del(config->command.xinit_path);
    eina_stringshare_del(config->command.xinit_args);
@@ -158,6 +166,12 @@ entrance_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "lockfile", lockfile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "logfile", logfile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "theme", theme, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "background_path", bg.path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "background_group", bg.group, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "elementary_profile", elm_profile, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "virtual_keyboard", vkbd_enabled, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "custom_conf", custom_conf, EET_T_UCHAR);
+   _entrance_config_descriptor = edd;
 
    if (stat( "/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
      {
@@ -171,8 +185,7 @@ entrance_config_init()
              _users_get();
           }
      }
-   entrance_config = _cache_get(edd);
-   eet_data_descriptor_free(edd);
+   entrance_config = _cache_get();
 }
 
 
@@ -180,5 +193,56 @@ void
 entrance_config_shutdown()
 {
    _config_free(entrance_config);
+   eet_data_descriptor_free(_entrance_config_descriptor);
+}
+
+void
+entrance_config_set(const Entrance_Conf_Gui_Event *conf)
+{
+   Eet_File *file;
+   Eina_Bool update = EINA_FALSE;
+   if (conf->bg.path && conf->bg.path != entrance_config->bg.path)
+     {
+        if (entrance_config->bg.path)
+          eina_stringshare_replace(&entrance_config->bg.path, conf->bg.path);
+        else
+          entrance_config->bg.path = eina_stringshare_add(conf->bg.path);
+        update = EINA_TRUE;
+     }
+   if (conf->bg.group && conf->bg.group != entrance_config->bg.group)
+     {
+        if (entrance_config->bg.group)
+          eina_stringshare_replace(&entrance_config->bg.group, conf->bg.group);
+        else
+          entrance_config->bg.group = eina_stringshare_add(conf->bg.group);
+        if (!update)
+          update = EINA_TRUE;
+     }
+   if (conf->vkbd_enabled != entrance_config->vkbd_enabled)
+     {
+        entrance_config->vkbd_enabled = conf->vkbd_enabled;
+        if (!update)
+          update = EINA_TRUE;
+     }
+
+   if (update)
+     {
+        PT("Config save\n");
+        if (!ecore_file_is_dir("/var/cache/"PACKAGE))
+          ecore_file_mkdir("/var/cache/"PACKAGE);
+        file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+                        EET_FILE_MODE_READ_WRITE);
+        if (!file)
+          file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+                        EET_FILE_MODE_WRITE);
+        if (!file)
+          {
+             PT("Warning can't open /var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE);
+             return;
+          }
+        eet_data_write(file, _entrance_config_descriptor, ENTRANCE_CONFIG_KEY,
+                       entrance_config, 1);
+        eet_close(file);
+     }
 }
 

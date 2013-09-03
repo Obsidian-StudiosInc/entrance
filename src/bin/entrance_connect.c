@@ -1,20 +1,18 @@
 #include <Ecore_Con.h>
 #include "entrance_client.h"
 
-Ecore_Con_Server *_entrance_connect;
-Eina_List *_handlers;
 
 static Eina_Bool _entrance_connect_add(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_del(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_data(void *data, int type, void *event);
 
-
+Ecore_Con_Server *_entrance_connect;
+Eina_List *_handlers;
 
 static Eina_Bool
 _entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
 {
    PT("connected\n");
-
    return ECORE_CALLBACK_RENEW;
 }
 
@@ -31,68 +29,123 @@ static Eina_Bool
 _entrance_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
-   Entrance_Event *eev;
    ev = event;
 
-   eev = entrance_event_decode(ev->data, ev->size);
+   entrance_event_received(ev->data, ev->size);
+
+   return ECORE_CALLBACK_RENEW;
+}
+
+static Eina_Bool
+_entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_data EINA_UNUSED)
+{
+   const Entrance_Event *eev;
+   eev = data;
    if (eev)
      {
         if (eev->type == ENTRANCE_EVENT_STATUS)
           {
              if (eev->event.status.granted)
-               entrance_gui_auth_valid();
+               {
+                  PT("Auth granted :)\n");
+                  entrance_gui_auth_valid();
+               }
              else
-               entrance_gui_auth_error();
+               {
+                  PT("Auth error :(\n");
+                  entrance_gui_auth_error();
+               }
           }
         else if (eev->type == ENTRANCE_EVENT_MAXTRIES)
-          entrance_gui_auth_wait();
+          {
+             PT("Max tries !\n");
+             entrance_gui_auth_max_tries();
+          }
         else if (eev->type == ENTRANCE_EVENT_XSESSIONS)
-          entrance_gui_xsession_set(eev->event.xsessions.xsessions);
+          {
+             PT("Xsession received\n");
+             entrance_gui_xsessions_set(eev->event.xsessions.xsessions);
+          }
         else if (eev->type == ENTRANCE_EVENT_USERS)
-          entrance_gui_users_set(eev->event.users.users);
+          {
+             PT("Users received\n");
+             entrance_gui_users_set(eev->event.users.users);
+          }
         else if (eev->type == ENTRANCE_EVENT_ACTIONS)
-          entrance_gui_actions_set(eev->event.actions.actions);
+          {
+             PT("Action received\n");
+             entrance_gui_actions_set(eev->event.actions.actions);
+          }
+        else if (eev->type == ENTRANCE_EVENT_CONF_GUI)
+          {
+             PT("Gui conf received\n");
+             entrance_gui_conf_set(&(eev->event.conf_gui));
+          }
         else
-          PT("unknow signal\n");
+          {
+             PT("UNKNOW signal ");
+             fprintf(stderr, "%d\n", eev->type);
+          }
+        //free(eev);
      }
    return ECORE_CALLBACK_RENEW;
 }
 
+static Eina_Bool
+_entrance_connect_write_cb(const void *data, size_t size, void *user_data EINA_UNUSED)
+{
+   ecore_con_server_send(_entrance_connect, data, size);
+   return ECORE_CALLBACK_RENEW;
+}
+
 void
-entrance_connect_auth_send(const char *login, const char *password, const char *session)
+entrance_connect_auth_send(const char *login, const char *password, const char *session, Eina_Bool open_session)
 {
    Entrance_Event eev;
-   void *data;
-   int size;
 
+   PT("Request auth\n");
    eev.event.auth.login = login;
    eev.event.auth.password = password;
    eev.event.auth.session = session;
+   eev.event.auth.open_session = open_session;
    eev.type = ENTRANCE_EVENT_AUTH;
-   data = entrance_event_encode(&eev, &size);
-   ecore_con_server_send(_entrance_connect, data, size);
+   entrance_event_send(&eev);
 }
 
 void
-entrance_connect_action_send(int id)
+entrance_connect_action_send(unsigned char id)
 {
    Entrance_Event eev;
-   void *data;
-   int size;
 
+   PT("Request action %d\n", id);
    eev.event.action.action = id;
    eev.type = ENTRANCE_EVENT_ACTION;
-   data = entrance_event_encode(&eev, &size);
-   ecore_con_server_send(_entrance_connect, data, size);
+   entrance_event_send(&eev);
 }
+
+void
+entrance_connect_conf_send(Entrance_Conf_Gui_Event *ev)
+{
+   Entrance_Event eev;
+   PT("Send config\n");
+   eev.event.conf_gui.bg.path = ev->bg.path;
+   eev.event.conf_gui.bg.group = ev->bg.group;
+
+   eev.type = ENTRANCE_EVENT_CONF_GUI;
+   entrance_event_send(&eev);
+}
+
 
 void
 entrance_connect_init()
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
+   entrance_event_init(_entrance_connect_read_cb,
+                       _entrance_connect_write_cb,
+                       NULL);
    _entrance_connect = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
-                                            "entrance", 42, NULL);
+                                                "entrance", 42, NULL);
    if (_entrance_connect)
      PT("client server init ok\n");
    else
@@ -115,6 +168,7 @@ entrance_connect_shutdown()
    PT("client server shutdown\n");
    EINA_LIST_FREE(_handlers, h)
       ecore_event_handler_del(h);
+   entrance_event_shutdown();
    ecore_con_shutdown();
 }
 
