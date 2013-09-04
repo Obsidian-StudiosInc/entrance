@@ -20,6 +20,7 @@ collections {
          part { name: "base";
             type: IMAGE;
             description { state: "default" 0.0;
+                 color: 50 80 140 255;
                image {
                   normal: "entrance_background.jpg";
                   scale_hint: STATIC;

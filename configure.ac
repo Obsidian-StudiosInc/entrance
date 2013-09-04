@@ -49,10 +49,10 @@ AC_MSG_RESULT([${enable_pam}])
 AC_ARG_ENABLE([grub2],
    [AC_HELP_STRING([--disable-grub2], [disable grub2 support. @<:@default=enabled@:>@])],
    [
-    if test "x${disableval}" = "xyes" ; then
-       enable_grub2="no"
-    else
+    if test "x${enableval}" = "xyes" ; then
        enable_grub2="yes"
+    else
+       enable_grub2="no"
     fi
    ],
    [enable_grub2="yes"])
@@ -64,15 +64,15 @@ AC_MSG_RESULT([${enable_grub2}])
 AC_ARG_ENABLE([ekbd],
    [AC_HELP_STRING([--disable-ekbd], [disable virtual keyboard. @<:@default=enabled@:>@])],
    [
-    if test "x${disableval}" = "xyes" ; then
-       enable_ekbd="no"
-    else
+    if test "x${enableval}" = "xyes" ; then
        enable_ekbd="yes"
+    else
+       enable_ekbd="no"
     fi
    ],
    [enable_ekbd="yes"])
 AC_MSG_CHECKING([whether to support virtual keyboard features])
-AC_MSG_RESULT([${enable_grub2}])
+AC_MSG_RESULT([${enable_ekbd}])
 
 # consolekit
 AC_ARG_ENABLE([consolekit],
@@ -122,7 +122,7 @@ if test "x${enable_grub2}" = "xyes" ; then
 fi
 
 # Ekbd
-if test "x${enable_consolekit}" = "xyes" ; then
+if test "x${enable_ekbd}" = "xyes" ; then
    PKG_CHECK_MODULES([ENTRANCE_EKBD], [ekbd], [enable_ekbd="yes"], [enable_ekbd="no"])
 fi
 
@@ -189,7 +189,6 @@ data/Makefile
 data/themes/Makefile
 data/themes/beaumonts/Makefile
 data/themes/default/Makefile
-data/themes/fade/Makefile
 data/themes/old/Makefile
 ])
 

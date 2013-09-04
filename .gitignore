@@ -1,5 +1,7 @@
 *.edj
 *.o
+*~
+compile
 INSTALL
 Makefile
 Makefile.in
