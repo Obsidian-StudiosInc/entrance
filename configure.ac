@@ -189,7 +189,6 @@ data/Makefile
 data/themes/Makefile
 data/themes/beaumonts/Makefile
 data/themes/default/Makefile
-data/themes/fade/Makefile
 data/themes/old/Makefile
 ])
 

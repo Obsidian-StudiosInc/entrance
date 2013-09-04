@@ -13,17 +13,19 @@ externals {
 collections {
    group {
       name: "entrance/background/default";
-      images {
-         image: "entrance_background.jpg" LOSSY 90;
-      }
+//      images {
+//         image: "entrance_background.jpg" LOSSY 90;
+//      }
       parts {
          part { name: "base";
-            type: IMAGE;
+//            type: IMAGE;
+            type: RECT;
             description { state: "default" 0.0;
-               image {
-                  normal: "entrance_background.jpg";
-                  scale_hint: STATIC;
-               }
+                 color: 50 80 140 255;
+//               image {
+//                  normal: "entrance_background.jpg";
+//                  scale_hint: STATIC;
+//               }
             }
          }
       }
