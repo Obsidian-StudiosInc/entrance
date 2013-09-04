@@ -63,7 +63,7 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
      {
         if (WIFEXITED(status) && WEXITSTATUS(status))
           setenv("ENTRANCE_QUIT", "1", 1);
-        execlp("entrance", "entrance", "--nodaemon", NULL);
+        execlp(PACKAGE_SBIN_DIR"/entrance", PACKAGE_SBIN_DIR"/entrance", "--nodaemon", NULL);
      }
    return -1;
 }
