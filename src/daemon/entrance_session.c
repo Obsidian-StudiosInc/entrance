@@ -335,8 +335,12 @@ entrance_session_login(const char *session, Eina_Bool push)
      }
    if (push) entrance_history_push(pwd->pw_name, session);
    cmd = _entrance_session_find_command(pwd->pw_dir, session);
-   PT("launching session ");
-   fprintf(stderr, "%s for user %s\n", session, _login);
+   if (!cmd)
+     {
+        PT("Error !!! No command to launch, can't open a session :'(\n");
+        return ECORE_CALLBACK_CANCEL;
+     }
+   PT("launching session %s for user %s\n", cmd, _login);
    _entrance_session_run(pwd, cmd, buf);
    return ECORE_CALLBACK_CANCEL;
 }
@@ -358,10 +362,31 @@ _entrance_session_find_command(const char *path, const char *session)
                }
           }
      }
-   snprintf(buf, sizeof(buf), "%s/%s", path, ".Xsession");
+   snprintf(buf, sizeof(buf), "%s/%s",
+            path, ".xinitrc");
    if (ecore_file_can_exec(buf))
-     return eina_stringshare_add(buf);
-   return (entrance_config->command.session_login);
+     {
+        snprintf(buf, sizeof(buf), "%s %s/%s",
+                 entrance_config->command.session_login,
+                 path, ".xinitrc");
+        return eina_stringshare_add(buf);
+     }
+   snprintf(buf, sizeof(buf), "%s/%s",
+            path, ".Xsession");
+   if (ecore_file_can_exec(buf))
+     {
+        snprintf(buf, sizeof(buf), "%s %s/%s",
+                 entrance_config->command.session_login,
+                 path, ".Xsession");
+        return eina_stringshare_add(buf);
+     }
+   if (ecore_file_exists("/etc/X11/xinit/xinitrc"))
+     {
+        snprintf(buf, sizeof(buf), "%s /etc/X11/xinit/xinitrc",
+                 entrance_config->command.session_login);
+        return eina_stringshare_add(buf);
+     }
+   return NULL;
 }
 
 char *

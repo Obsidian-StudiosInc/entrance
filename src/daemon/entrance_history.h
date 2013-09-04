@@ -26,13 +26,11 @@ struct _Entrance_Login
         const char *group;
      } icon;
    Entrance_Background background;
+   Eina_Bool ignore_last_session;
 };
 
 struct _Entrance_History
 {
-   const char *theme;
-   Eina_Bool vkbdscreen;
-   Entrance_Background background;
    Eina_List *history;
 };
 

@@ -33,6 +33,8 @@ entrance_history_init()
    EET_LOGIN_ADD(icon.group, EET_T_STRING);
    EET_LOGIN_ADD(background.path, EET_T_STRING);
    EET_LOGIN_ADD(background.group, EET_T_STRING);
+   EET_LOGIN_ADD(ignore_last_session, EET_T_UCHAR);
+
 #undef EET_LOGIN_ADD
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_History);
@@ -110,15 +112,18 @@ entrance_history_push(const char *login, const char *session)
      {
         if (!strcmp(login, el->login))
           {
-             if (!session)
+             if (!el->ignore_last_session)
                {
-                  eina_stringshare_del(el->session);
-                  el->session = NULL;
-               }
-             else if (el->session && strcmp(session, el->session))
-               {
-                  eina_stringshare_replace(&el->session, session);
-                  _history_update = EINA_TRUE;
+                  if (!session)
+                    {
+                       eina_stringshare_del(el->session);
+                       el->session = NULL;
+                    }
+                  else if (el->session && strcmp(session, el->session))
+                    {
+                       eina_stringshare_replace(&el->session, session);
+                       _history_update = EINA_TRUE;
+                    }
                }
              break;
           }
