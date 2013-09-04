@@ -222,7 +222,6 @@ _entrance_action_grub2_get(void)
              char *action;
              char *local;
              char *tmp;
-             char *buf;
 
              r2 += 10;
              size -= 10;

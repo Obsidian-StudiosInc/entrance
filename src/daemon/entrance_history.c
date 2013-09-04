@@ -125,7 +125,7 @@ entrance_history_push(const char *login, const char *session)
      }
    if (!el)
      {
-        if (el = calloc(1, sizeof(Entrance_Login)))
+        if ((el = calloc(1, sizeof(Entrance_Login))))
           {
              el->login = eina_stringshare_add(login);
              el->session = eina_stringshare_add(session);
