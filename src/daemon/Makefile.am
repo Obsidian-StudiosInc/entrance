@@ -7,6 +7,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
+-DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
 @ENTRANCE_CFLAGS@
 
 if HAVE_CONSOLEKIT

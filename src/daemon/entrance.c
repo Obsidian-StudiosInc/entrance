@@ -135,9 +135,10 @@ entrance_close_log()
 }
 
 static void
-_entrance_wait()
+_entrance_wait(void)
 {
-   execl(PACKAGE_BIN_DIR"/entrance_wait", "/usr/sbin/entrance", NULL);
+   // XXX: use eina_prefix! hardcoding paths . :(
+   execl(PACKAGE_BIN_DIR"/entrance_wait", PACKAGE_SBIN_DIR"/entrance", NULL);
    PT("HUM HUM HUM can't wait ...\n\n\n");
    _exit(1);
 }
