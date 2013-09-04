@@ -140,7 +140,7 @@ _entrance_event_maxtries_dd()
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Maxtries_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Maxtries_Event, "maxtries",
-                                 maxtries, EET_T_UCHAR);
+                                 maxtries, EET_T_INT);
    return edd;
 }
 
@@ -171,7 +171,7 @@ _entrance_event_status_dd()
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Status_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Status_Event, "granted",
-                                 granted, EET_T_UCHAR);
+                                 granted, EET_T_INT);
    return edd;
 
 }

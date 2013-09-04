@@ -37,12 +37,12 @@ typedef struct Entrance_Auth_Event_
 
 typedef struct Entrance_Maxtries_Event_
 {
-   Eina_Bool maxtries;
+   int maxtries;
 } Entrance_Maxtries_Event;
 
 typedef struct Entrance_Status_Event_
 {
-   Eina_Bool granted;
+   int granted;
 } Entrance_Status_Event;
 
 typedef struct Entrance_Action_Event_
