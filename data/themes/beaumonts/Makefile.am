@@ -5,7 +5,7 @@ EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v -id $(top_srcdir)/data/themes/beaumonts -fd $(top_srcdir)/data/themes/beaumonts
 
 filesdir = $(datadir)/entrance/themes/
-files_DATA = default.edj
+files_DATA = beaumonts.edj
 
 EXTRA_DIST = \
 beaumonts.edc \
@@ -26,10 +26,10 @@ xsession.png \
 silhouette.png
 
 
-default.edj: Makefile $(EXTRA_DIST)
+beaumonts.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/themes/beaumonts/beaumonts.edc \
-	$(top_builddir)/data/themes/beaumonts/default.edj
+	$(top_builddir)/data/themes/beaumonts/beaumonts.edj
 
 clean-local:
 	rm -f *.edj
