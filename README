@@ -4,7 +4,10 @@ User can choose the WM to open
 Admin can make a script who are called to open session (/etc/X11/xinit/xinitrc)
 Everything can be configured in entrance.conf
 
-You could put an customized icon for your user in /var/cache/entrance/users/(username).edj with groupname "entrance/user/icon"
+You could put an customized icon for your user in
+ /var/cache/entrance/users/(username).edj with groupname "entrance/user/icon"
+BIG THX to http://tux.crystalxp.net for tux g1 ! Specificaly to all authors of
+each tux present in this build.
 
 to enable grub2 reboot feature use --enable-grub2 on configure. But you need to
 add this line 'GRUB_DEFAULT=saved' to /etc/default/grub
@@ -14,6 +17,7 @@ build and install:
 make
 make install
 
-on debian (ubuntu) you need to overide the pam file.
-cp data/entrance.debian /etc/pam.d/entrance
+On some systems (not debian like), you need to overide the pam file. Please try
+cp data/entrance.other /etc/pam.d/entrance
+or copy one of slim, gdm, kdm ... pam file to /etc/pam.d/entrance
 
