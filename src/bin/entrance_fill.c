@@ -99,7 +99,7 @@ _entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
 
 ///////////////// HOVERSEL /////////////////////////////
 static void
-_entrance_fill_hoversell_func_cb(void *data, Evas_Object *obj, void *event_info)
+_entrance_fill_hoversell_func_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
 {
    Entrance_Fill *ef;
 

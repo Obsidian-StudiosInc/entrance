@@ -1,13 +1,19 @@
 #include <Ecore_Con.h>
 #include "entrance_client.h"
 
+typedef struct
+{
+   Entrance_Connect_Auth_Cb func;
+   void *data;
+} Entrance_Connect_Auth;
 
 static Eina_Bool _entrance_connect_add(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_del(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_data(void *data, int type, void *event);
 
-Ecore_Con_Server *_entrance_connect;
-Eina_List *_handlers;
+static Ecore_Con_Server *_entrance_connect;
+static Eina_List *_handlers = NULL;
+static Eina_List *_auth_list = NULL;
 
 static Eina_Bool
 _entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
@@ -36,6 +42,19 @@ _entrance_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
    return ECORE_CALLBACK_RENEW;
 }
 
+static void
+_entrance_connect_auth(Eina_Bool granted)
+{
+   Entrance_Connect_Auth *auth;
+   Eina_List *l, *ll;
+
+   EINA_LIST_FOREACH_SAFE(_auth_list, l, ll, auth)
+     {
+        if (auth->func)
+          auth->func(auth->data, granted);
+     }
+}
+
 static Eina_Bool
 _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_data EINA_UNUSED)
 {
@@ -46,15 +65,10 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
         if (eev->type == ENTRANCE_EVENT_STATUS)
           {
              if (eev->event.status.granted)
-               {
-                  PT("Auth granted :)\n");
-                  entrance_gui_auth_valid();
-               }
+               PT("Auth granted :)\n");
              else
-               {
-                  PT("Auth error :(\n");
-                  entrance_gui_auth_error();
-               }
+               PT("Auth error :(\n");
+             _entrance_connect_auth(eev->event.status.granted);
           }
         else if (eev->type == ENTRANCE_EVENT_MAXTRIES)
           {
@@ -135,6 +149,24 @@ entrance_connect_conf_send(Entrance_Conf_Gui_Event *ev)
    entrance_event_send(&eev);
 }
 
+void *
+entrance_connect_auth_cb_add(Entrance_Connect_Auth_Cb func, void *data)
+{
+   PT("auth handler add\n");
+   Entrance_Connect_Auth *auth;
+   auth = malloc(sizeof(Entrance_Connect_Auth));
+   auth->func = func;
+   auth->data = data;
+   _auth_list = eina_list_append(_auth_list, auth);
+   return auth;
+}
+
+void
+entrance_connect_auth_cb_del(void *auth)
+{
+   PT("auth handler remove\n");
+   _auth_list = eina_list_remove(_auth_list, auth);
+}
 
 void
 entrance_connect_init()
@@ -165,7 +197,6 @@ void
 entrance_connect_shutdown()
 {
    Ecore_Event_Handler *h;
-   PT("client server shutdown\n");
    EINA_LIST_FREE(_handlers, h)
       ecore_event_handler_del(h);
    entrance_event_shutdown();

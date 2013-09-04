@@ -60,19 +60,22 @@ main(int argc, char **argv)
    elm_init(argc, argv);
    PT("login init\n");
    entrance_login_init();
-   PT("client init\n");
+   PT("gui init\n");
    if (!entrance_gui_init(theme)) return EXIT_FAILURE;
-   PT("client run\n");
+   PT("connect init\n");
    entrance_connect_init();
    elm_run();
+   PT("connect shutdown\n");
    entrance_connect_shutdown();
-   PT("_client: client shutdown\n");
+   PT("gui shutdown\n");
    entrance_gui_shutdown();
+   PT("login shutdown\n");
    entrance_login_shutdown();
    elm_shutdown();
    ecore_x_shutdown();
    ecore_shutdown();
    eina_shutdown();
+   PT("exit\n");
    return EXIT_SUCCESS;
 }
 

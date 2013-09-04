@@ -5,7 +5,7 @@ typedef void (*Entrance_Login_Cb) (void *data, Eina_Bool granted);
 
 void entrance_login_init(void);
 void entrance_login_shutdown(void);
-Evas_Object *entrance_login_add(Evas_Object *win);
+Evas_Object *entrance_login_add(Evas_Object *win, Entrance_Login_Cb login_cb, void *data);
 void entrance_login_xsessions_populate(Evas_Object *widget, Eina_List *xsessions);
 void entrance_login_login_set(Evas_Object *widget, const char *user);
 void entrance_login_session_set(Evas_Object *widget, const char *user);

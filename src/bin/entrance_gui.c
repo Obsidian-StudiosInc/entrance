@@ -14,6 +14,7 @@ static void _entrance_gui_user_del(void *data, Evas_Object *obj);
 static void _entrance_gui_actions_populate();
 static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_update(void);
+static void _entrance_gui_auth_cb(void *data, Eina_Bool granted);
 
 
 /*
@@ -118,8 +119,8 @@ entrance_gui_init(const char *theme)
               fprintf(stderr, "%s\n", "entrance");
               return j;
            }
-         elm_object_part_content_set(o, "entrance.login", ol);
-         o = entrance_login_add(ol);
+         elm_object_part_content_set(o, "entrance.screen", ol);
+         o = entrance_login_add(ol, _entrance_gui_auth_cb, screen);
          entrance_login_open_session_set(o, EINA_TRUE);
          screen->login = o;
          elm_object_part_content_set(ol, "entrance.login", o);
@@ -245,40 +246,6 @@ entrance_gui_stringlist_free(Eina_List *list)
       eina_stringshare_del(s);
 }
 
-void
-entrance_gui_auth_valid()
-{
-   Eina_List *l;
-   Entrance_Screen *screen;
-   EINA_LIST_FOREACH(_gui->screens, l, screen)
-     {
-        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
-                                "entrance,auth,valid", "");
-     }
-   /*
-   _gui_login_timeout = ecore_timer_add(10.0,
-                                        _entrance_gui_login_timeout,
-                                        screen);
-                                        */
-}
-
-void
-entrance_gui_auth_error()
-{
-   /*
-   Evas_Object *o;
-   Eina_List *l;
-   Entrance_Screen *screen;
-
-   EINA_LIST_FOREACH(_gui->screens, l, screen)
-     {
-        o = ENTRANCE_GUI_GET(screen->edj, "entrance.password");
-        elm_entry_entry_set(o, "");
-        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
-                                "entrance,auth,error", "");
-     }
-     */
-}
 
 void
 entrance_gui_actions_set(Eina_List *actions)
@@ -329,7 +296,7 @@ entrance_gui_users_set(Eina_List *users)
         ol = ENTRANCE_GUI_GET(screen->edj, "entrance.users");
         if (!ol) continue;
         entrance_fill(ol, ef, users, _entrance_gui_user_sel_cb, screen->login);
-        edje_object_signal_emit(elm_layout_edje_get(screen->edj),
+        elm_object_signal_emit(screen->edj,
                                 "entrance,users,enabled", "");
      }
    _gui->users = users;
@@ -882,6 +849,32 @@ _entrance_gui_actions_populate()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+static void
+_entrance_gui_auth_cb(void *data, Eina_Bool granted)
+{
+   Eina_List *l;
+   Entrance_Screen *screen;
+
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        if (granted)
+          {
+             elm_object_signal_emit(screen->edj,
+                                    "entrance,auth,valid", "");
+          }
+        else
+          {
+             elm_object_signal_emit(screen->edj,
+                                    "entrance,auth,error", "");
+          }
+     }
+   /*
+      if (granted)
+      _gui_login_timeout = ecore_timer_add(10.0,
+      _entrance_gui_login_timeout,
+      data);
+    */
+}
 
 static Eina_Bool
 _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
