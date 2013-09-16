@@ -358,7 +358,12 @@ _entrance_session_find_command(const char *path, const char *session)
              if (!strcmp(xsession->name, session))
                {
                   if (xsession->command)
-                    return xsession->command;
+                    {
+                       snprintf(buf, sizeof(buf), "%s %s",
+                                entrance_config->command.session_login,
+                                xsession->command);
+                       return eina_stringshare_add(buf);
+                    }
                }
           }
      }
