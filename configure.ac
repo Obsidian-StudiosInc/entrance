@@ -113,8 +113,8 @@ AC_C___ATTRIBUTE__
 
 ### Checks for libraries
 
-PKG_CHECK_MODULES([ENTRANCE], [efreet >= 1.0.0 eina >= 1.0.0 eet >= 1.4.0 ecore-con >= 1.0.0 ecore >= 1.0.0 ecore-file >= 1.0.0 xcb >= 1.0.0])
-PKG_CHECK_MODULES([ENTRANCE_CLIENT], [eet >= 1.4.0 edje >= 1.0.0 elementary >= 0.5.0.0 ecore-evas >= 1.0.0 evas >= 1.0.0 ecore-con >= 1.0.0 ecore >= 1.0.0 ecore-x >= 1.0.0 eina >= 1.0.0])
+PKG_CHECK_MODULES([ENTRANCE], [eina >= 1.0.0 eet >= 1.4.0 ecore >= 1.0.0 ecore-con >= 1.0.0 ecore-file >= 1.0.0 efreet >= 1.0.0 xcb >= 1.0.0])
+PKG_CHECK_MODULES([ENTRANCE_CLIENT], [eina >= 1.0.0 eet >= 1.4.0 edje >= 1.0.0 evas >= 1.0.0 ecore >= 1.0.0 ecore-con >= 1.0.0 ecore-evas >= 1.0.0 ecore-input >= 1.0.0 ecore-x >= 1.0.0 elementary >= 0.5.0.0])
 
 # Grub2
 if test "x${enable_grub2}" = "xyes" ; then
