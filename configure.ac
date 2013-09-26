@@ -1,4 +1,4 @@
-AC_INIT([entrance], [0.0.4], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([entrance], [0.0.5], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -187,9 +187,7 @@ src/bin/Makefile
 src/daemon/Makefile
 data/Makefile
 data/themes/Makefile
-data/themes/beaumonts/Makefile
 data/themes/default/Makefile
-data/themes/old/Makefile
 ])
 
 
