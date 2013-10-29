@@ -11,11 +11,9 @@ Ecore_Con_Server *_entrance_server = NULL;
 Eina_List *_handlers = NULL;
 
 static Eina_Bool
-_entrance_server_add(void *data __UNUSED__, int type __UNUSED__, void *event EINA_UNUSED)
+_entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
-   //Ecore_Con_Event_Client_Add *ev;
    Entrance_Event eev;
-   //ev = event;
 
    PT("server client connected\n");
    PT("Sending users\n");
@@ -51,20 +49,15 @@ _entrance_server_add(void *data __UNUSED__, int type __UNUSED__, void *event EIN
 
 
 static Eina_Bool
-_entrance_server_del(void *data __UNUSED__, int type __UNUSED__, void *event EINA_UNUSED)
+_entrance_server_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
-   /*
-
-   Ecore_Con_Event_Client_Del *ev;
-   ev = event;
-   */
    PT("server client disconnected\n");
 
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-_entrance_server_data(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_server_data(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
 
    Ecore_Con_Event_Client_Data *ev;
@@ -89,15 +82,20 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
                                           eev->event.auth.password))
           {
              PT("server authenticate granted\n");
+             neev.event.status.login = entrance_session_login_get();
+             neev.event.status.granted = EINA_TRUE;
              if (eev->event.auth.open_session)
                {
                   PT("opening session now ...\n");
                   entrance_session_login(eev->event.auth.session, EINA_TRUE);
                }
-             neev.event.status.granted = EINA_TRUE;
+             else
+               entrance_session_close();
           }
         else
           {
+             entrance_session_close();
+             neev.event.status.login = NULL;
              neev.event.status.granted = EINA_FALSE;
              PT("server authenticate error\n");
           }

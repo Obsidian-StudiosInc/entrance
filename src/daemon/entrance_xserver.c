@@ -94,7 +94,7 @@ xserver_error:
 }
 
 static Eina_Bool
-_xserver_started(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+_xserver_started(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    PT("xserver started\n");
    _env_set(_xserver->dname);

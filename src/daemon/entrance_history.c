@@ -24,18 +24,7 @@ entrance_history_init()
    // TODO screenshot a new session after 3 min
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
-   edd = eet_data_descriptor_stream_new(&eddc);
-#define EET_LOGIN_ADD(NAME, TYPE) \
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
-   EET_LOGIN_ADD(login, EET_T_STRING);
-   EET_LOGIN_ADD(session, EET_T_STRING);
-   EET_LOGIN_ADD(icon.path, EET_T_STRING);
-   EET_LOGIN_ADD(icon.group, EET_T_STRING);
-   EET_LOGIN_ADD(background.path, EET_T_STRING);
-   EET_LOGIN_ADD(background.group, EET_T_STRING);
-   EET_LOGIN_ADD(ignore_last_session, EET_T_UCHAR);
-
-#undef EET_LOGIN_ADD
+   edd = entrance_event_user_dd();
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_History);
    _eddh = eet_data_descriptor_stream_new(&eddc);
@@ -79,7 +68,6 @@ _entrance_history_write()
    Eet_File *ef;
    Entrance_Login *el;
 
-
    if (_history_update)
      {
         PT("writing history file\n");
@@ -98,7 +86,11 @@ _entrance_history_write()
    EINA_LIST_FREE(_entrance_history->history, el)
      {
         eina_stringshare_del(el->login);
-        eina_stringshare_del(el->session);
+        eina_stringshare_del(el->image.path);
+        eina_stringshare_del(el->image.group);
+        eina_stringshare_del(el->bg.path);
+        eina_stringshare_del(el->bg.group);
+        eina_stringshare_del(el->lsess);
      }
 }
 
@@ -108,20 +100,22 @@ entrance_history_push(const char *login, const char *session)
    Eina_List *l;
    Entrance_Login *el;
 
+   PT("history push for user %s session %s\n", login, session);
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
         if (!strcmp(login, el->login))
           {
-             if (!el->ignore_last_session)
+             PT("History updating\n");
+             if (el->remember_session)
                {
                   if (!session)
                     {
-                       eina_stringshare_del(el->session);
-                       el->session = NULL;
+                       eina_stringshare_del(el->lsess);
+                       el->lsess = NULL;
                     }
-                  else if (el->session && strcmp(session, el->session))
+                  else if (el->lsess && strcmp(session, el->lsess))
                     {
-                       eina_stringshare_replace(&el->session, session);
+                       eina_stringshare_replace(&el->lsess, session);
                        _history_update = EINA_TRUE;
                     }
                }
@@ -130,11 +124,13 @@ entrance_history_push(const char *login, const char *session)
      }
    if (!el)
      {
+        PT("History create a new entry for %s\n", login);
         if ((el = calloc(1, sizeof(Entrance_Login))))
           {
              el->login = eina_stringshare_add(login);
-             if (session) el->session = eina_stringshare_add(session);
-             else el->session = NULL;
+             if (session) el->lsess = eina_stringshare_add(session);
+             else el->lsess = NULL;
+             el->remember_session = EINA_TRUE;
              _entrance_history->history =
                 eina_list_append(_entrance_history->history, el);
              _history_update = EINA_TRUE;
@@ -152,7 +148,7 @@ _entrance_history_match(const char *login)
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
         if (!strcmp(el->login, login))
-          ret = el->session;
+          ret = el->lsess;
      }
    return ret;
 }
@@ -162,7 +158,7 @@ _entrance_user_init()
 {
    char buf[PATH_MAX];
    FILE *f;
-   Entrance_User_Event *eu;
+   Entrance_Login *eu;
    Eina_List *lu = NULL;
    char *token;
    char *user;
@@ -185,7 +181,7 @@ _entrance_user_init()
      }
    EINA_LIST_FREE(lu, user)
      {
-        if ((eu = (Entrance_User_Event *) calloc(1, sizeof(Entrance_User_Event))))
+        if ((eu = (Entrance_Login *) calloc(1, sizeof(Entrance_Login))))
           {
              eu->login = eina_stringshare_add(user);
              snprintf(buf, sizeof(buf),
@@ -193,6 +189,7 @@ _entrance_user_init()
              if (ecore_file_exists(buf))
                eu->image.path = eina_stringshare_add(buf);
              eu->lsess = _entrance_history_match(user);
+             eu->remember_session = EINA_TRUE;
              eina_stringshare_del(user);
              _lusers = eina_list_append(_lusers, eu);
           }
@@ -202,7 +199,7 @@ _entrance_user_init()
 static void
 _entrance_user_shutdown()
 {
-   Entrance_User_Event *eu;
+   Entrance_Login *eu;
    EINA_LIST_FREE(_lusers, eu)
      {
         eina_stringshare_del(eu->login);

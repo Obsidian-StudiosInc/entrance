@@ -14,7 +14,7 @@ static void _entrance_gui_user_del(void *data, Evas_Object *obj);
 static void _entrance_gui_actions_populate();
 static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_update(void);
-static void _entrance_gui_auth_cb(void *data, Eina_Bool granted);
+static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
 
 
 /*
@@ -295,7 +295,8 @@ entrance_gui_users_set(Eina_List *users)
      {
         ol = ENTRANCE_GUI_GET(screen->edj, "entrance.users");
         if (!ol) continue;
-        entrance_fill(ol, ef, users, _entrance_gui_user_sel_cb, screen->login);
+        entrance_fill(ol, ef, users, NULL,
+                      _entrance_gui_user_sel_cb, screen->login);
         elm_object_signal_emit(screen->edj,
                                 "entrance,users,enabled", "");
      }
@@ -353,6 +354,12 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
    _entrance_gui_update();
 }
 
+void
+entrance_gui_theme_name_set(const char *theme)
+{
+   /* TODO */
+}
+
 const char *
 entrance_gui_theme_name_get(void)
 {
@@ -384,12 +391,12 @@ entrance_gui_vkbd_enabled_get(void)
 }
 /*
 static void
-_entrance_gui_login_activated_cb(void *data __UNUSED__, Evas_Object *obj, void *event_info __UNUSED__)
+_entrance_gui_login_activated_cb(void *data EINA_UNUSED, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    char *txt;
    Eina_List *l, *ll;
    Entrance_Xsession *xsess;
-   Entrance_User_Event *eu = NULL;
+   Entrance_Login *eu = NULL;
    Entrance_Screen *screen;
 
    PT("login activated\n");
@@ -423,7 +430,7 @@ _entrance_gui_login_activated_cb(void *data __UNUSED__, Evas_Object *obj, void *
 }
 
 static void
-_entrance_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_entrance_gui_shutdown(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    elm_exit();
    PT("shutdown cb\n");
@@ -431,7 +438,7 @@ _entrance_gui_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void 
 
 
 static void
-_entrance_gui_focus(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_entrance_gui_focus(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Eina_List *l;
    Entrance_Screen *screen;
@@ -442,7 +449,7 @@ _entrance_gui_focus(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *ev
 }
 
 static void
-_entrance_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
+_entrance_gui_login_cancel_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *sig EINA_UNUSED, const char *src EINA_UNUSED)
 {
    Evas_Object *o;
    Entrance_Screen *screen;
@@ -461,7 +468,7 @@ _entrance_gui_login_cancel_cb(void *data __UNUSED__, Evas_Object *obj __UNUSED__
 }
 
 static Eina_Bool
-_entrance_gui_login_timeout(void *data __UNUSED__)
+_entrance_gui_login_timeout(void *data EINA_UNUSED)
 {
    Evas_Object *popup, *o, *bx;
    Entrance_Screen *screen;
@@ -531,20 +538,20 @@ _entrance_gui_login(Entrance_Screen *screen)
 }
 
 static void
-_entrance_gui_login_request_cb(void *data, Evas_Object *obj __UNUSED__, const char *sig __UNUSED__, const char *src __UNUSED__)
+_entrance_gui_login_request_cb(void *data, Evas_Object *obj EINA_UNUSED, const char *sig EINA_UNUSED, const char *src EINA_UNUSED)
 {
    _entrance_gui_login(data);
 }
 
 static void
-_entrance_gui_password_activated_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_entrance_gui_password_activated_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    PT("password activated\n");
    _entrance_gui_login(data);
 }
 
 static void
-_entrance_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info __UNUSED__)
+_entrance_gui_xsessions_clicked_cb(void *data, Evas_Object *obj, void *event_info EINA_UNUSED)
 {
    Evas_Object *icon;
    Eina_List *l;
@@ -632,7 +639,7 @@ _entrance_gui_sessions_populate()
 }
 
 static Eina_Bool
-_entrance_gui_auth_enable(void *data __UNUSED__)
+_entrance_gui_auth_enable(void *data EINA_UNUSED)
 {
    Evas_Object *o;
    Eina_List *l;
@@ -677,12 +684,17 @@ _entrance_gui_update(void)
                }
              if (!bg)
                {
+                  const char *path;
+                  const char *group;
                   if (_gui->bg.group)
                     bg = entrance_gui_theme_get(screen->transition,
                                                 _gui->bg.group);
                   else
                     bg = entrance_gui_theme_get(screen->transition,
                                                 "entrance/background/default");
+                  edje_object_file_get(elm_layout_edje_get(bg), &path, &group);
+                  eina_stringshare_replace(&_gui->bg.path, path);
+                  eina_stringshare_replace(&_gui->bg.group, group);
                }
              elm_object_part_content_set(screen->transition,
                                          "entrance.wallpaper.default", bg);
@@ -743,27 +755,27 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj)
 }
 
 static void
-_entrance_gui_user_sel_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info)
+_entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
-   Entrance_User_Event *eu;
+   Entrance_Login *eu;
    eu = elm_object_item_data_get(event_info);
    entrance_login_login_set(data, eu->login);
    entrance_login_session_set(data, eu->lsess);
 }
 
 static char *
-_entrance_gui_user_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
-   Entrance_User_Event *eu;
+   Entrance_Login *eu;
    eu = data;
    return strdup(eu->login);
 }
 
 static Evas_Object *
-_entrance_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj, const char *part)
+_entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const char *part)
 {
    Evas_Object *ic = NULL;
-   Entrance_User_Event *eu;
+   Entrance_Login *eu;
    eu = data;
 
    if (eu && !strcmp(part, "elm.swallow.icon"))
@@ -798,13 +810,13 @@ _entrance_gui_user_content_get(void *data __UNUSED__, Evas_Object *obj, const ch
 }
 
 static Eina_Bool
-_entrance_gui_user_state_get(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_entrance_gui_user_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    return EINA_FALSE;
 }
 
 static void
-_entrance_gui_user_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
+_entrance_gui_user_del(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED)
 {
 }
 
@@ -813,7 +825,7 @@ _entrance_gui_user_del(void *data __UNUSED__, Evas_Object *obj __UNUSED__)
 ///////////////////////////////////////////////////
 
 static char *
-_entrance_gui_action_text_get(void *data, Evas_Object *obj __UNUSED__, const char *part __UNUSED__)
+_entrance_gui_action_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    Entrance_Action *ea;
    ea = data;
@@ -821,7 +833,7 @@ _entrance_gui_action_text_get(void *data, Evas_Object *obj __UNUSED__, const cha
 }
 
 static void
-_entrance_gui_action_clicked_cb(void *data, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_entrance_gui_action_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    Entrance_Action *ea;
    ea = data;
@@ -841,7 +853,7 @@ _entrance_gui_actions_populate()
         ef = entrance_fill_new(NULL, _entrance_gui_action_text_get,
                                NULL, NULL, NULL);
         o = ENTRANCE_GUI_GET(screen->edj, "entrance.actions");
-        entrance_fill(o, ef, _gui->actions,
+        entrance_fill(o, ef, _gui->actions, NULL,
                       _entrance_gui_action_clicked_cb, screen);
         edje_object_signal_emit(elm_layout_edje_get(screen->edj),
                                 "entrance,action,enabled", "");
@@ -850,7 +862,7 @@ _entrance_gui_actions_populate()
 
 ////////////////////////////////////////////////////////////////////////////////
 static void
-_entrance_gui_auth_cb(void *data, Eina_Bool granted)
+_entrance_gui_auth_cb(void *data, const char *user EINA_UNUSED, Eina_Bool granted)
 {
    Eina_List *l;
    Entrance_Screen *screen;

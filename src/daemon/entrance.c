@@ -36,7 +36,7 @@ _signal_cb(int sig)
 }
 
 static void
-_signal_log(int sig __UNUSED__)
+_signal_log(int sig EINA_UNUSED)
 {
    PT("reopen the log file\n");
    entrance_close_log();
@@ -169,7 +169,7 @@ _entrance_main(const char *dname)
 }
 
 static Eina_Bool
-_entrance_client_del(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Exe_Event_Del *ev;
 
@@ -304,9 +304,6 @@ main (int argc, char ** argv)
 
 
    entrance_user = getenv("ENTRANCE_USER");
-#ifdef HAVE_PAM
-   entrance_pam_init(PACKAGE, dname, entrance_user);
-#endif
    if (entrance_user)
      {
         char *quit;
@@ -364,7 +361,7 @@ main (int argc, char ** argv)
         entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER, entrance_config->userlogin);
 #endif
         PT("login user\n");
-        entrance_session_login(entrance_config->command.session_login, EINA_FALSE);
+        entrance_session_login(NULL, EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
      }

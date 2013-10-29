@@ -49,19 +49,17 @@ _entrance_session_cookie_add(const char *mcookie, const char *display,
 
     if (!xauth_cmd || !auth_file) return 1;
     snprintf(buf, sizeof(buf), "%s -f %s -q", xauth_cmd, auth_file);
-    PT("write auth on ");
-    fprintf(stderr, "display %s with file %s\n", display, auth_file);
+    PT("write auth on display %s with file %s\n", display, auth_file);
     cmd = popen(buf, "w");
     if (!cmd)
       {
-         fprintf(stderr, " fail !\n");
+         PT("write auth fail !\n");
          return 1;
       }
     fprintf(cmd, "remove %s\n", display);
     fprintf(cmd, "add %s . %s\n", display, mcookie);
     fprintf(cmd, "exit\n");
     pclose(cmd);
-    fprintf(stderr, " done\n");
     return 0;
 }
 
@@ -186,7 +184,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         snprintf(buf, sizeof(buf), "%s > %s/.entrance_session.log 2>&1",
                  cmd, pwd->pw_dir);
 #endif
-        execle(pwd->pw_shell, pwd->pw_shell, "-c", buf, NULL, env);
+        execle(pwd->pw_shell, pwd->pw_shell, "--login", "-c", buf, NULL, env);
         PT("The Xsessions are not launched :(\n");
      }
 }
@@ -194,11 +192,20 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 void
 entrance_session_end(const char *user)
 {
+#ifdef HAVE_PAM
+   entrance_pam_init(PACKAGE, _dname, user);
+#endif
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf),
             "%s %s ", entrance_config->command.session_stop, user);
    if (-1 == system(buf))
      PT("Error on session stop command\n");
+   entrance_session_close();
+}
+
+void
+entrance_session_close(void)
+{
 #ifdef HAVE_PAM
    entrance_pam_close_session();
    entrance_pam_end();
@@ -275,6 +282,7 @@ entrance_session_authenticate(const char *login, const char *passwd)
    Eina_Bool auth;
    _login = strdup(login);
 #ifdef HAVE_PAM
+   entrance_pam_init(PACKAGE, _dname, NULL);
    auth = !!(!entrance_pam_auth_set(login, passwd)
              && !entrance_pam_authenticate());
 #else
@@ -359,10 +367,7 @@ _entrance_session_find_command(const char *path, const char *session)
                {
                   if (xsession->command)
                     {
-                       snprintf(buf, sizeof(buf), "%s %s",
-                                entrance_config->command.session_login,
-                                xsession->command);
-                       return eina_stringshare_add(buf);
+                       return xsession->command;
                     }
                }
           }
@@ -371,25 +376,17 @@ _entrance_session_find_command(const char *path, const char *session)
             path, ".xinitrc");
    if (ecore_file_can_exec(buf))
      {
-        snprintf(buf, sizeof(buf), "%s %s/%s",
-                 entrance_config->command.session_login,
-                 path, ".xinitrc");
         return eina_stringshare_add(buf);
      }
    snprintf(buf, sizeof(buf), "%s/%s",
             path, ".Xsession");
    if (ecore_file_can_exec(buf))
      {
-        snprintf(buf, sizeof(buf), "%s %s/%s",
-                 entrance_config->command.session_login,
-                 path, ".Xsession");
         return eina_stringshare_add(buf);
      }
    if (ecore_file_exists("/etc/X11/xinit/xinitrc"))
      {
-        snprintf(buf, sizeof(buf), "%s /etc/X11/xinit/xinitrc",
-                 entrance_config->command.session_login);
-        return eina_stringshare_add(buf);
+        return eina_stringshare_add("/etc/X11/xinit/xinitrc");
      }
    return NULL;
 }

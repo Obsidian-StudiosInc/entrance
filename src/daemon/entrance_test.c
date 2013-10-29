@@ -19,14 +19,14 @@ _theme_get(Evas_Object *win, const char *group)
 }
 
 static void
-_signal(void *data __UNUSED__, Evas_Object *obj __UNUSED__, const char *sig, const char *src)
+_signal(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *sig, const char *src)
 {
    printf("Event: %s - %s \n", sig, src);
 }
 
 
 static void
-_shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
+_shutdown(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
    printf("Quit\n");
    elm_exit();
@@ -34,7 +34,7 @@ _shutdown(void *data __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info _
 
 
 int
-elm_main (int argc __UNUSED__, char **argv __UNUSED__)
+elm_main (int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {
    Evas_Object *o, *win;
    win = elm_win_add(NULL, "theme_test", ELM_WIN_BASIC);

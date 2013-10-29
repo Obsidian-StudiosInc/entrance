@@ -26,7 +26,7 @@
 static int _entrance_pam_conv(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
 
 static struct pam_conv _pam_conversation;
-static pam_handle_t* _pam_handle;
+static pam_handle_t* _pam_handle = NULL;
 static int last_result;
 static char *_login = NULL;
 static char *_passwd = NULL;
@@ -35,7 +35,7 @@ static char *_passwd = NULL;
 
 static int
 _entrance_pam_conv(int num_msg, const struct pam_message **msg,
-     struct pam_response **resp, void *appdata_ptr __UNUSED__) {
+     struct pam_response **resp, void *appdata_ptr EINA_UNUSED) {
      int i, result = PAM_SUCCESS;
      *resp = (struct pam_response *) calloc(num_msg, sizeof(struct pam_response));
      for (i = 0; i < num_msg; ++i){
@@ -195,11 +195,18 @@ entrance_pam_authenticate()
       default:
          //case PAM_NEW_AUTHTOKEN_REQD:
       case PAM_ACCT_EXPIRED:
+         PT("PAM user acct expired error\n");
+         entrance_pam_end();
+         return 1;
       case PAM_USER_UNKNOWN:
+         PT("PAM user unknow error\n");
          entrance_pam_end();
          return 1;
       case PAM_AUTH_ERR:
+         PT("PAM auth error\n");
+         return 1;
       case PAM_PERM_DENIED:
+         PT("PAM perm_denied error\n");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -215,7 +222,6 @@ entrance_pam_init(const char *service, const char *display, const char *user) {
    if (!service && !*service) goto pam_error;
    if (!display && !*display) goto pam_error;
 
-   _pam_handle = NULL;
    _pam_conversation.conv = _entrance_pam_conv;
    _pam_conversation.appdata_ptr = NULL;
 

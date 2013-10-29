@@ -93,7 +93,7 @@ entrance_action_run(int action)
 }
 
 static void
-_entrance_action_suspend(void *data __UNUSED__)
+_entrance_action_suspend(void *data EINA_UNUSED)
 {
    PT("Suspend");
    _action_exe = NULL;
@@ -101,21 +101,21 @@ _entrance_action_suspend(void *data __UNUSED__)
 }
 
 static void
-_entrance_action_shutdown(void *data __UNUSED__)
+_entrance_action_shutdown(void *data EINA_UNUSED)
 {
    PT("Shutdown");
    _action_exe = ecore_exe_run(entrance_config->command.shutdown, NULL);
 }
 
 static void
-_entrance_action_reboot(void *data __UNUSED__)
+_entrance_action_reboot(void *data EINA_UNUSED)
 {
    PT("Reboot\n");
    _action_exe = ecore_exe_run(entrance_config->command.reboot, NULL);
 }
 
 static Eina_Bool
-_entrance_action_exe_event_del_cb(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_action_exe_event_del_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Exe_Event_Del *ev;
    Eina_Bool ret = ECORE_CALLBACK_PASS_ON;

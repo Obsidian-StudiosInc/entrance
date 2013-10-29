@@ -15,10 +15,17 @@
 
 static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
-static Eet_Data_Descriptor *_entrance_event_auth_dd();
-static Eet_Data_Descriptor *_entrance_event_status_dd();
-static Eet_Data_Descriptor *_entrance_event_xsessions_dd();
-static Eet_Data_Descriptor *_entrance_event_conf_gui_dd();
+static Eet_Data_Descriptor *_entrance_event_auth_dd(void);
+static Eet_Data_Descriptor *_entrance_event_status_dd(void);
+static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
+static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
+static Eet_Data_Descriptor *_entrance_event_users_dd(void);
+static Eet_Data_Descriptor *_entrance_event_user_dd(void);
+static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
+static Eet_Data_Descriptor *_entrance_event_action_dd(void);
+static Eet_Data_Descriptor *_entrance_event_new(void);
+static Eina_Bool _entrance_event_read_cb(const void *data, size_t size, void *user_data);
 
 
 typedef struct _Entrance_Event_Private {
@@ -94,7 +101,7 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_xsessions_dd()
+_entrance_event_xsessions_dd(void)
 {
    Eet_Data_Descriptor_Class eddc, eddcl;
    Eet_Data_Descriptor *edd, *eddl;
@@ -114,7 +121,7 @@ _entrance_event_xsessions_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_auth_dd()
+_entrance_event_auth_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -133,7 +140,7 @@ _entrance_event_auth_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_maxtries_dd()
+_entrance_event_maxtries_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -145,7 +152,7 @@ _entrance_event_maxtries_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_conf_gui_dd()
+_entrance_event_conf_gui_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -164,12 +171,14 @@ _entrance_event_conf_gui_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_status_dd()
+_entrance_event_status_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Status_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Status_Event, "login",
+                                 login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Status_Event, "granted",
                                  granted, EET_T_INT);
    return edd;
@@ -177,21 +186,12 @@ _entrance_event_status_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_users_dd()
+_entrance_event_users_dd(void)
 {
    Eet_Data_Descriptor *edd, *eddl;
    Eet_Data_Descriptor_Class eddc, eddcl;
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_User_Event);
-   edd = eet_data_descriptor_stream_new(&eddc);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "login",
-                                 login, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "image.path",
-                                 image.path, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "image.group",
-                                 image.group, EET_T_STRING);
-   // TODO screenshot
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "lsess",
-                                 lsess, EET_T_STRING);
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
+   edd = _entrance_event_user_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Users_Event);
    eddl = eet_data_descriptor_stream_new(&eddcl);
    EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Entrance_Users_Event, "users",
@@ -200,25 +200,29 @@ _entrance_event_users_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_user_dd()
+_entrance_event_user_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_User_Event);
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = eet_data_descriptor_stream_new(&eddc);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "login",
-                                 login, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "image.path",
-                                 image.path, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "image.group",
-                                 image.group, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Event, "lsess",
-                                 lsess, EET_T_STRING);
+#define EET_LOGIN_ADD(NAME, TYPE) \
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
+   EET_LOGIN_ADD(login, EET_T_STRING);
+   EET_LOGIN_ADD(image.path, EET_T_STRING);
+   EET_LOGIN_ADD(image.group, EET_T_STRING);
+   EET_LOGIN_ADD(bg.path, EET_T_STRING);
+   EET_LOGIN_ADD(bg.group, EET_T_STRING);
+   EET_LOGIN_ADD(lsess, EET_T_STRING);
+   EET_LOGIN_ADD(remember_session, EET_T_INT);
+   // TODO screenshot
+
+#undef EET_LOGIN_ADD
    return edd;
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_actions_dd()
+_entrance_event_actions_dd(void)
 {
    Eet_Data_Descriptor *edd, *eddl;
    Eet_Data_Descriptor_Class eddc, eddcl;
@@ -236,7 +240,7 @@ _entrance_event_actions_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_action_dd()
+_entrance_event_action_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -248,7 +252,7 @@ _entrance_event_action_dd()
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_new()
+_entrance_event_new(void)
 {
    Eet_Data_Descriptor_Class eddc;
    Eet_Data_Descriptor *edd;
@@ -328,4 +332,8 @@ entrance_event_received(const void *data, size_t size)
    eet_connection_received(_eep->event_connection, data, size);
 }
 
-
+Eet_Data_Descriptor *
+entrance_event_user_dd()
+{
+   return _entrance_event_user_dd();
+}

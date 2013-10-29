@@ -2,7 +2,7 @@
 
 #define ENTRANCE_PASSWD_LEN 256
 
-typedef struct Entrance_Login_ Entrance_Login;
+typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
 static void _login_reset(Evas_Object *widget);
 static void _login_backspace(Evas_Object *widget);
@@ -19,11 +19,11 @@ static void _login_password_focused_cb(void *data, Evas_Object *obj, void *event
 static void _login_password_unfocused_cb(void *data, Evas_Object *obj, void *event);
 static void _login_login_activated_cb(void *data, Evas_Object *obj, void *event);
 static char *_login_xsession_text_get(void *data, Evas_Object *obj, const char *part);
-static void _login_auth_cb(void *data, Eina_Bool granted);
+static void _login_auth_cb(void *data, const char *user, Eina_Bool granted);
 
 static Entrance_Fill *_login_fill;
 
-struct Entrance_Login_
+struct Entrance_Gui_Login_
 {
    Ecore_Event_Handler *handler;
    char passwd[ENTRANCE_PASSWD_LEN];
@@ -41,7 +41,7 @@ struct Entrance_Login_
 };
 
 #define LOGIN_GET(widget) \
-   Entrance_Login *login; \
+   Entrance_Gui_Login *login; \
    login = evas_object_data_get(widget, "entrance"); \
    if (!login) return
 
@@ -146,11 +146,13 @@ _login_password_catch(Evas_Object *widget, Eina_Bool catch)
      {
         if (catch)
           {
+             PT("catch password\n");
              login->handler = ecore_event_handler_add(
                 ECORE_EVENT_KEY_DOWN, _login_key_down_cb, widget);
           }
         else
           {
+             PT("uncatch password\n");
              ecore_event_handler_del(login->handler);
              login->handler = NULL;
           }
@@ -166,11 +168,10 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
    ev = event;
 
 
-   elm_object_signal_emit(data,
-                          "entrance,auth,changed", "");
-   elm_object_signal_emit(elm_object_part_content_get(data,
-                                                      "entrance.password"),
-                          "entrance,auth,changed", "");
+   elm_object_signal_emit(data, "entrance,auth,changed", "");
+   elm_object_signal_emit(
+      elm_object_part_content_get(data, "entrance.password"),
+      "entrance,auth,changed", "");
 
    if (!strcmp(ev->key, "KP_Enter"))
      {
@@ -199,12 +200,19 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
         else
           _login_delete(data);
      }
-   else if (!strcmp(ev->key, "Tab"))
+   else if ((!strcmp(ev->key, "Tab"))
+            || (!strcmp(ev->key, "ISO_Left_Tab")))
      {
         if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
-          elm_object_focus_next(data, ELM_FOCUS_PREVIOUS);
+          {
+             PT("focus previous\n");
+             elm_object_focus_next(data, ELM_FOCUS_PREVIOUS);
+          }
         else
-          elm_object_focus_next(data, ELM_FOCUS_NEXT);
+          {
+             PT("focus next\n");
+             elm_object_focus_next(data, ELM_FOCUS_NEXT);
+          }
      }
    else if ((!strcmp(ev->key, "u"))
             && (ev->modifiers & ECORE_EVENT_MODIFIER_CTRL))
@@ -302,13 +310,13 @@ _login_xsession_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event
 }
 
 static void
-_login_auth_cb(void *data, Eina_Bool granted)
+_login_auth_cb(void *data, const char *user, Eina_Bool granted)
 {
    LOGIN_GET(data);
    if (login->wait)
      {
         if (login->func.login)
-          login->func.login(login->func.data, granted);
+          login->func.login(login->func.data, user, granted);
         login->wait = EINA_FALSE;
         entrance_connect_auth_cb_del(login->auth);
         login->auth = NULL;
@@ -360,10 +368,10 @@ Evas_Object *
 entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 {
    Evas_Object *o, *h, *p;
-   Entrance_Login *login;
+   Entrance_Gui_Login *login;
 
    /* layout */
-   login = calloc(1, sizeof(Entrance_Login));
+   login = calloc(1, sizeof(Entrance_Gui_Login));
    login->func.login = login_cb;
    login->func.data = data;
    o = entrance_gui_theme_get(obj, "entrance/login");
@@ -409,7 +417,7 @@ entrance_login_xsessions_populate(Evas_Object *widget, Eina_List *xsessions)
    LOGIN_GET(widget);
 
    o = elm_object_part_content_get(widget, "entrance.xsessions");
-   entrance_fill(o, _login_fill, xsessions,
+   entrance_fill(o, _login_fill, xsessions, NULL,
                  _login_xsession_clicked_cb, widget);
    login->session = eina_list_data_get(xsessions);
    _login_xsession_update(widget);
@@ -454,9 +462,17 @@ entrance_login_session_set(Evas_Object *widget, const char *name)
 void
 entrance_login_open_session_set(Evas_Object *widget, Eina_Bool open_session)
 {
+   Evas_Object *o;
    LOGIN_GET(widget);
    open_session = !!open_session;
    if (login->open_session != open_session)
-     login->open_session = open_session;
+     {
+        login->open_session = open_session;
+        o = elm_object_part_content_get(widget, "entrance.xsessions");
+        if (login->open_session)
+          evas_object_show(o);
+        else
+          evas_object_hide(o);
+     }
 }
 

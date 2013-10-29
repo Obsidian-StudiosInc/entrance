@@ -10,20 +10,21 @@ typedef struct
 static Eina_Bool _entrance_connect_add(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_del(void *data, int type, void *event);
 static Eina_Bool _entrance_connect_data(void *data, int type, void *event);
+static void _entrance_connect_auth(const char *login, Eina_Bool granted);
 
 static Ecore_Con_Server *_entrance_connect;
 static Eina_List *_handlers = NULL;
 static Eina_List *_auth_list = NULL;
 
 static Eina_Bool
-_entrance_connect_add(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+_entrance_connect_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    PT("connected\n");
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-_entrance_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event __UNUSED__)
+_entrance_connect_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    PT("disconnected\n");
    _entrance_connect = NULL;
@@ -32,7 +33,7 @@ _entrance_connect_del(void *data __UNUSED__, int type __UNUSED__, void *event __
 }
 
 static Eina_Bool
-_entrance_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
+_entrance_connect_data(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
    ev = event;
@@ -43,7 +44,7 @@ _entrance_connect_data(void *data __UNUSED__, int type __UNUSED__, void *event)
 }
 
 static void
-_entrance_connect_auth(Eina_Bool granted)
+_entrance_connect_auth(const char *login, Eina_Bool granted)
 {
    Entrance_Connect_Auth *auth;
    Eina_List *l, *ll;
@@ -51,7 +52,7 @@ _entrance_connect_auth(Eina_Bool granted)
    EINA_LIST_FOREACH_SAFE(_auth_list, l, ll, auth)
      {
         if (auth->func)
-          auth->func(auth->data, granted);
+          auth->func(auth->data, login, granted);
      }
 }
 
@@ -68,7 +69,8 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
                PT("Auth granted :)\n");
              else
                PT("Auth error :(\n");
-             _entrance_connect_auth(eev->event.status.granted);
+             _entrance_connect_auth(eev->event.status.login,
+                                    eev->event.status.granted);
           }
         else if (eev->type == ENTRANCE_EVENT_MAXTRIES)
           {

@@ -5,10 +5,10 @@ struct Entrance_Fill_
    const char *item_style; //maybee need to be provided by theme ?
    struct
      {
-        EntranceFillTextGetFunc text_get;
-        EntranceFillContentGetFunc content_get;
-        EntranceFillStateGetFunc state_get;
-        EntranceFillDelFunc del;
+        Entrance_Fill_Text_Get_Func text_get;
+        Entrance_Fill_Content_Get_Func content_get;
+        Entrance_Fill_State_Get_Func state_get;
+        Entrance_Fill_Del_Func del;
         Evas_Smart_Cb sel;
         void *data;
      } func;
@@ -18,7 +18,7 @@ struct Entrance_Fill_
 
 ///////////////// LIST ///////////////////////////////
 static void
-_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
+_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    void *content;
@@ -31,13 +31,15 @@ _entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Ev
                                     NULL, func, data);
         if (it)
           elm_object_item_data_set(it, content);
+        if (fill_cb)
+          fill_cb(content, it);
      }
    elm_list_go(obj);
 }
 
 ///////////////// GENLIST /////////////////////////////
 static void
-_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
+_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    Elm_Genlist_Item_Class *glc;
@@ -64,12 +66,14 @@ _entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
                                      content, NULL, ELM_GENLIST_ITEM_NONE,
                                      func, data);
         elm_object_item_data_set(it, content);
+        if (fill_cb)
+          fill_cb(content, it);
      }
 }
 
 ///////////////// GENGRID /////////////////////////////
 static void
-_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
+_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    Elm_Gengrid_Item_Class *ggc;
@@ -94,6 +98,8 @@ _entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
         it = elm_gengrid_item_append(obj, ggc,
                                      content, func, data);
         elm_object_item_data_set(it, content);
+        if (fill_cb)
+          fill_cb(content, it);
      }
 }
 
@@ -110,7 +116,7 @@ _entrance_fill_hoversell_func_cb(void *data EINA_UNUSED, Evas_Object *obj, void 
 }
 
 static void
-_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
+_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    Eina_List *l;
    void *content;
@@ -130,6 +136,8 @@ _entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *content
                                    _entrance_fill_hoversell_func_cb, NULL);
         elm_object_item_data_set(it, content);
         evas_object_data_set(elm_object_item_widget_get(it), "fill_data", ef);
+        if (fill_cb)
+          fill_cb(content, it);
         if (ic)
           {
              free(ic);
@@ -145,7 +153,7 @@ _entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *content
 
 ///////////////// MAIN /////////////////////////////
 Entrance_Fill *
-entrance_fill_new(const char *item_style, EntranceFillTextGetFunc text_get, EntranceFillContentGetFunc content_get, EntranceFillStateGetFunc state_get, EntranceFillDelFunc del_func)
+entrance_fill_new(const char *item_style, Entrance_Fill_Text_Get_Func text_get, Entrance_Fill_Content_Get_Func content_get, Entrance_Fill_State_Get_Func state_get, Entrance_Fill_Del_Func del_func)
 {
    Entrance_Fill *ef;
    ef = calloc(1, sizeof(Entrance_Fill));
@@ -165,20 +173,20 @@ entrance_fill_del(Entrance_Fill *ef)
 }
 
 void
-entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Evas_Smart_Cb func, void *data)
+entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    const char *type;
    if (!obj) return;
    if ((type = elm_object_widget_type_get(obj)))
      {
         if (!strcmp(type, "elm_list"))
-          _entrance_fill_list(obj, ef, contents, func, data);
+          _entrance_fill_list(obj, ef, contents, fill_cb, func, data);
         else if (!strcmp(type, "elm_genlist"))
-          _entrance_fill_genlist(obj, ef, contents, func, data);
+          _entrance_fill_genlist(obj, ef, contents, fill_cb, func, data);
         else if (!strcmp(type, "elm_gengrid"))
-          _entrance_fill_gengrid(obj, ef, contents, func, data);
+          _entrance_fill_gengrid(obj, ef, contents, fill_cb, func, data);
         else if (!strcmp(type, "elm_hoversel"))
-          _entrance_fill_hoversell(obj, ef, contents, func, data);
+          _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
           {
              PT("Unknow object type to fill ");

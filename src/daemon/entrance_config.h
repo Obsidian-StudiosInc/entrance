@@ -15,7 +15,6 @@ struct _Entrance_Config
         const char *xauth_path;
         const char *xauth_file;
         const char *session_start;
-        const char *session_login;
         const char *session_stop;
         const char *shutdown;
         const char *reboot;

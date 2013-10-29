@@ -1,7 +1,7 @@
 #ifndef ENTRANCE_CONNECT_
 #define ENTRANCE_CONNECT_
 
-typedef void (*Entrance_Connect_Auth_Cb)(void *data, Eina_Bool granted);
+typedef void (*Entrance_Connect_Auth_Cb)(void *data, const char *login, Eina_Bool granted);
 
 void entrance_connect_init();
 void entrance_connect_auth_send(const char *login, const char *password, const char *session, Eina_Bool open_session);

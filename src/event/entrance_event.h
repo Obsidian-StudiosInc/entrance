@@ -42,6 +42,7 @@ typedef struct Entrance_Maxtries_Event_
 
 typedef struct Entrance_Status_Event_
 {
+   const char *login;
    int granted;
 } Entrance_Status_Event;
 
@@ -49,22 +50,6 @@ typedef struct Entrance_Action_Event_
 {
    unsigned char action;
 } Entrance_Action_Event;
-
-typedef struct Entrance_User_Event_
-{
-   const char *login;
-   const char *lsess;
-   struct
-     {
-        const char *path;
-        const char *group;
-     } image;
-   struct
-     {
-        const char *path;
-        const char *group;
-     } background;
-} Entrance_User_Event;
 
 typedef struct Entrance_Users_Event_
 {
@@ -95,6 +80,20 @@ typedef struct Entrance_Conf_Gui_Event_
 } Entrance_Conf_Gui_Event;
 
 
+typedef struct Entrance_Background_
+{
+   const char *group;
+   const char *path;
+} Entrance_Background;
+
+typedef struct Entrance_Login_
+{
+   const char *login;
+   const char *lsess;
+   Entrance_Background bg;
+   Entrance_Background image;
+   Eina_Bool remember_session;
+} Entrance_Login;
 
 typedef struct Entrance_Event_
 {
@@ -106,7 +105,7 @@ typedef struct Entrance_Event_
         Entrance_Maxtries_Event maxtries;
         Entrance_Status_Event status;
         Entrance_Users_Event users;
-        Entrance_User_Event user;
+        Entrance_Login user;
         Entrance_Actions_Event actions;
         Entrance_Action_Event action;
         Entrance_Conf_Gui_Event conf_gui;
@@ -117,4 +116,5 @@ void entrance_event_init(Eet_Read_Cb func_read_cb, Eet_Write_Cb func_write_cb, v
 void entrance_event_shutdown(void);
 void entrance_event_send(const Entrance_Event *data);
 void entrance_event_received(const void *data, size_t size);
+Eet_Data_Descriptor *entrance_event_user_dd();
 #endif /* ENTRANCE_EVENT_ */

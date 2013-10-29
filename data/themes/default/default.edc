@@ -413,9 +413,6 @@ collections {
 
    group { name: "entrance/conf/login";
       parts {
-         alias: "entrance.login" "login:entrance.login";
-         alias: "entrance.password" "login:entrance.password";
-         alias: "entrance.xsessions" "login:entrance.xsessions";
          part { name: "base";
             type: RECT;
             description { state: "default" 0.0;
@@ -439,14 +436,23 @@ collections {
                visible: 0;
             }
          }
-         part { name: "login";
-            type: GROUP;
+         part { name: "entrance.login";
+            type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
             }
             description { state: "hidden" 0.0;
                visible: 0;
             }
+         }
+      }
+      programs {
+         program { name: "conf_enabled";
+            signal: "entrance,conf_user,enabled";
+            source: "";
+            action: STATE_SET "hidden" 0.0;
+            target: "hover";
+            target: "entrance.login";
          }
       }
    }
