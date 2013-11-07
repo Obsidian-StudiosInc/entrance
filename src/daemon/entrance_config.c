@@ -25,7 +25,7 @@ _defaults_set(Entrance_Config *config)
    config->command.suspend = eina_stringshare_add("/usr/sbin/suspend");
    config->daemonize = EINA_TRUE;
    config->numlock = EINA_FALSE;
-   config->xsessions = EINA_FALSE;
+   config->xsessions = ENTRANCE_SESSION_DESKTOP_NONE;
    config->autologin = EINA_FALSE;
    config->custom_conf = EINA_FALSE;
    config->userlogin = eina_stringshare_add("mylogintouse");

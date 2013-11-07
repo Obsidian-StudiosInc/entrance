@@ -367,7 +367,11 @@ _entrance_session_find_command(const char *path, const char *session)
                {
                   if (xsession->command)
                     {
-                       return xsession->command;
+                       if (entrance_config->xsessions
+                           == ENTRANCE_SESSION_DESKTOP_FILE_CMD_ARGS)
+                         break;
+                       else
+                         return xsession->command;
                     }
                }
           }
@@ -376,16 +380,28 @@ _entrance_session_find_command(const char *path, const char *session)
             path, ".xinitrc");
    if (ecore_file_can_exec(buf))
      {
+        if (xsession)
+          snprintf(buf, sizeof(buf), "%s/%s %s",
+                   path, ".xinitrc", xsession->command);
         return eina_stringshare_add(buf);
      }
    snprintf(buf, sizeof(buf), "%s/%s",
             path, ".Xsession");
    if (ecore_file_can_exec(buf))
      {
+        if (xsession)
+          snprintf(buf, sizeof(buf), "%s/%s %s",
+                   path, ".Xsession", xsession->command);
         return eina_stringshare_add(buf);
      }
    if (ecore_file_exists("/etc/X11/xinit/xinitrc"))
      {
+        if (xsession)
+          {
+             snprintf(buf, sizeof(buf), "/etc/X11/xinit/xinitrc %s",
+                      xsession->command);
+             return eina_stringshare_add(buf);
+          }
         return eina_stringshare_add("/etc/X11/xinit/xinitrc");
      }
    return NULL;
