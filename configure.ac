@@ -126,7 +126,7 @@ if test "x${enable_ekbd}" = "xyes" ; then
    PKG_CHECK_MODULES([ENTRANCE_EKBD], [ekbd], [enable_ekbd="yes"], [enable_ekbd="no"])
 fi
 
-AM_CONDITIONAL(HAVE_CONSOLEKIT, [test "x${enable_ekbd}" = "xyes"])
+AM_CONDITIONAL(HAVE_EKBD, [test "x${enable_ekbd}" = "xyes"])
 if test "x${enable_ekbd}" = "xyes" ; then
    AC_DEFINE([HAVE_EKBD], [1], [Set to 1 if ekbd is enabled.])
 fi
