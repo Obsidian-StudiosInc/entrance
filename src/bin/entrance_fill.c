@@ -179,13 +179,13 @@ entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance
    if (!obj) return;
    if ((type = elm_object_widget_type_get(obj)))
      {
-        if (!strcmp(type, "elm_list"))
+        if (!strcasecmp(type, "elm_list"))
           _entrance_fill_list(obj, ef, contents, fill_cb, func, data);
-        else if (!strcmp(type, "elm_genlist"))
+        else if (!strcasecmp(type, "elm_genlist"))
           _entrance_fill_genlist(obj, ef, contents, fill_cb, func, data);
-        else if (!strcmp(type, "elm_gengrid"))
+        else if (!strcasecmp(type, "elm_gengrid"))
           _entrance_fill_gengrid(obj, ef, contents, fill_cb, func, data);
-        else if (!strcmp(type, "elm_hoversel"))
+        else if (!strcasecmp(type, "elm_hoversel"))
           _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
           {
