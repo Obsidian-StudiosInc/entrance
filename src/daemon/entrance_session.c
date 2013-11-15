@@ -357,7 +357,7 @@ static const char *
 _entrance_session_find_command(const char *path, const char *session)
 {
    Eina_List *l;
-   Entrance_Xsession *xsession;
+   Entrance_Xsession *xsession = NULL;
    char buf[PATH_MAX];
    if (session)
      {
