@@ -20,6 +20,7 @@ static void _login_password_unfocused_cb(void *data, Evas_Object *obj, void *eve
 static void _login_login_activated_cb(void *data, Evas_Object *obj, void *event);
 static char *_login_xsession_text_get(void *data, Evas_Object *obj, const char *part);
 static void _login_auth_cb(void *data, const char *user, Eina_Bool granted);
+static void _entrance_login_session_set(Evas_Object *widget, const char *name);
 
 static Entrance_Fill *_login_fill;
 
@@ -256,6 +257,23 @@ _login_input_event_cb(void *data, Evas_Object *obj EINA_UNUSED, Evas_Object *src
 static void
 _login_password_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
+   const Eina_List *users, *l;
+   Evas_Object *o;
+   const char *hostname;
+   Entrance_Login *eu;
+   LOGIN_GET(data);
+
+   users = entrance_gui_users_get();
+   o = elm_object_part_content_get(data, "entrance.login");
+   hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
+   EINA_LIST_FOREACH(users, l, eu)
+     {
+        if (!strcmp(eu->login, hostname))
+          {
+             _entrance_login_session_set(data, eu->lsess);
+             break;
+          }
+     }
    _login_password_catch(data, EINA_TRUE);
 }
 
@@ -345,6 +363,29 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
      }
 }
 
+static void
+_entrance_login_session_set(Evas_Object *widget, const char *name)
+{
+   Entrance_Xsession *sess;
+   const Eina_List *l = NULL;
+   LOGIN_GET(widget);
+   if (name)
+     {
+        EINA_LIST_FOREACH(entrance_gui_xsessions_get(), l, sess)
+          {
+             if ((sess->name) &&
+                 (!strcmp(sess->name, name)))
+               {
+                  break;
+               }
+          }
+     }
+   if (l)
+     login->session = sess;
+   _login_xsession_update(widget);
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -352,7 +393,7 @@ void
 entrance_login_init(void)
 {
    _login_fill = entrance_fill_new(NULL, _login_xsession_text_get,
-                                      NULL, NULL, NULL);
+                                   NULL, NULL, NULL);
 }
 
 void
@@ -435,28 +476,6 @@ entrance_login_login_set(Evas_Object *widget, const char *user)
                            "entrance,auth,enable", "");
    o = elm_object_part_content_get(widget, "entrance.password");
    elm_object_focus_set(o, EINA_TRUE);
-}
-
-void
-entrance_login_session_set(Evas_Object *widget, const char *name)
-{
-   Entrance_Xsession *sess;
-   const Eina_List *l = NULL;
-   LOGIN_GET(widget);
-   if (name)
-     {
-        EINA_LIST_FOREACH(entrance_gui_xsessions_get(), l, sess)
-          {
-             if ((sess->name) &&
-                 (!strcmp(sess->name, name)))
-               {
-                  break;
-               }
-          }
-     }
-   if (l)
-     login->session = sess;
-   _login_xsession_update(widget);
 }
 
 void

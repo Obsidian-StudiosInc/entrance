@@ -760,7 +760,6 @@ _entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_
    Entrance_Login *eu;
    eu = elm_object_item_data_get(event_info);
    entrance_login_login_set(data, eu->login);
-   entrance_login_session_set(data, eu->lsess);
 }
 
 static char *
