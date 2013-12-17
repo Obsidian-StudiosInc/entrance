@@ -87,6 +87,10 @@ AC_MSG_CHECKING([whether to support consolekit login])
 AC_MSG_RESULT([${enable_consolekit}])
 
 
+### Checks for programs
+AC_PROG_CC
+PKG_PROG_PKG_CONFIG
+
 # Set edje_cc path
 AC_ARG_WITH([edje-cc],
    [AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc])],
@@ -97,10 +101,6 @@ AC_ARG_WITH([edje-cc],
    ],
    [edje_cc=$($PKG_CONFIG --variable=prefix edje)/bin/edje_cc])
 AC_SUBST(edje_cc)
-
-### Checks for programs
-AC_PROG_CC
-PKG_PROG_PKG_CONFIG
 
 ### Checks for compiler characteristics
 AC_USE_SYSTEM_EXTENSIONS
