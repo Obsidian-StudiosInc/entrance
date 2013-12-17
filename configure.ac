@@ -3,8 +3,6 @@ AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_CANONICAL_HOST
-
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -97,18 +95,15 @@ AC_ARG_WITH([edje-cc],
     edje_cc=$v
     echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
    ],
-   [edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc])
+   [edje_cc=$($PKG_CONFIG --variable=prefix edje)/bin/edje_cc])
 AC_SUBST(edje_cc)
 
 ### Checks for programs
 AC_PROG_CC
+PKG_PROG_PKG_CONFIG
 
 ### Checks for compiler characteristics
 AC_USE_SYSTEM_EXTENSIONS
-AC_ISC_POSIX
-AC_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
 AC_C___ATTRIBUTE__
 
 ### Checks for libraries
