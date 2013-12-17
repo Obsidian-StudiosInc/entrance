@@ -274,6 +274,7 @@ _login_password_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event
              break;
           }
      }
+   if (!l) _entrance_login_session_set(data, NULL);
    _login_password_catch(data, EINA_TRUE);
 }
 
@@ -382,6 +383,8 @@ _entrance_login_session_set(Evas_Object *widget, const char *name)
      }
    if (l)
      login->session = sess;
+   else
+     login->session = eina_list_data_get(entrance_gui_xsessions_get());
    _login_xsession_update(widget);
 }
 
