@@ -15,6 +15,7 @@ static void _entrance_gui_actions_populate();
 static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
+static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *signal, const char *source);
 
 
 static Entrance_Gui *_gui;
@@ -100,6 +101,8 @@ entrance_gui_init(const char *theme)
         /* layout */
          o = entrance_gui_theme_get(_gui->win, "entrance/wallpaper/default");
          screen->transition = o;
+         elm_object_signal_callback_add(o, "entrance,wallpaper,end", "",
+                                        _entrance_gui_user_bg_cb, screen);
          ol = entrance_gui_theme_get(_gui->win, "entrance");
          screen->edj = ol;
          if (!ol)
@@ -379,6 +382,31 @@ entrance_gui_vkbd_enabled_get(void)
    return _gui->vkbd_enabled;
 }
 
+void
+entrance_gui_user_bg_set(const char *path, const char *group)
+{
+   Eina_List *l;
+   Entrance_Screen *screen;
+   Evas_Object *o;
+
+   EINA_LIST_FOREACH(_gui->screens, l, screen)
+     {
+        if (path && group)
+          {
+             o = elm_layout_add(screen->background);
+             elm_layout_file_set(o, path, group);
+             elm_object_part_content_set(screen->transition,
+                                         "entrance.wallpaper.user.start", o);
+             evas_object_show(o);
+             elm_object_signal_emit(screen->transition,
+                                    "entrance,wallpaper,user", "");
+          }
+        else
+          elm_object_signal_emit(screen->transition,
+                                 "entrance,wallpaper,default", "");
+     }
+}
+
 static void
 _entrance_gui_update(void)
 {
@@ -484,6 +512,7 @@ _entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_
    eu = elm_object_item_data_get(event_info);
    entrance_login_login_set(data, eu->login);
 }
+
 
 static char *
 _entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
@@ -608,6 +637,22 @@ _entrance_gui_auth_cb(void *data, const char *user EINA_UNUSED, Eina_Bool grante
       _entrance_gui_login_timeout,
       data);
     */
+}
+
+static void
+_entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *signal, const char *source)
+{
+   Evas_Object *o;
+   Entrance_Screen *screen;
+   screen = data;
+   o = elm_object_part_content_get(screen->transition,
+                                   "entrance.wallpaper.user");
+   evas_object_del(o);
+   o = elm_object_part_content_get(screen->transition,
+                                   "entrance.wallpaper.user.start");
+   if (o)
+     elm_object_part_content_set(screen->transition,
+                                 "entrance.wallpaper.user", o);
 }
 
 static Eina_Bool
