@@ -1,4 +1,4 @@
-AC_INIT([entrance], [0.0.5], [enlightenment-devel@lists.sourceforge.net])
+AC_INIT([entrance], [0.0.99], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
@@ -143,7 +143,6 @@ if test "x${enable_pam}" = "xyes" ; then
       [have_pam="no"])
 fi
 
-
 ### Checks for header files
 
 # Pam
@@ -172,8 +171,7 @@ EFL_COMPILER_FLAG([-Wmissing-declarations])
 
 ### Checks for library functions
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS(strndup)
-
+AC_FUNC_ALLOCA
 
 AC_OUTPUT([
 Makefile
