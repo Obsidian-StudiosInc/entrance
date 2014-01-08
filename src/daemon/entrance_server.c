@@ -89,8 +89,8 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
                   PT("opening session now ...\n");
                   entrance_session_login(eev->event.auth.session, EINA_TRUE);
                }
-             else
-               entrance_session_close();
+//             else
+//               entrance_session_close();
           }
         else
           {
