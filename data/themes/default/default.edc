@@ -48,9 +48,9 @@ collections {
             description { state: "default" 0.0;
                visible: 1;
                color: 255 255 255 255;
-               rel2 {
+               rel1 {
                   to: "cur";
-                  relative: 0.0 1.0;
+                  relative: 1.0 0.0;
                }
             }
          }
@@ -59,9 +59,10 @@ collections {
             description { state: "default" 0.0;
                visible: 1;
                color: 255 255 255 255;
-               rel1 {
+               rel2 {
                   to: "cur";
-                  relative: 1.0 0.0;
+                  relative: 0.0 1.0;
+                  offset: 0 -1;
                }
             }
          }
@@ -71,11 +72,11 @@ collections {
                min: 1 0;
                max: 1 99999;
                visible: 0;
-               align: 1.0 0.5;
+               align: 0.0 0.5;
             }
             description { state: "user" 0.0;
                inherit: "default" 0.0;
-               align: 0.0 0.5;
+               align: 1.0 0.5;
             }
          }
          part { name: "entrance.wallpaper.default";
@@ -86,6 +87,13 @@ collections {
             }
          }
          part { name: "entrance.wallpaper.user";
+            clip_to: "clip2";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               visible: 1;
+            }
+         }
+         part { name: "entrance.wallpaper.user.start";
             clip_to: "clip2";
             type: SWALLOW;
             description { state: "default" 0.0;
@@ -104,13 +112,20 @@ collections {
             signal: "entrance,wallpaper,user";
             source: "";
             action: STATE_SET "user" 0.0;
+            transition: LINEAR 0.7;
             target: "cur";
+            after: "wallpaper_transition_end";
          }
          program { name: "wallpaper_default";
             signal: "entrance,wallpaper,default";
             source: "";
             action: STATE_SET "default" 0.0;
+            transition: LINEAR 0.7;
             target: "cur";
+            after: "wallpaper_transition_end";
+         }
+         program { name: "wallpaper_transition_end";
+            action: SIGNAL_EMIT "entrance,wallpaper,end" "";
          }
       }
    }
