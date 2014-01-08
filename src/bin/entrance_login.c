@@ -13,8 +13,10 @@ static void _login_check_auth(Evas_Object *widget);
 static void _login_password_catch(Evas_Object *widget, Eina_Bool catch);
 static Eina_Bool _login_key_down_cb(void *data, int type, void *event);
 static void _login_xsession_update(Evas_Object *obj);
+static void _login_xsession_guess(void *data, const char *user);
 static void _login_xsession_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static Eina_Bool _login_input_event_cb(void *data EINA_UNUSED, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type type, void *event_info);
+static void _login_login_unfocused_cb(void *data, Evas_Object *obj, void *event);
 static void _login_password_focused_cb(void *data, Evas_Object *obj, void *event);
 static void _login_password_unfocused_cb(void *data, Evas_Object *obj, void *event);
 static void _login_login_activated_cb(void *data, Evas_Object *obj, void *event);
@@ -255,26 +257,21 @@ _login_input_event_cb(void *data, Evas_Object *obj EINA_UNUSED, Evas_Object *src
 }
 
 static void
-_login_password_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
+_login_login_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
-   const Eina_List *users, *l;
    Evas_Object *o;
    const char *hostname;
-   Entrance_Login *eu;
    LOGIN_GET(data);
 
-   users = entrance_gui_users_get();
    o = elm_object_part_content_get(data, "entrance.login");
    hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
-   EINA_LIST_FOREACH(users, l, eu)
-     {
-        if (!strcmp(eu->login, hostname))
-          {
-             _entrance_login_session_set(data, eu->lsess);
-             break;
-          }
-     }
-   if (!l) _entrance_login_session_set(data, NULL);
+
+   _login_xsession_guess(data, hostname);
+}
+
+static void
+_login_password_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
+{
    _login_password_catch(data, EINA_TRUE);
 }
 
@@ -283,6 +280,7 @@ _login_password_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *eve
 {
    _login_password_catch(data, EINA_FALSE);
 }
+
 static void
 _login_login_activated_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
@@ -318,6 +316,26 @@ _login_xsession_update(Evas_Object *obj)
    elm_object_text_set(o, login->session->name);
    elm_image_file_set(o, login->session->icon, NULL);
    elm_object_content_set(o, icon);
+}
+
+static void
+_login_xsession_guess(void *data, const char *user)
+{
+   const Eina_List *users, *l;
+   Entrance_Login *eu;
+   LOGIN_GET(data);
+
+   users = entrance_gui_users_get();
+   EINA_LIST_FOREACH(users, l, eu)
+     {
+        if (!strcmp(eu->login, user))
+          {
+             _entrance_login_session_set(data, eu->lsess);
+             break;
+          }
+     }
+
+   if (!l) _entrance_login_session_set(data, NULL);
 }
 
 static void
@@ -441,6 +459,8 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    elm_object_event_callback_add(o, _login_input_event_cb, o);
    evas_object_smart_callback_add(h, "activated",
                                   _login_login_activated_cb, p);
+   evas_object_smart_callback_add(h, "unfocused",
+                                  _login_login_unfocused_cb, o);
    evas_object_smart_callback_add(p, "focused",
                                   _login_password_focused_cb, o);
    evas_object_smart_callback_add(p, "unfocused",
@@ -479,6 +499,8 @@ entrance_login_login_set(Evas_Object *widget, const char *user)
                            "entrance,auth,enable", "");
    o = elm_object_part_content_get(widget, "entrance.password");
    elm_object_focus_set(o, EINA_TRUE);
+
+   _login_xsession_guess(widget, user);
 }
 
 void
