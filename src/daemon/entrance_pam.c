@@ -35,49 +35,53 @@ static char *_passwd = NULL;
 
 static int
 _entrance_pam_conv(int num_msg, const struct pam_message **msg,
-     struct pam_response **resp, void *appdata_ptr EINA_UNUSED) {
-     int i, result = PAM_SUCCESS;
-     *resp = (struct pam_response *) calloc(num_msg, sizeof(struct pam_response));
-     for (i = 0; i < num_msg; ++i){
-         resp[i]->resp=0;
-         resp[i]->resp_retcode=0;
-         switch(msg[i]->msg_style){
-            case PAM_PROMPT_ECHO_ON:
-                 // We assume PAM is asking for the username
-                 PT("echo on\n");
-                 resp[i]->resp = _login;
-                 break;
+     struct pam_response **resp, void *appdata_ptr EINA_UNUSED)
+{
+   int i, result = PAM_SUCCESS;
+   *resp = (struct pam_response *) calloc(num_msg, sizeof(struct pam_response));
+   for (i = 0; i < num_msg; ++i)
+     {
+        resp[i]->resp=0;
+        resp[i]->resp_retcode=0;
+        switch(msg[i]->msg_style)
+          {
+           case PAM_PROMPT_ECHO_ON:
+              // We assume PAM is asking for the username
+              PT("echo on\n");
+              resp[i]->resp = _login;
+              break;
 
-            case PAM_PROMPT_ECHO_OFF:
-                 PT("echo off\n");
-                 resp[i]->resp = _passwd;
-                 _passwd = NULL;
-                 break;
-            case PAM_ERROR_MSG:
-                 PT("error msg\n");
-            case PAM_TEXT_INFO:
-                 PT("info ");
-                 fprintf(stderr, "%s\n", msg[i]->msg);
-                 break;
-            case PAM_SUCCESS:
-                 PT("success :)\n");
-                 break;
-            default:
-                 PT("default\n");
-
-         }
-         if (result != PAM_SUCCESS) break;
+           case PAM_PROMPT_ECHO_OFF:
+              PT("echo off\n");
+              resp[i]->resp = _passwd;
+              _passwd = NULL;
+              break;
+           case PAM_ERROR_MSG:
+              PT("error msg\n");
+           case PAM_TEXT_INFO:
+              PT("info ");
+              fprintf(stderr, "%s\n", msg[i]->msg);
+              break;
+           case PAM_SUCCESS:
+              PT("success :)\n");
+              break;
+           default:
+              PT("default\n");
+          }
+        if (result != PAM_SUCCESS) break;
      }
-     if (result != PAM_SUCCESS) {
-         for (i = 0; i < num_msg; ++i){
+   if (result != PAM_SUCCESS)
+     {
+        for (i = 0; i < num_msg; ++i)
+          {
              if (resp[i]->resp==0) continue;
              free(resp[i]->resp);
              resp[i]->resp=0;
-         };
-         free(*resp);
-         *resp=0;
+          }
+        free(*resp);
+        *resp=0;
      }
-     return result;
+   return result;
 }
 
 static char *
@@ -93,7 +97,7 @@ _get_running_username(void)
 
 
 int
-entrance_pam_open_session()
+entrance_pam_open_session(void)
 {
    last_result = pam_setcred(_pam_handle, PAM_ESTABLISH_CRED);
    switch (last_result)
@@ -126,12 +130,14 @@ entrance_pam_open_session()
 }
 
 void
-entrance_pam_close_session() {
+entrance_pam_close_session(void)
+{
    PT("PAM close session\n");
    last_result = pam_close_session(_pam_handle, PAM_SILENT);
    switch (last_result) {
       default:
          //case PAM_SESSION_ERROR:
+         PT("error on close session");
          pam_setcred(_pam_handle, PAM_DELETE_CRED);
          entrance_pam_end();
       case PAM_SUCCESS:
@@ -152,7 +158,8 @@ entrance_pam_close_session() {
 }
 
 int
-entrance_pam_end() {
+entrance_pam_end(void)
+{
    int result;
    result = pam_end(_pam_handle, last_result);
    _pam_handle = NULL;
@@ -160,7 +167,7 @@ entrance_pam_end() {
 }
 
 int
-entrance_pam_authenticate()
+entrance_pam_authenticate(void)
 {
    last_result = pam_authenticate(_pam_handle, 0);
    switch (last_result)
@@ -216,7 +223,8 @@ entrance_pam_authenticate()
 }
 
 int
-entrance_pam_init(const char *service, const char *display, const char *user) {
+entrance_pam_init(const char *service, const char *display, const char *user)
+{
    int status;
 
    if (!service && !*service) goto pam_error;
@@ -255,7 +263,8 @@ entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value)
 }
 
 const void *
-entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type) {
+entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type)
+{
    const void *data;
    last_result = pam_get_item(_pam_handle, type, &data);
    switch (last_result) {
@@ -271,12 +280,14 @@ entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type) {
 }
 
 int
-entrance_pam_env_set(const char *env, const char *value) {
+entrance_pam_env_set(const char *env, const char *value)
+{
    char buf[1024];
    if (!env || !value) return 1;
    snprintf(buf, sizeof(buf), "%s=%s", env, value);
    last_result = pam_putenv(_pam_handle, buf);
-   switch (last_result) {
+   switch (last_result)
+     {
       default:
       case PAM_PERM_DENIED:
       case PAM_ABORT:
@@ -285,7 +296,7 @@ entrance_pam_env_set(const char *env, const char *value) {
          return 1;
       case PAM_SUCCESS:
          break;
-   };
+     }
    return 0;
 
 }

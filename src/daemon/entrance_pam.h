@@ -16,13 +16,13 @@ typedef enum ENTRANCE_PAM_ITEM_TYPE_ {
 int entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value);
 const void *entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE);
 int entrance_pam_env_set(const char *env, const char *value);
-char **entrance_pam_env_list_get();
+char **entrance_pam_env_list_get(void);
 int entrance_pam_init(const char *service, const char *display, const char *user);
-void entrance_pam_shutdown();
-int entrance_pam_open_session();
-void entrance_pam_close_session();
-int entrance_pam_authenticate();
+void entrance_pam_shutdown(void);
+int entrance_pam_open_session(void);
+void entrance_pam_close_session(void);
+int entrance_pam_authenticate(void);
 int entrance_pam_auth_set(const char *login, const char *passwd);
-int entrance_pam_end();
+int entrance_pam_end(void);
 
 #endif /* ENTRANCE_PAM_H_ */
