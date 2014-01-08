@@ -44,7 +44,6 @@ entrance.c
 
 entrance_LDFLAGS =
 entrance_LDADD = @ENTRANCE_LIBS@
-# -lrt
 
 entrance_wait_SOURCES = \
 entrance_wait.c
