@@ -351,6 +351,8 @@ entrance_session_login(const char *session, Eina_Bool push)
      }
    PT("launching session %s for user %s\n", cmd, _login);
    _entrance_session_run(pwd, cmd, buf);
+   snprintf(buf, sizeof(buf), "ENTRANCE_USER=%s", pwd->pw_name);
+   putenv(buf);
    return ECORE_CALLBACK_CANCEL;
 }
 
