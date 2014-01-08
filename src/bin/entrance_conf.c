@@ -183,13 +183,13 @@ _entrance_conf_user_bg_fill_cb(void *data, Elm_Object_Item *it)
    return EINA_FALSE;
 }
 static char *
-_entrance_conf_session_text_get(void *data, Evas_Object *obj, const char *part)
+_entrance_conf_session_text_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    return NULL;
 }
 
 static Evas_Object *
-_entrance_conf_session_content_get(void *data, Evas_Object *obj, const char *part)
+_entrance_conf_session_content_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
    return NULL;
 }
@@ -201,7 +201,7 @@ _entrance_conf_session_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_U
 }
 
 static void
-_entrance_conf_session_del(void *data, Evas_Object *obj EINA_UNUSED)
+_entrance_conf_session_del(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED)
 {
 }
 

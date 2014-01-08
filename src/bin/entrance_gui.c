@@ -15,7 +15,7 @@ static void _entrance_gui_actions_populate();
 static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
-static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *signal, const char *source);
+static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *sig, const char *src);
 
 
 static Entrance_Gui *_gui;
@@ -613,7 +613,7 @@ _entrance_gui_actions_populate()
 
 ////////////////////////////////////////////////////////////////////////////////
 static void
-_entrance_gui_auth_cb(void *data, const char *user EINA_UNUSED, Eina_Bool granted)
+_entrance_gui_auth_cb(void *data EINA_UNUSED, const char *user EINA_UNUSED, Eina_Bool granted)
 {
    Eina_List *l;
    Entrance_Screen *screen;
@@ -640,7 +640,7 @@ _entrance_gui_auth_cb(void *data, const char *user EINA_UNUSED, Eina_Bool grante
 }
 
 static void
-_entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *signal, const char *source)
+_entrance_gui_user_bg_cb(void *data, Evas_Object *obj EINA_UNUSED, const char *sig EINA_UNUSED, const char *src EINA_UNUSED)
 {
    Evas_Object *o;
    Entrance_Screen *screen;
