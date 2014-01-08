@@ -201,14 +201,14 @@ entrance_session_end(const char *user)
             "%s %s ", entrance_config->command.session_stop, user);
    if (-1 == system(buf))
      PT("Error on session stop command\n");
-   entrance_session_close();
+   entrance_session_close(EINA_TRUE);
 }
 
 void
-entrance_session_close(void)
+entrance_session_close(const Eina_Bool opened)
 {
 #ifdef HAVE_PAM
-   entrance_pam_close_session();
+   entrance_pam_close_session(opened);
    entrance_pam_end();
    entrance_pam_shutdown();
 #endif

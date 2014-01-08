@@ -130,11 +130,12 @@ entrance_pam_open_session(void)
 }
 
 void
-entrance_pam_close_session(void)
+entrance_pam_close_session(const Eina_Bool opened)
 {
    PT("PAM close session\n");
    last_result = pam_close_session(_pam_handle, PAM_SILENT);
-   switch (last_result) {
+   switch (last_result)
+     {
       default:
          //case PAM_SESSION_ERROR:
          PT("error on close session");
@@ -142,19 +143,22 @@ entrance_pam_close_session(void)
          entrance_pam_end();
       case PAM_SUCCESS:
          break;
-   };
-   last_result = pam_setcred(_pam_handle, PAM_DELETE_CRED);
-   switch(last_result) {
-      default:
-      case PAM_CRED_ERR:
-      case PAM_CRED_UNAVAIL:
-      case PAM_CRED_EXPIRED:
-      case PAM_USER_UNKNOWN:
-         entrance_pam_end();
-      case PAM_SUCCESS:
-         break;
-   };
-   return;
+     }
+   if (opened)
+     {
+        last_result = pam_setcred(_pam_handle, PAM_DELETE_CRED);
+        switch(last_result)
+          {
+           default:
+           case PAM_CRED_ERR:
+           case PAM_CRED_UNAVAIL:
+           case PAM_CRED_EXPIRED:
+           case PAM_USER_UNKNOWN:
+              entrance_pam_end();
+           case PAM_SUCCESS:
+              break;
+          }
+     }
 }
 
 int
