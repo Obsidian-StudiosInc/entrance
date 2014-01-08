@@ -22,7 +22,7 @@ _entrance_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
 }
 
 static void
-kill_wait()
+kill_wait(void)
 {
    kill(_x_pid, SIGTERM);
 }

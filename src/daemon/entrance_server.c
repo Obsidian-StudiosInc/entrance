@@ -129,7 +129,7 @@ _entrance_server_write_cb(const void *data, size_t size, void *user_data EINA_UN
 }
 
 void
-entrance_server_init()
+entrance_server_init(void)
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
@@ -154,7 +154,7 @@ entrance_server_init()
 }
 
 void
-entrance_server_shutdown()
+entrance_server_shutdown(void)
 {
    Ecore_Event_Handler *h;
    if (_entrance_server)
@@ -166,7 +166,7 @@ entrance_server_shutdown()
 }
 
 void
-entrance_server_client_wait()
+entrance_server_client_wait(void)
 {
    Entrance_Event eev;
    eev.type = ENTRANCE_EVENT_MAXTRIES;

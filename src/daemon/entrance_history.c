@@ -3,10 +3,10 @@
 #define ENTRANCE_SESSION_KEY "session"
 #define ENTRANCE_HISTORY_FILE "entrance.hst"
 
-static void _entrance_history_read();
-static void _entrance_history_write();
-static void _entrance_user_init();
-static void _entrance_user_shutdown();
+static void _entrance_history_read(void);
+static void _entrance_history_write(void);
+static void _entrance_user_init(void);
+static void _entrance_user_shutdown(void);
 const char *_entrance_history_match(const char *login);
 
 
@@ -16,7 +16,7 @@ static Eina_List *_lusers = NULL;
 static Eina_Bool _history_update = EINA_FALSE;
 
 void
-entrance_history_init()
+entrance_history_init(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -35,20 +35,20 @@ entrance_history_init()
 }
 
 Eina_List
-*entrance_history_get()
+*entrance_history_get(void)
 {
    return _lusers;
 }
 
 void
-entrance_history_shutdown()
+entrance_history_shutdown(void)
 {
    _entrance_history_write();
    _entrance_user_shutdown();
 }
 
 static void
-_entrance_history_read()
+_entrance_history_read(void)
 {
    Eet_File *ef;
 
@@ -63,7 +63,7 @@ _entrance_history_read()
 }
 
 static void
-_entrance_history_write()
+_entrance_history_write(void)
 {
    Eet_File *ef;
    Entrance_Login *el;
@@ -154,7 +154,7 @@ _entrance_history_match(const char *login)
 }
 
 static void
-_entrance_user_init()
+_entrance_user_init(void)
 {
    char buf[PATH_MAX];
    FILE *f;
@@ -197,7 +197,7 @@ _entrance_user_init()
 }
 
 static void
-_entrance_user_shutdown()
+_entrance_user_shutdown(void)
 {
    Entrance_Login *eu;
    EINA_LIST_FREE(_lusers, eu)

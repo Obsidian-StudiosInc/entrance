@@ -333,7 +333,7 @@ entrance_event_received(const void *data, size_t size)
 }
 
 Eet_Data_Descriptor *
-entrance_event_user_dd()
+entrance_event_user_dd(void)
 {
    return _entrance_event_user_dd();
 }

@@ -24,13 +24,13 @@ static void _entrance_session_run(struct passwd *pwd, const char *cmd, const cha
 
 static void _entrance_session_desktops_scan_file(const char *path);
 static void _entrance_session_desktops_scan(const char *dir);
-static void _entrance_session_desktops_init();
-//static void _entrance_session_desktops_shutdown();
+static void _entrance_session_desktops_init(void);
+//static void _entrance_session_desktops_shutdown(void);
 static const char *_entrance_session_find_command(const char *path, const char *session);
 static struct passwd *_entrance_session_session_open();
 
 long
-entrance_session_seed_get()
+entrance_session_seed_get(void)
 {
     struct timespec ts;
     long pid = getpid();
@@ -222,7 +222,7 @@ entrance_session_pid_set(pid_t pid)
 }
 
 pid_t
-entrance_session_pid_get()
+entrance_session_pid_get(void)
 {
    return _session_pid;
 }
@@ -264,7 +264,7 @@ entrance_session_init(const char *dname)
 }
 
 void
-entrance_session_shutdown()
+entrance_session_shutdown(void)
 {
    Entrance_Xsession *xsession;
 
@@ -314,7 +314,7 @@ entrance_session_authenticate(const char *login, const char *passwd)
 }
 
 static struct passwd *
-_entrance_session_session_open()
+_entrance_session_session_open(void)
 {
 #ifdef HAVE_PAM
    if (!entrance_pam_open_session())
@@ -411,25 +411,25 @@ _entrance_session_find_command(const char *path, const char *session)
 }
 
 char *
-entrance_session_login_get()
+entrance_session_login_get(void)
 {
    return _login;
 }
 
 int
-entrance_session_logged_get()
+entrance_session_logged_get(void)
 {
    return !!_logged;
 }
 
 Eina_List *
-entrance_session_list_get()
+entrance_session_list_get(void)
 {
    return _xsessions;
 }
 
 static void
-_entrance_session_desktops_init()
+_entrance_session_desktops_init(void)
 {
    char buf[PATH_MAX];
    Eina_List *dirs;

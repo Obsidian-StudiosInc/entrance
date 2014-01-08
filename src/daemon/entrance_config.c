@@ -4,9 +4,9 @@
 #define ENTRANCE_CONFIG_KEY "config"
 
 static void _defaults_set(Entrance_Config *config);
-static void _users_get();
+static void _users_get(void);
 static void _config_free(Entrance_Config *config);
-static Entrance_Config *_cache_get();
+static Entrance_Config *_cache_get(void);
 
 static Eet_Data_Descriptor *_entrance_config_descriptor;
 
@@ -36,7 +36,7 @@ _defaults_set(Entrance_Config *config)
 
 
 static void
-_users_get()
+_users_get(void)
 {
    Eet_File *ef;
    FILE *f;
@@ -85,7 +85,7 @@ _users_get()
 }
 
 static Entrance_Config *
-_cache_get()
+_cache_get(void)
 {
    Entrance_Config *config = NULL;
    Eet_File *file;

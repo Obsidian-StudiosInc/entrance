@@ -171,7 +171,7 @@ entrance_connect_auth_cb_del(void *auth)
 }
 
 void
-entrance_connect_init()
+entrance_connect_init(void)
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
@@ -196,7 +196,7 @@ entrance_connect_init()
 }
 
 void
-entrance_connect_shutdown()
+entrance_connect_shutdown(void)
 {
    Ecore_Event_Handler *h;
    EINA_LIST_FREE(_handlers, h)

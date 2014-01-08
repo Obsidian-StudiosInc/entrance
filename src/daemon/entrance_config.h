@@ -45,8 +45,8 @@ struct _Entrance_Config
    Eina_Bool vkbd_enabled;
 };
 
-void entrance_config_init();
-void entrance_config_shutdown();
+void entrance_config_init(void);
+void entrance_config_shutdown(void);
 void entrance_config_set(const Entrance_Conf_Gui_Event *conf);
 
 Entrance_Config *entrance_config;

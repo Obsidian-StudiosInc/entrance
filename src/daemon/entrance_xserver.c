@@ -29,7 +29,7 @@ _env_set(const char *dname)
 }
 
 static int
-_xserver_start()
+_xserver_start(void)
 {
    char *buf = NULL;
    char **args = NULL;
@@ -124,14 +124,14 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
 }
 
 void
-entrance_xserver_end()
+entrance_xserver_end(void)
 {
    PT("xserver end\n");
    unsetenv("ENTRANCE_XPID");
 }
 
 void
-entrance_xserver_shutdown()
+entrance_xserver_shutdown(void)
 {
    eina_stringshare_del(_xserver->dname);
    free(_xserver);

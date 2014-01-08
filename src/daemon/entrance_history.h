@@ -1,10 +1,10 @@
 #ifndef ENTRANCE_HISTORY_
 #define ENTRANCE_HISTORY_
 
-void entrance_history_init();
-void entrance_history_shutdown();
+void entrance_history_init(void);
+void entrance_history_shutdown(void);
 void entrance_history_push(const char *login, const char *session);
-Eina_List *entrance_history_get();
+Eina_List *entrance_history_get(void);
 
 typedef struct _Entrance_History Entrance_History;
 

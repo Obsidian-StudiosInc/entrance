@@ -116,5 +116,5 @@ void entrance_event_init(Eet_Read_Cb func_read_cb, Eet_Write_Cb func_write_cb, v
 void entrance_event_shutdown(void);
 void entrance_event_send(const Entrance_Event *data);
 void entrance_event_received(const void *data, size_t size);
-Eet_Data_Descriptor *entrance_event_user_dd();
+Eet_Data_Descriptor *entrance_event_user_dd(void);
 #endif /* ENTRANCE_EVENT_ */

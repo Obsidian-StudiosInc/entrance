@@ -159,7 +159,7 @@ entrance_gui_init(const char *theme)
 }
 
 void
-entrance_gui_shutdown()
+entrance_gui_shutdown(void)
 {
    Entrance_Screen *screen;
    Entrance_Xsession *xsession;

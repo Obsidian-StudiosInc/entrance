@@ -56,8 +56,8 @@ static void _entrance_conf_bg_sel(void *data, Evas_Object *obj, void *event_info
 static Eina_Bool _entrance_conf_bg_fill_cb(void *data, Elm_Object_Item *it);
 static Eina_Bool _entrance_conf_user_bg_fill_cb(void *data, Elm_Object_Item *it);
 static void _entrance_conf_user_bg_sel(void *data, Evas_Object *obj, void *event_info);
-static void _entrance_conf_changed();
-static void _entrance_conf_apply();
+static void _entrance_conf_changed(void);
+static void _entrance_conf_apply(void);
 static Evas_Object *_entrance_conf_user_build(Evas_Object *obj);
 static void _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu);
 
@@ -316,7 +316,7 @@ _entrance_conf_backgrounds_get(Evas_Object *obj, const char *user)
 }
 
 static void
-_entrance_conf_apply()
+_entrance_conf_apply(void)
 {
    Entrance_Conf_Gui_Event conf;
 
@@ -664,7 +664,6 @@ _entrance_conf_changed(void)
        || (_entrance_int_conf->elm_profile != elm_config_profile_get())
        || (_entrance_int_conf->vkbd_enabled != entrance_gui_vkbd_enabled_get()))
        || ((_entrance_int_conf->user.orig) &&
-           
            ((_entrance_int_conf->user.orig->bg.path != _entrance_int_conf->user.bg.path)
             || (_entrance_int_conf->user.orig->bg.group != _entrance_int_conf->user.bg.group)
             || (_entrance_int_conf->user.orig->image.path != _entrance_int_conf->user.image.path)

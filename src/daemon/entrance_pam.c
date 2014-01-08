@@ -306,12 +306,14 @@ entrance_pam_env_set(const char *env, const char *value)
 }
 
 char **
-entrance_pam_env_list_get() {
+entrance_pam_env_list_get(void)
+{
    return pam_getenvlist(_pam_handle);
 }
 
 void
-entrance_pam_shutdown() {
+entrance_pam_shutdown(void)
+{
 }
 
 int
@@ -324,3 +326,4 @@ entrance_pam_auth_set(const char *login, const char *passwd)
      _passwd = strdup(passwd);
    return 0;
 }
+

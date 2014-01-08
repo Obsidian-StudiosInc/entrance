@@ -33,6 +33,6 @@ extern   time_t current_time;
 extern   struct tm *local_time;
 extern   char entrance_time_d[4096];
 
-int entrance_client_main();
+int entrance_client_main(void);
 
 #endif /* ENTRANCE_H_ */
