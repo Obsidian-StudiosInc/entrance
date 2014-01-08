@@ -184,6 +184,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         snprintf(buf, sizeof(buf), "%s > %s/.entrance_session.log 2>&1",
                  cmd, pwd->pw_dir);
 #endif
+        PT("Executing: %s --login -c %s \n", pwd->pw_shell, buf);
         execle(pwd->pw_shell, pwd->pw_shell, "--login", "-c", buf, NULL, env);
         PT("The Xsessions are not launched :(\n");
      }
@@ -398,11 +399,11 @@ _entrance_session_find_command(const char *path, const char *session)
      {
         if (xsession)
           {
-             snprintf(buf, sizeof(buf), "/etc/X11/xinit/xinitrc %s",
+             snprintf(buf, sizeof(buf), "sh /etc/X11/xinit/xinitrc %s",
                       xsession->command);
              return eina_stringshare_add(buf);
           }
-        return eina_stringshare_add("/etc/X11/xinit/xinitrc");
+        return eina_stringshare_add("sh /etc/X11/xinit/xinitrc");
      }
    return NULL;
 }
