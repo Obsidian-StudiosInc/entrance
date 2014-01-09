@@ -199,7 +199,8 @@ _entrance_history_match(const char *login)
 
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
-        if (!strcmp(el->login, login))
+//        if (!strcmp(el->login, login))
+        if (el->login == login)
           break;
      }
    return el;
@@ -257,13 +258,16 @@ _entrance_user_shutdown(void)
    Entrance_Login *eu;
    EINA_LIST_FREE(_lusers, eu)
      {
-        eina_stringshare_del(eu->login);
-        eina_stringshare_del(eu->lsess);
-        eina_stringshare_del(eu->image.path);
-        eina_stringshare_del(eu->image.group);
-        eina_stringshare_del(eu->bg.path);
-        eina_stringshare_del(eu->bg.group);
-        free(eu);
+        if (!_entrance_history_match(eu->login))
+          {
+             eina_stringshare_del(eu->login);
+             eina_stringshare_del(eu->lsess);
+             eina_stringshare_del(eu->image.path);
+             eina_stringshare_del(eu->image.group);
+             eina_stringshare_del(eu->bg.path);
+             eina_stringshare_del(eu->bg.group);
+             free(eu);
+          }
      }
 }
 
