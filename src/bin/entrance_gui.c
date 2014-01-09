@@ -549,7 +549,10 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const c
                {
                   const char *path, *group;
                   ic = _entrance_gui_user_icon_random_get(obj);
-                  edje_object_file_get(elm_layout_edje_get(ic), &path, &group);
+                  edje_object_file_get(
+                     elm_layout_edje_get(
+                        elm_object_part_content_get(ic, "entrance.icon")),
+                     &path, &group);
                   eu->image.path = eina_stringshare_add(path);
                   eu->image.group = eina_stringshare_add(group);
                }

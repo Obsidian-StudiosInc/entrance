@@ -39,9 +39,6 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
         eev.event.conf_gui.enabled = EINA_TRUE;
         eev.event.conf_gui.bg.path = entrance_config->bg.path;
         eev.event.conf_gui.bg.group = entrance_config->bg.group;
-
-        printf("sending %s %s\n", entrance_config->bg.path,
-               entrance_config->bg.group);
         entrance_event_send(&eev);
      }
    return ECORE_CALLBACK_RENEW;
@@ -111,6 +108,11 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
      {
         PT("Conf Gui received\n");
         entrance_config_set(&eev->event.conf_gui);
+     }
+   else if (eev->type == ENTRANCE_EVENT_CONF_USER)
+     {
+        PT("Conf user received\n");
+        entrance_history_user_update(&eev->event.conf_user);
      }
    else
      PT("UNKNOW signal server\n");

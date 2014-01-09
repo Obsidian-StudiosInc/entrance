@@ -140,14 +140,30 @@ entrance_connect_action_send(unsigned char id)
 }
 
 void
-entrance_connect_conf_send(Entrance_Conf_Gui_Event *ev)
+entrance_connect_conf_gui_send(Entrance_Conf_Gui_Event *ev)
 {
    Entrance_Event eev;
-   PT("Send config\n");
+   PT("Send gui config\n");
    eev.event.conf_gui.bg.path = ev->bg.path;
    eev.event.conf_gui.bg.group = ev->bg.group;
 
    eev.type = ENTRANCE_EVENT_CONF_GUI;
+   entrance_event_send(&eev);
+}
+
+void
+entrance_connect_conf_user_send(Entrance_Login *el)
+{
+   Entrance_Event eev;
+   PT("Send user config\n");
+   eev.event.conf_user.login = el->login;
+   eev.event.conf_user.lsess = el->lsess;
+   eev.event.conf_user.image.group = el->image.group;
+   eev.event.conf_user.image.path = el->image.path;
+   eev.event.conf_user.bg.path = el->bg.path;
+   eev.event.conf_user.bg.group = el->bg.group;
+   eev.event.conf_user.remember_session = el->remember_session;
+   eev.type = ENTRANCE_EVENT_CONF_USER;
    entrance_event_send(&eev);
 }
 

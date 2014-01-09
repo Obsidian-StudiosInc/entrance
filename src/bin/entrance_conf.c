@@ -19,6 +19,7 @@ typedef struct Entrance_Int_Conf_
    const char *elm_profile;
    Eina_Bool vkbd_enabled : 1;
    double scale;
+   Eina_Bool update : 1;
 
    struct
      {
@@ -36,6 +37,7 @@ typedef struct Entrance_Int_Conf_
           } image;
         const char *lsess;
         Eina_Bool remember_session : 1;
+        Eina_Bool update : 1;
      } user;
 
    struct
@@ -43,7 +45,6 @@ typedef struct Entrance_Int_Conf_
         Evas_Object *btn_ok;
         Evas_Object *btn_apply;
      } gui;
-
 } Entrance_Int_Conf;
 
 
@@ -324,20 +325,23 @@ _entrance_conf_apply(void)
    conf.bg.group = _entrance_int_conf->bg.group;
    conf.vkbd_enabled = _entrance_int_conf->vkbd_enabled;
 
-   if (_entrance_int_conf->scale != elm_config_scale_get())
+   if (_entrance_int_conf->update)
      {
-        elm_config_scale_set(_entrance_int_conf->scale);
-        elm_config_all_flush();
-        elm_config_save();
+        if (_entrance_int_conf->scale != elm_config_scale_get())
+          {
+             elm_config_scale_set(_entrance_int_conf->scale);
+             elm_config_all_flush();
+             elm_config_save();
+          }
+        if (_entrance_int_conf->theme != entrance_gui_theme_name_get())
+          {
+             entrance_gui_theme_name_set(_entrance_int_conf->theme);
+          }
+        entrance_gui_conf_set(&conf);
+        entrance_connect_conf_gui_send(&conf);
      }
-   if (_entrance_int_conf->theme != entrance_gui_theme_name_get())
-     {
-        entrance_gui_theme_name_set(_entrance_int_conf->theme);
-     }
-   entrance_gui_conf_set(&conf);
-   entrance_connect_conf_send(&conf);
 
-   if (_entrance_int_conf->user.orig)
+   if (_entrance_int_conf->user.update)
      {
         Entrance_Login *eu;
         eu = _entrance_int_conf->user.orig;
@@ -357,6 +361,7 @@ _entrance_conf_apply(void)
           eu->remember_session = _entrance_int_conf->user.remember_session;
         if (eu->lsess != _entrance_int_conf->user.lsess)
           eina_stringshare_replace(&eu->lsess, _entrance_int_conf->user.lsess);
+        entrance_connect_conf_user_send(eu);
         /*
         printf("%s | %s\n%s | %s\n%s | %s\n%s | %s\n%d | %d\n%s | %s\n",
                eu->bg.path, _entrance_int_conf->user.bg.path,
@@ -657,20 +662,23 @@ _entrance_conf_changed(void)
    const char *bg_group;
 
    entrance_gui_background_get(&bg_path, &bg_group);
-   if (((_entrance_int_conf->theme != entrance_gui_theme_name_get())
-       || (_entrance_int_conf->bg.path != bg_path)
-       || (_entrance_int_conf->bg.group != bg_group)
-       || (_entrance_int_conf->scale != elm_config_scale_get())
-       || (_entrance_int_conf->elm_profile != elm_config_profile_get())
-       || (_entrance_int_conf->vkbd_enabled != entrance_gui_vkbd_enabled_get()))
-       || ((_entrance_int_conf->user.orig) &&
-           ((_entrance_int_conf->user.orig->bg.path != _entrance_int_conf->user.bg.path)
-            || (_entrance_int_conf->user.orig->bg.group != _entrance_int_conf->user.bg.group)
-            || (_entrance_int_conf->user.orig->image.path != _entrance_int_conf->user.image.path)
-            || (_entrance_int_conf->user.orig->image.group != _entrance_int_conf->user.image.group)
-            || (_entrance_int_conf->user.orig->remember_session != _entrance_int_conf->user.remember_session)
-            || (_entrance_int_conf->user.orig->lsess != _entrance_int_conf->user.lsess))))
+   _entrance_int_conf->update =
+      !!((_entrance_int_conf->theme != entrance_gui_theme_name_get())
+         || (_entrance_int_conf->bg.path != bg_path)
+         || (_entrance_int_conf->bg.group != bg_group)
+         || (_entrance_int_conf->scale != elm_config_scale_get())
+         || (_entrance_int_conf->elm_profile != elm_config_profile_get())
+         || (_entrance_int_conf->vkbd_enabled != entrance_gui_vkbd_enabled_get()));
 
+   if (_entrance_int_conf->user.orig)
+     _entrance_int_conf->user.update =
+        !!((_entrance_int_conf->user.orig->bg.path != _entrance_int_conf->user.bg.path)
+           || (_entrance_int_conf->user.orig->bg.group != _entrance_int_conf->user.bg.group)
+           || (_entrance_int_conf->user.orig->image.path != _entrance_int_conf->user.image.path)
+           || (_entrance_int_conf->user.orig->image.group != _entrance_int_conf->user.image.group)
+           || (_entrance_int_conf->user.orig->remember_session != _entrance_int_conf->user.remember_session)
+           || (_entrance_int_conf->user.orig->lsess != _entrance_int_conf->user.lsess));
+   if (_entrance_int_conf->update || _entrance_int_conf->user.update)
      {
         elm_object_disabled_set(_entrance_int_conf->gui.btn_ok, EINA_FALSE);
         elm_object_disabled_set(_entrance_int_conf->gui.btn_apply, EINA_FALSE);

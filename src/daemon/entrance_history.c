@@ -7,7 +7,8 @@ static void _entrance_history_read(void);
 static void _entrance_history_write(void);
 static void _entrance_user_init(void);
 static void _entrance_user_shutdown(void);
-const char *_entrance_history_match(const char *login);
+Entrance_Login *_entrance_history_match(const char *login);
+static void _entrance_history_user_set(Entrance_Login *el, const Entrance_Login *eu);
 
 
 static Eet_Data_Descriptor *_eddh;
@@ -43,8 +44,20 @@ Eina_List
 void
 entrance_history_shutdown(void)
 {
+   Entrance_Login *el;
+
    _entrance_history_write();
    _entrance_user_shutdown();
+   EINA_LIST_FREE(_entrance_history->history, el)
+     {
+        eina_stringshare_del(el->login);
+        eina_stringshare_del(el->image.path);
+        eina_stringshare_del(el->image.group);
+        eina_stringshare_del(el->bg.path);
+        eina_stringshare_del(el->bg.group);
+        eina_stringshare_del(el->lsess);
+     }
+   free(_entrance_history);
 }
 
 static void
@@ -54,7 +67,8 @@ _entrance_history_read(void)
 
    ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
                  EET_FILE_MODE_READ_WRITE);
-   if (!(ef) || !(_entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY)))
+   if (!(ef)
+       || !(_entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY)))
      {
         PT("Error on reading last session login\n");
         _entrance_history = calloc(1, sizeof(Entrance_History));
@@ -66,7 +80,6 @@ static void
 _entrance_history_write(void)
 {
    Eet_File *ef;
-   Entrance_Login *el;
 
    if (_history_update)
      {
@@ -82,15 +95,6 @@ _entrance_history_write(void)
           PT("Error on updating last session login\n");
 
         eet_close(ef);
-     }
-   EINA_LIST_FREE(_entrance_history->history, el)
-     {
-        eina_stringshare_del(el->login);
-        eina_stringshare_del(el->image.path);
-        eina_stringshare_del(el->image.group);
-        eina_stringshare_del(el->bg.path);
-        eina_stringshare_del(el->bg.group);
-        eina_stringshare_del(el->lsess);
      }
 }
 
@@ -129,7 +133,6 @@ entrance_history_push(const char *login, const char *session)
           {
              el->login = eina_stringshare_add(login);
              if (session) el->lsess = eina_stringshare_add(session);
-             else el->lsess = NULL;
              el->remember_session = EINA_TRUE;
              _entrance_history->history =
                 eina_list_append(_entrance_history->history, el);
@@ -138,19 +141,68 @@ entrance_history_push(const char *login, const char *session)
      }
 }
 
+static void
+_entrance_history_user_set(Entrance_Login *el, const Entrance_Login *eu)
+{
+   if (eu->lsess != el->lsess)
+     eina_stringshare_replace(&el->lsess, eu->lsess);
+   if (eu->image.path != el->image.path)
+     eina_stringshare_replace(&el->image.path, eu->image.path);
+   if (eu->image.group != el->image.group)
+     eina_stringshare_replace(&el->image.group, eu->image.group);
+   if (eu->bg.path != el->bg.path)
+     eina_stringshare_replace(&el->bg.path, eu->bg.path);
+   if (eu->bg.group != el->bg.group)
+     eina_stringshare_replace(&el->bg.group, eu->bg.group);
+   if (eu->remember_session != el->remember_session)
+     el->remember_session = eu->remember_session;
+}
 
-const char *
-_entrance_history_match(const char *login)
+void
+entrance_history_user_update(const Entrance_Login *eu)
 {
    Eina_List *l;
    Entrance_Login *el;
-   const char *ret = NULL;
+
+   PT("Updating user info\n");
+
+   EINA_LIST_FOREACH(_entrance_history->history, l, el)
+     {
+        if (!strcmp(eu->login, el->login))
+          {
+             PT("Find user in history\n");
+             _entrance_history_user_set(el, eu);
+            break;
+          }
+     }
+   if (!l)
+     {
+        EINA_LIST_FOREACH(_lusers, l, el)
+          {
+             if (!strcmp(eu->login, el->login))
+               {
+                  PT("Append user in history\n");
+                  _entrance_history_user_set(el, eu);
+                  break;
+               }
+          }
+     }
+   _history_update = !!l;
+   _entrance_history_write();
+}
+
+Entrance_Login *
+_entrance_history_match(const char *login)
+{
+   Eina_List *l;
+   Entrance_Login *el = NULL;
+
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
         if (!strcmp(el->login, login))
-          ret = el->lsess;
+          break;
      }
-   return ret;
+   return el;
 }
 
 static void
@@ -181,18 +233,21 @@ _entrance_user_init(void)
      }
    EINA_LIST_FREE(lu, user)
      {
-        if ((eu = (Entrance_Login *) calloc(1, sizeof(Entrance_Login))))
+        eu = _entrance_history_match(user);
+        if (!eu)
           {
-             eu->login = eina_stringshare_add(user);
-             snprintf(buf, sizeof(buf),
-                      "/var/cache/"PACKAGE"/users/%s.edj", user);
-             if (ecore_file_exists(buf))
-               eu->image.path = eina_stringshare_add(buf);
-             eu->lsess = _entrance_history_match(user);
-             eu->remember_session = EINA_TRUE;
-             eina_stringshare_del(user);
-             _lusers = eina_list_append(_lusers, eu);
+             if ((eu = (Entrance_Login *) calloc(1, sizeof(Entrance_Login))))
+               {
+                  eu->login = eina_stringshare_add(user);
+                  snprintf(buf, sizeof(buf),
+                           "/var/cache/"PACKAGE"/users/%s.edj", user);
+                  if (ecore_file_exists(buf))
+                    eu->image.path = eina_stringshare_add(buf);
+                  eu->remember_session = EINA_TRUE;
+               }
           }
+        eina_stringshare_del(user);
+        _lusers = eina_list_append(_lusers, eu);
      }
 }
 
@@ -203,8 +258,12 @@ _entrance_user_shutdown(void)
    EINA_LIST_FREE(_lusers, eu)
      {
         eina_stringshare_del(eu->login);
+        eina_stringshare_del(eu->lsess);
+        eina_stringshare_del(eu->image.path);
+        eina_stringshare_del(eu->image.group);
+        eina_stringshare_del(eu->bg.path);
+        eina_stringshare_del(eu->bg.group);
         free(eu);
      }
-   free(_entrance_history);
 }
 

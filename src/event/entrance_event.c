@@ -8,10 +8,10 @@
 #define ENTRANCE_EVENT_XSESSIONS_NAME "EntranceEventSession"
 #define ENTRANCE_EVENT_STATUS_NAME "EntranceEventStatus"
 #define ENTRANCE_EVENT_USERS_NAME "EntranceEventUsers"
-#define ENTRANCE_EVENT_USER_NAME "EntranceEventUser"
 #define ENTRANCE_EVENT_ACTIONS_NAME "EntranceEventActions"
 #define ENTRANCE_EVENT_ACTION_NAME "EntranceEventAction"
 #define ENTRANCE_EVENT_CONF_GUI_NAME "EntranceEventConfGui"
+#define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
 
 static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
@@ -21,7 +21,7 @@ static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
 static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
 static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
 static Eet_Data_Descriptor *_entrance_event_users_dd(void);
-static Eet_Data_Descriptor *_entrance_event_user_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_user_dd(void);
 static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
 static Eet_Data_Descriptor *_entrance_event_action_dd(void);
 static Eet_Data_Descriptor *_entrance_event_new(void);
@@ -52,8 +52,8 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
      *ev = ENTRANCE_EVENT_XSESSIONS;
    else if (!strcmp(type, ENTRANCE_EVENT_USERS_NAME))
      *ev = ENTRANCE_EVENT_USERS;
-   else if (!strcmp(type, ENTRANCE_EVENT_USER_NAME))
-     *ev = ENTRANCE_EVENT_USER;
+   else if (!strcmp(type, ENTRANCE_EVENT_CONF_USER_NAME))
+     *ev = ENTRANCE_EVENT_CONF_USER;
    else if (!strcmp(type, ENTRANCE_EVENT_ACTIONS_NAME))
      *ev = ENTRANCE_EVENT_ACTIONS;
    else if (!strcmp(type, ENTRANCE_EVENT_ACTION_NAME))
@@ -62,7 +62,7 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
      *ev = ENTRANCE_EVENT_CONF_GUI;
    else
      {
-        printf("error on type set\n");
+        printf("error on type set %s\n", type);
         *ev = ENTRANCE_EVENT_UNKNOWN;
         return EINA_FALSE;
      }
@@ -83,8 +83,8 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
      return ENTRANCE_EVENT_XSESSIONS_NAME;
    else if (*ev == ENTRANCE_EVENT_USERS)
      return ENTRANCE_EVENT_USERS_NAME;
-   else if (*ev == ENTRANCE_EVENT_USER)
-     return ENTRANCE_EVENT_USER_NAME;
+   else if (*ev == ENTRANCE_EVENT_CONF_USER)
+     return ENTRANCE_EVENT_CONF_USER_NAME;
    else if (*ev == ENTRANCE_EVENT_ACTIONS)
      return ENTRANCE_EVENT_ACTIONS_NAME;
    else if (*ev == ENTRANCE_EVENT_ACTION)
@@ -93,7 +93,7 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
      return ENTRANCE_EVENT_CONF_GUI_NAME;
    else
      {
-        printf("error on type get\n");
+        printf("error on type get %d\n", *ev);
         if (unknow)
           *unknow = EINA_TRUE;
      }
@@ -191,7 +191,7 @@ _entrance_event_users_dd(void)
    Eet_Data_Descriptor *edd, *eddl;
    Eet_Data_Descriptor_Class eddc, eddcl;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
-   edd = _entrance_event_user_dd();
+   edd = _entrance_event_conf_user_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Users_Event);
    eddl = eet_data_descriptor_stream_new(&eddcl);
    EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Entrance_Users_Event, "users",
@@ -200,7 +200,7 @@ _entrance_event_users_dd(void)
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_user_dd(void)
+_entrance_event_conf_user_dd(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
@@ -276,8 +276,8 @@ _entrance_event_new(void)
                                    _entrance_event_status_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_USERS_NAME,
                                    _entrance_event_users_dd());
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_USER_NAME,
-                                   _entrance_event_user_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_USER_NAME,
+                                   _entrance_event_conf_user_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTIONS_NAME,
                                    _entrance_event_actions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTION_NAME,
@@ -335,5 +335,5 @@ entrance_event_received(const void *data, size_t size)
 Eet_Data_Descriptor *
 entrance_event_user_dd(void)
 {
-   return _entrance_event_user_dd();
+   return _entrance_event_conf_user_dd();
 }

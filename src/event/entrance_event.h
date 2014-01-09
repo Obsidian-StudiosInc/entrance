@@ -8,7 +8,7 @@ typedef enum Entrance_Event_Type_
    ENTRANCE_EVENT_STATUS,
    ENTRANCE_EVENT_XSESSIONS,
    ENTRANCE_EVENT_USERS,
-   ENTRANCE_EVENT_USER,
+   ENTRANCE_EVENT_CONF_USER,
    ENTRANCE_EVENT_ACTIONS,
    ENTRANCE_EVENT_ACTION,
    ENTRANCE_EVENT_MAXTRIES,
@@ -105,7 +105,7 @@ typedef struct Entrance_Event_
         Entrance_Maxtries_Event maxtries;
         Entrance_Status_Event status;
         Entrance_Users_Event users;
-        Entrance_Login user;
+        Entrance_Login conf_user;
         Entrance_Actions_Event actions;
         Entrance_Action_Event action;
         Entrance_Conf_Gui_Event conf_gui;
