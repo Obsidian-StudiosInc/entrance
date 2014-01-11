@@ -1,10 +1,10 @@
-What entrance do:
+What entrance can do:
 open session with pam
 User can choose the WM to open
 Admin can make a script who are called to open session (/etc/X11/xinit/xinitrc)
 Everything can be configured in entrance.conf
 
-You could put an customized icon for your user in
+You could put a customized icon for your user in
  /var/cache/entrance/users/(username).edj with groupname "entrance/user/icon"
 BIG THX to http://tux.crystalxp.net for tux g1 ! Specificaly to all authors of
 each tux present in this build.
