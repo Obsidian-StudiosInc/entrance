@@ -231,8 +231,8 @@ entrance_pam_init(const char *service, const char *display, const char *user)
 {
    int status;
 
-   if (!service && !*service) goto pam_error;
-   if (!display && !*display) goto pam_error;
+   if (!service || !*service) goto pam_error;
+   if (!display || !*display) goto pam_error;
 
    _pam_conversation.conv = _entrance_pam_conv;
    _pam_conversation.appdata_ptr = NULL;
