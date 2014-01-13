@@ -307,7 +307,9 @@ main (int argc, char ** argv)
    if (entrance_user)
      {
         char *quit;
+        entrance_session_init(dname);
         entrance_session_end(entrance_user);
+        entrance_session_shutdown();
         sleep(2);
         entrance_xserver_end();
         quit = getenv("ENTRANCE_QUIT");
