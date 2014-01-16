@@ -521,6 +521,7 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
                   _entrance_int_conf->user.lsess = eu->lsess;
                   _entrance_int_conf->user.remember_session
                      = eu->remember_session;
+                  /*
                   printf("init %s %s | %s %s | %s | %d\n",
                          _entrance_int_conf->user.bg.path,
                          _entrance_int_conf->user.bg.group,
@@ -528,6 +529,7 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
                          _entrance_int_conf->user.image.group,
                          _entrance_int_conf->user.lsess,
                          _entrance_int_conf->user.remember_session);
+                         */
                   break;
                }
           }
