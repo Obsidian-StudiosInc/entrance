@@ -154,11 +154,10 @@ _entrance_main(const char *dname)
              char buf[PATH_MAX];
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
-             PT("Exec entrance_client: ");
              snprintf(buf, sizeof(buf),
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
-             printf("%s\n", buf);
+             PT("Exec entrance_client: %s\n", buf);
 
              _entrance_client = ecore_exe_run(buf, NULL);
           }
@@ -342,6 +341,7 @@ main (int argc, char ** argv)
 
    PT("session init\n");
    entrance_session_init(dname);
+   entrance_session_cookie();
    if (!_xephyr)
      {
         PT("xserver init\n");

@@ -227,10 +227,16 @@ entrance_session_pid_get(void)
    return _session_pid;
 }
 
+void
+entrance_session_init(const char *dname)
+{
+   _dname = dname;
+}
+
 static const char *dig = "0123456789abcdef";
 
 void
-entrance_session_init(const char *dname)
+entrance_session_cookie(void)
 {
    uint16_t word;
    uint8_t hi, lo;
@@ -256,11 +262,10 @@ entrance_session_init(const char *dname)
             entrance_config->command.xauth_file);
    putenv(strdup(buf));
    //PT("cookie %s \n", _mcookie);
-   _entrance_session_cookie_add(_mcookie, dname,
+   _entrance_session_cookie_add(_mcookie, _dname,
                             entrance_config->command.xauth_path,
                             entrance_config->command.xauth_file);
    _entrance_session_desktops_init();
-   _dname = dname;
 }
 
 void

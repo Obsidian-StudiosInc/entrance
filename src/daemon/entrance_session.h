@@ -3,6 +3,7 @@
 #include <pwd.h>
 
 void entrance_session_init(const char *dname);
+void entrance_session_cookie(void);
 void entrance_session_end(const char *login);
 void entrance_session_shutdown(void);
 Eina_Bool entrance_session_authenticate(const char *login, const char *pwd);
