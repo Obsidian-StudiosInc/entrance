@@ -195,6 +195,10 @@ static const Ecore_Getopt options =
    {
       ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
       ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
+      ECORE_GETOPT_STORE_TRUE('e', "fastexit", "Will change the way entrance \
+handles the exit of the created session.\n If set, entrance will exit if the session \
+quits.\n If not, entrance will restart if the session is quit because of an error, \
+or if the environment variable ENTRANCE_RESTART is set."),
       ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
       ECORE_GETOPT_HELP ('h', "help"),
       ECORE_GETOPT_VERSION('V', "version"),
@@ -212,12 +216,14 @@ main (int argc, char ** argv)
    char *dname;
    char *entrance_user = NULL;
    unsigned char nodaemon = 0;
+   unsigned char fastexit = 0;
    unsigned char quit_option = 0;
 
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
         ECORE_GETOPT_VALUE_BOOL(_testing),
+        ECORE_GETOPT_VALUE_BOOL(fastexit),
         ECORE_GETOPT_VALUE_BOOL(_xephyr),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -243,6 +249,12 @@ main (int argc, char ** argv)
      }
    if (!_xephyr && getenv("ENTRANCE_XEPHYR"))
      _xephyr = EINA_TRUE;
+
+   if (fastexit)
+     {
+        putenv(strdup("ENTRANCE_FAST_QUIT=1"));
+        PT("Fast exit enabled !\n");
+     }
 
    if (_xephyr)
      {
@@ -321,9 +333,7 @@ main (int argc, char ** argv)
              entrance_close_log();
              exit(0);
           }
-        entrance_close_log();
-        PT("Nice to see you again.\n");
-        exit(1);
+        PT("Nice to see you again. Entrance will restart.\n");
      }
    PT("Welcome\n");
    ecore_init();
