@@ -317,23 +317,27 @@ main (int argc, char ** argv)
    entrance_user = getenv("ENTRANCE_USER");
    if (entrance_user)
      {
-        char *quit;
+        char *quit, *x_pid_char;
         entrance_session_init(dname);
         entrance_session_end(entrance_user);
         entrance_session_shutdown();
-        sleep(2);
-        entrance_xserver_end();
         quit = getenv("ENTRANCE_QUIT");
         if (quit)
           {
              unsetenv("ENTRANCE_QUIT");
-             _remove_lock();
-             entrance_config_shutdown();
-             PT("Bye, see you.\n\n");
-             entrance_close_log();
-             exit(0);
+             PT("Last DE Session quit with error!\n");
           }
-        PT("Nice to see you again. Entrance will restart.\n");
+        PT("ending xserver\n");
+        x_pid_char = getenv("ENTRANCE_XPID");
+        if (x_pid_char) 
+          kill(atoi(x_pid_char), SIGTERM);
+        else
+          PT("No Xserver found, Strange!\n");
+        entrance_xserver_end();
+        _remove_lock();
+        PT("Entrance will quit, bye bye :).\n");
+        entrance_close_log();
+        exit(1);
      }
    PT("Welcome\n");
    ecore_init();
