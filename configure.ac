@@ -26,11 +26,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # Set the localedir var for gettext
 AC_DEFINE([LOCALEDIR], ["/usr/share/locale/"], ["locales"])
 
-if test "x{want_systemd}" = "xyes"; then
-     PKG_CHECK_MODULES([SYSTEMD], [libsystemd-daemon >= 192 libsystemd-journal >= 192],
-                                [want_systemd="yes"],
-                                [want_systemd="no"])
-fi
 ### Additional options to configure
 # Pam
 AC_ARG_ENABLE([pam],
@@ -89,10 +84,10 @@ AC_ARG_ENABLE([consolekit],
 AC_MSG_CHECKING([whether to support consolekit login])
 AC_MSG_RESULT([${enable_consolekit}])
 
-# consolekit
+# systemd
 AC_ARG_ENABLE([systemd],
    [AC_HELP_STRING([--disable-systemd],
-      [Enable systemd support. @<:@default=disabled@:>@])],
+      [Enable systemd support. @<:@default=enabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
        want_systemd="yes"
@@ -101,8 +96,13 @@ AC_ARG_ENABLE([systemd],
     fi
    ],
    [want_systemd="yes"])
-
-
+if test "x${enableval}" = "xyes" ; then
+   PKG_CHECK_MODULES([SYSTEMD], [libsystemd-daemon >= 192 libsystemd-journal >= 192],
+                                [want_systemd="yes"],
+                                [want_systemd="no"])
+fi
+ 
+   
 ### Checks for programs
 AC_PROG_CC
 PKG_PROG_PKG_CONFIG
@@ -160,9 +160,7 @@ if test "x${enable_pam}" = "xyes" ; then
 fi
 
 #systemd
-if test "x${want_systemd}" = "xyes" ; then
-  AM_CONDITIONAL([WANT_SYSTEMD], [test "${want_systemd}" = "yes"])
-fi
+AM_CONDITIONAL([WANT_SYSTEMD], [test "${want_systemd}" = "yes"])
 
 
 ### Checks for header files
