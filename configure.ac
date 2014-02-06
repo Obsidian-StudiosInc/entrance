@@ -97,7 +97,7 @@ AC_ARG_ENABLE([systemd],
    ],
    [want_systemd="yes"])
 if test "x${enableval}" = "xyes" ; then
-   PKG_CHECK_MODULES([SYSTEMD], [libsystemd-daemon >= 192 libsystemd-journal >= 192],
+   PKG_CHECK_MODULES([SYSTEMD], [systemd >= 192],
                                 [want_systemd="yes"],
                                 [want_systemd="no"])
 fi
