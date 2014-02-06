@@ -1,0 +1,13 @@
+[Unit]
+Description=Enlightenment Display Manager
+After=systemd-user-sessions.service
+
+[Service]
+
+Environment="LD_LIBRARY_PATH=@prefix@/lib" "PATH=$PATH:@prefix@/bin"
+
+ExecStart=@prefix@/sbin/entrance --nodaemon
+Restart= always
+
+[Install]
+Alias=display-manager.service

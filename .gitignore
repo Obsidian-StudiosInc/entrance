@@ -37,4 +37,5 @@ src/daemon/Makefile
 src/daemon/Makefile.in
 src/daemon/entrance
 src/daemon/entrance_wait
+data/entrance.service
 stamp-h1
