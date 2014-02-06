@@ -26,9 +26,12 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 # Set the localedir var for gettext
 AC_DEFINE([LOCALEDIR], ["/usr/share/locale/"], ["locales"])
 
-
+if test "x{want_systemd}" = "xyes"; then
+     PKG_CHECK_MODULES([SYSTEMD], [libsystemd-daemon >= 192 libsystemd-journal >= 192],
+                                [want_systemd="yes"],
+                                [want_systemd="no"])
+fi
 ### Additional options to configure
-
 # Pam
 AC_ARG_ENABLE([pam],
    [AC_HELP_STRING([--disable-pam], [disable pam support. @<:@default=enabled@:>@])],
@@ -86,6 +89,19 @@ AC_ARG_ENABLE([consolekit],
 AC_MSG_CHECKING([whether to support consolekit login])
 AC_MSG_RESULT([${enable_consolekit}])
 
+# consolekit
+AC_ARG_ENABLE([systemd],
+   [AC_HELP_STRING([--disable-systemd],
+      [Enable systemd support. @<:@default=disabled@:>@])],
+   [
+    if test "x${enableval}" = "xyes" ; then
+       want_systemd="yes"
+    else
+       want_systemd="no"
+    fi
+   ],
+   [want_systemd="yes"])
+
 
 ### Checks for programs
 AC_PROG_CC
@@ -107,9 +123,9 @@ AC_USE_SYSTEM_EXTENSIONS
 AC_C___ATTRIBUTE__
 
 ### Checks for libraries
-
 PKG_CHECK_MODULES([ENTRANCE], [eina >= 1.0.0 eet >= 1.4.0 ecore >= 1.0.0 ecore-con >= 1.0.0 ecore-file >= 1.0.0 efreet >= 1.0.0 xcb >= 1.0.0])
 PKG_CHECK_MODULES([ENTRANCE_CLIENT], [eina >= 1.0.0 eet >= 1.4.0 edje >= 1.0.0 evas >= 1.0.0 ecore >= 1.0.0 ecore-con >= 1.0.0 ecore-evas >= 1.0.0 ecore-input >= 1.0.0 ecore-x >= 1.0.0 elementary >= 0.5.0.0])
+
 
 # Grub2
 if test "x${enable_grub2}" = "xyes" ; then
@@ -142,6 +158,12 @@ if test "x${enable_pam}" = "xyes" ; then
       [have_pam="yes"],
       [have_pam="no"])
 fi
+
+#systemd
+if test "x${want_systemd}" = "xyes" ; then
+  AM_CONDITIONAL([WANT_SYSTEMD], [test "${want_systemd}" = "yes"])
+fi
+
 
 ### Checks for header files
 
@@ -181,6 +203,7 @@ src/daemon/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
+data/entrance.service
 ])
 
 
@@ -200,6 +223,7 @@ echo "  pam..................: ${have_pam}"
 echo "  grub2................: ${enable_grub2}"
 echo "  ekbd.................: ${enable_ekbd}"
 echo "  consolekit...........: ${enable_consolekit}"
+echo "  systemd..............: ${want_systemd}"
 echo
 echo "  edje_cc..............: ${edje_cc}"
 echo
