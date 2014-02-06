@@ -669,6 +669,14 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
         PT("screen managed\n");
         elm_exit();
      }
+
+   char *name = ecore_x_window_prop_string_get(ecore_x_window_root_get(ev->win), ECORE_X_ATOM_NET_WM_NAME);
+   if (name)
+     {
+        PT("screen managed though not compliant\n");
+        elm_exit();
+     }
+
    return ECORE_CALLBACK_DONE;
 }
 
