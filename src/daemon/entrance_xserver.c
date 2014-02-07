@@ -126,7 +126,12 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
 void
 entrance_xserver_end(void)
 {
+   const char *xpid;
    PT("xserver end\n");
+   xpid = getenv("ENTRANCE_XPID");
+   if (xpid) 
+     kill(atoi(xpid), SIGTERM);
+
    unsetenv("ENTRANCE_XPID");
 }
 

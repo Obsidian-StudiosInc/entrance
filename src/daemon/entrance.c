@@ -317,7 +317,7 @@ main (int argc, char ** argv)
    entrance_user = getenv("ENTRANCE_USER");
    if (entrance_user)
      {
-        char *quit, *x_pid_char;
+        char *quit;
         entrance_session_init(dname);
         entrance_session_end(entrance_user);
         entrance_session_shutdown();
@@ -328,11 +328,6 @@ main (int argc, char ** argv)
              PT("Last DE Session quit with error!\n");
           }
         PT("ending xserver\n");
-        x_pid_char = getenv("ENTRANCE_XPID");
-        if (x_pid_char) 
-          kill(atoi(x_pid_char), SIGTERM);
-        else
-          PT("No Xserver found, Strange!\n");
         entrance_xserver_end();
         _remove_lock();
         PT("Entrance will quit, bye bye :).\n");

@@ -662,6 +662,7 @@ static Eina_Bool
 _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 {
    Ecore_X_Event_Window_Property *ev;
+   char *name;
 
    ev = event_info;
    if (ev->atom == ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK)
@@ -670,7 +671,9 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
         elm_exit();
      }
 
-   char *name = ecore_x_window_prop_string_get(ecore_x_window_root_get(ev->win), ECORE_X_ATOM_NET_WM_NAME);
+   /* Adding this avoid us to launch entrance_client with a wm anymore ... */
+   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(ev->win),
+                                         ECORE_X_ATOM_NET_WM_NAME);
    if (name)
      {
         PT("screen managed though not compliant\n");
