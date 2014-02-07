@@ -12,8 +12,6 @@ internal_bindir=$(libdir)/entrance
 internal_bin_PROGRAMS = entrance_client
 
 entrance_client_SOURCES = \
-../event/entrance_event.h \
-../event/entrance_event.c \
 entrance_client.h         \
 entrance_client.c         \
 entrance_conf.h           \
@@ -29,5 +27,4 @@ entrance_gui.c
 
 
 entrance_client_LDFLAGS =
-entrance_client_LDADD = @ENTRANCE_CLIENT_LIBS@
-
+entrance_client_LDADD = @ENTRANCE_CLIENT_LIBS@ ../event/libevent.a

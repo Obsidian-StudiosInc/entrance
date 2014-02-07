@@ -32,6 +32,10 @@ src/bin/.deps/
 src/bin/Makefile
 src/bin/Makefile.in
 src/bin/entrance_client
+src/event/.deps/
+src/event/Makefile
+src/event/Makefile.in
+src/event/libevent.a
 src/daemon/.deps/
 src/daemon/Makefile
 src/daemon/Makefile.in

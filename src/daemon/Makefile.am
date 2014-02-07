@@ -30,8 +30,6 @@ entrance_session.h     \
 entrance_session.c     \
 entrance_xserver.h     \
 entrance_xserver.c     \
-../event/entrance_event.c \
-../event/entrance_event.h \
 entrance_server.h     \
 entrance_server.c     \
 entrance_history.h    \
@@ -43,7 +41,7 @@ entrance.c
 
 
 entrance_LDFLAGS =
-entrance_LDADD = @ENTRANCE_LIBS@
+entrance_LDADD = @ENTRANCE_LIBS@ ../event/libevent.a
 
 entrance_wait_SOURCES = \
 entrance_wait.c

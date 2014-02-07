@@ -1,3 +1,3 @@
-SUBDIRS = bin daemon
+SUBDIRS = event bin daemon
 
 MAINTAINERCLEANFILES = Makefile.in
