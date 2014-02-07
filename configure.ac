@@ -87,22 +87,18 @@ AC_MSG_RESULT([${enable_consolekit}])
 # systemd
 AC_ARG_ENABLE([systemd],
    [AC_HELP_STRING([--disable-systemd],
-      [Enable systemd support. @<:@default=enabled@:>@])],
+      [Disable systemd support. @<:@default=enabled@:>@])],
    [
     if test "x${enableval}" = "xyes" ; then
-       want_systemd="yes"
+       enable_systemd="yes"
     else
-       want_systemd="no"
+       enable_systemd="no"
     fi
    ],
-   [want_systemd="yes"])
-if test "x${enableval}" = "xyes" ; then
-   PKG_CHECK_MODULES([SYSTEMD], [systemd >= 192],
-                                [want_systemd="yes"],
-                                [want_systemd="no"])
-fi
- 
-   
+   [enable_systemd="yes"])
+AC_MSG_CHECKING([whether to support systemd init])
+AC_MSG_RESULT([${enable_systemd}])
+
 ### Checks for programs
 AC_PROG_CC
 PKG_PROG_PKG_CONFIG
@@ -159,9 +155,13 @@ if test "x${enable_pam}" = "xyes" ; then
       [have_pam="no"])
 fi
 
-#systemd
-AM_CONDITIONAL([WANT_SYSTEMD], [test "${want_systemd}" = "yes"])
-
+# Systemd
+AM_CONDITIONAL(HAVE_SYSTEMD, [test "x${enable_systemd}" = "xyes"])
+if test "x${enableval}" = "xyes" ; then
+   PKG_CHECK_MODULES([HAVE_SYSTEMD], [systemd >= 192],
+      [enable_systemd="yes"],
+      [enable_systemd="no"])
+fi
 
 ### Checks for header files
 
@@ -221,7 +221,7 @@ echo "  pam..................: ${have_pam}"
 echo "  grub2................: ${enable_grub2}"
 echo "  ekbd.................: ${enable_ekbd}"
 echo "  consolekit...........: ${enable_consolekit}"
-echo "  systemd..............: ${want_systemd}"
+echo "  systemd..............: ${enable_systemd}"
 echo
 echo "  edje_cc..............: ${edje_cc}"
 echo

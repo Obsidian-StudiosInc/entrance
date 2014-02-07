@@ -9,7 +9,7 @@ pam_DATA = entrance
 confdir = $(sysconfdir)
 conf_DATA = entrance.conf
 
-if WANT_SYSTEMD
+if HAVE_SYSTEMD
 systemddir = /usr/lib/systemd/system/
 systemd_DATA = entrance.service
 endif
