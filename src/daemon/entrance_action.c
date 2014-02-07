@@ -166,7 +166,7 @@ _entrance_action_grub2(void *data)
    i = (size_t)data;
 
    snprintf(buf, sizeof(buf),
-            "grub-reboot %lu && %s", i, entrance_config->command.reboot);
+            "grub-reboot %lu && %s", (unsigned long int) i, entrance_config->command.reboot);
    _action_exe = ecore_exe_run(buf, NULL);
 
 }
