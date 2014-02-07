@@ -132,7 +132,6 @@ fi
 if test "x${enable_ekbd}" = "xyes" ; then
    PKG_CHECK_MODULES([ENTRANCE_EKBD], [ekbd], [enable_ekbd="yes"], [enable_ekbd="no"])
 fi
-
 AM_CONDITIONAL(HAVE_EKBD, [test "x${enable_ekbd}" = "xyes"])
 if test "x${enable_ekbd}" = "xyes" ; then
    AC_DEFINE([HAVE_EKBD], [1], [Set to 1 if ekbd is enabled.])
@@ -142,7 +141,6 @@ fi
 if test "x${enable_consolekit}" = "xyes" ; then
    PKG_CHECK_MODULES([ENTRANCE_CK], [dbus-1 ck-connector], [enable_consolekit="yes"], [enable_consolekit="no"])
 fi
-
 AM_CONDITIONAL(HAVE_CONSOLEKIT, [test "x${enable_consolekit}" = "xyes"])
 if test "x${enable_consolekit}" = "xyes" ; then
    AC_DEFINE([HAVE_CONSOLEKIT], [1], [Set to 1 if consolekit is enabled.])
@@ -156,12 +154,12 @@ if test "x${enable_pam}" = "xyes" ; then
 fi
 
 # Systemd
-AM_CONDITIONAL(HAVE_SYSTEMD, [test "x${enable_systemd}" = "xyes"])
-if test "x${enableval}" = "xyes" ; then
-   PKG_CHECK_MODULES([HAVE_SYSTEMD], [systemd >= 192],
+if test "x${enable_systemd}" = "xyes" ; then
+   PKG_CHECK_EXISTS([systemd >= 192],
       [enable_systemd="yes"],
       [enable_systemd="no"])
 fi
+AM_CONDITIONAL(HAVE_SYSTEMD, [test "x${enable_systemd}" = "xyes"])
 
 ### Checks for header files
 
