@@ -101,6 +101,7 @@ AC_MSG_RESULT([${enable_systemd}])
 
 ### Checks for programs
 AC_PROG_CC
+AC_PROG_SED
 PKG_PROG_PKG_CONFIG
 
 # Set edje_cc path
@@ -199,7 +200,6 @@ src/daemon/Makefile
 data/Makefile
 data/themes/Makefile
 data/themes/default/Makefile
-data/entrance.service
 ])
 
 
