@@ -2,7 +2,7 @@ AC_INIT([entrance], [0.0.99], [enlightenment-devel@lists.sourceforge.net])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
-AC_PROG_RANLIB
+
 AM_INIT_AUTOMAKE([1.6 dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -196,7 +196,6 @@ AC_FUNC_ALLOCA
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/event/Makefile
 src/bin/Makefile
 src/daemon/Makefile
 data/Makefile
