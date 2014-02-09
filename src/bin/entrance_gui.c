@@ -583,6 +583,8 @@ _entrance_gui_action_text_get(void *data, Evas_Object *obj EINA_UNUSED, const ch
 {
    Entrance_Action *ea;
    ea = data;
+   if ((part) && (!strcmp(part, "icon")))
+     return NULL;
    return strdup(ea->label);
 }
 
