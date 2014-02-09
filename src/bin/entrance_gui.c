@@ -587,10 +587,10 @@ _entrance_gui_action_text_get(void *data, Evas_Object *obj EINA_UNUSED, const ch
 }
 
 static void
-_entrance_gui_action_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
+_entrance_gui_action_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    Entrance_Action *ea;
-   ea = data;
+   ea = elm_object_item_data_get(event_info);
    if (ea) entrance_connect_action_send(ea->id);
 }
 
