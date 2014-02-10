@@ -16,7 +16,7 @@ static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *ev
 static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
 static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *sig, const char *src);
-
+static void _entrance_gui_check_wm_loaded(Ecore_X_Window *win);
 
 static Entrance_Gui *_gui;
 
@@ -629,6 +629,8 @@ _entrance_gui_auth_cb(void *data EINA_UNUSED, const char *user EINA_UNUSED, Eina
           {
              elm_object_signal_emit(screen->edj,
                                     "entrance,auth,valid", "");
+
+             _entrance_gui_check_wm_loaded(_gui->win);
           }
         else
           {
@@ -664,7 +666,6 @@ static Eina_Bool
 _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
 {
    Ecore_X_Event_Window_Property *ev;
-   char *name;
 
    ev = event_info;
    if (ev->atom == ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK)
@@ -673,16 +674,42 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
         elm_exit();
      }
 
-   /* Adding this avoid us to launch entrance_client with a wm anymore ... */
-   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(ev->win),
-                                         ECORE_X_ATOM_NET_WM_NAME);
-   if (name)
-     {
-        PT("screen managed though not compliant\n");
-        elm_exit();
-     }
+   _entrance_gui_check_wm_loaded(ev->win);
 
    return ECORE_CALLBACK_DONE;
 }
 
+static void _entrance_gui_check_wm_loaded(Ecore_X_Window *win)
+{
+   Ecore_X_Window val;
+   char *name;
+
+   /* In case we missed the event let's first check if a SUPPORTING_WM is registered */
+   ecore_x_window_prop_window_get(ecore_x_window_root_get(win),
+                                         ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK, &val, 1);
+   if (val)
+     {
+        PT("Found a SUPPORTING_WM set\n");
+        // TODO we should check the child window exists
+
+        elm_exit();
+     }
+
+   /* Adding this avoid us to launch entrance_client with a wm anymore ... */
+   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(win),
+                                         ECORE_X_ATOM_NET_WM_NAME);
+   if (name)
+     {
+        PT("screen managed by %s though not compliant\n", name);
+        elm_exit();
+     }
+
+   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(win),
+                                         ECORE_X_ATOM_WM_NAME);
+   if (name)
+     {
+        PT("screen managed by legacy %s\n", name);
+        elm_exit();
+     }
+}
 
