@@ -23,6 +23,7 @@ static void _login_login_activated_cb(void *data, Evas_Object *obj, void *event)
 static char *_login_xsession_text_get(void *data, Evas_Object *obj, const char *part);
 static void _login_auth_cb(void *data, const char *user, Eina_Bool granted);
 static void _entrance_login_session_set(Evas_Object *widget, const char *name);
+static void _entrance_login_auth_check_cb(void *data, Evas_Object *obj, const char *signal, const char *source);
 
 static Entrance_Fill *_login_fill;
 
@@ -354,13 +355,6 @@ _login_xsession_guess(void *data, const char *user)
 }
 
 static void
-_login_loginbutton_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
-{
-   _login_check_auth(data);
-}
-
-
-static void
 _login_xsession_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
 {
    LOGIN_GET(data);
@@ -428,7 +422,11 @@ _entrance_login_session_set(Evas_Object *widget, const char *name)
    _login_xsession_update(widget);
 }
 
-
+static void
+_entrance_login_auth_check_cb(void *data, Evas_Object *obj EINA_UNUSED, const char *signal EINA_UNUSED, const char *source EINA_UNUSED)
+{
+   _login_check_auth(data);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -451,7 +449,7 @@ entrance_login_shutdown(void)
 Evas_Object *
 entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 {
-   Evas_Object *o, *h, *p, *b;
+   Evas_Object *o, *h, *p;
    Entrance_Gui_Login *login;
 
    /* layout */
@@ -477,12 +475,6 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    elm_object_part_content_set(o, "entrance.password", p);
    evas_object_show(p);
 
-   /* login button */
-   b = elm_button_add(o);
-   elm_object_part_content_set(o, "entrance.loginbtn", b);
-   elm_object_text_set(b, "Login");
-   evas_object_show(b);
-
    /* callbacks */
    elm_object_event_callback_add(o, _login_input_event_cb, o);
    evas_object_smart_callback_add(h, "activated",
@@ -493,8 +485,8 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
                                   _login_password_focused_cb, o);
    evas_object_smart_callback_add(p, "unfocused",
                                   _login_password_unfocused_cb, o);
-   evas_object_smart_callback_add(b, "clicked",
-                                  _login_loginbutton_cb, o);
+   elm_object_signal_callback_add(o, "entrance,auth,check", "",
+                                  _entrance_login_auth_check_cb, o);
    h = elm_hoversel_add(o);
    elm_hoversel_hover_parent_set(h, obj);
    evas_object_data_set(o, "entrance", login);
