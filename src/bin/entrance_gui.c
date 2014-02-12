@@ -276,9 +276,12 @@ entrance_gui_users_set(Eina_List *users)
    Entrance_Screen *screen;
    Eina_List *l;
    Entrance_Fill *ef;
+   char *style = "double_label";
 
-   PT("Add users list\n");
-   ef = entrance_fill_new("default",
+   screen = eina_list_data_get(_gui->screens);
+   style = edje_object_data_get(elm_layout_edje_get(screen->edj), "item_style"); 
+   PT("Add users list, using item style: %s\n", style);
+   ef = entrance_fill_new(style,
                           _entrance_gui_user_text_get,
                           _entrance_gui_user_content_get,
                           _entrance_gui_user_state_get,
@@ -515,11 +518,17 @@ _entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_
 
 
 static char *
-_entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
+_entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part)
 {
    Entrance_Login *eu;
    eu = data;
-   return strdup(eu->login);
+   if ((part) && (!strcmp(part, "elm.text.sub")))
+     if (eu->lsess)
+       return strdup(eu->lsess);
+     else
+       return NULL;
+   else
+     return strdup(eu->login);
 }
 
 static Evas_Object *
