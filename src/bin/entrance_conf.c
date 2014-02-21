@@ -23,8 +23,6 @@ typedef struct Entrance_Int_Conf_
 
    struct
      {
-        Evas_Object *user, *pw;
-        void *auth_cb;
         Entrance_Login *orig;
         struct
           {
@@ -509,7 +507,7 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
 
    if (granted)
      {
-        t = data;
+        t = elm_object_part_content_get(data, "entrance.conf");
         users = entrance_gui_users_get();
         EINA_LIST_FOREACH(users, l, eu)
           {
@@ -543,75 +541,25 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
      }
 }
 
-static void
-_entrance_conf_user_auth_cb(void *data, const char *user, Eina_Bool granted)
-{
-   entrance_connect_auth_cb_del(_entrance_int_conf->user.auth_cb);
-   _entrance_int_conf->user.auth_cb = NULL;
-   _entrance_conf_user_auth(data, user, granted);
-}
-
-static void
-_entrance_conf_user_auth_btn_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
-{
-   const char *user = elm_object_text_get(_entrance_int_conf->user.user);
-   const char *pw = elm_object_text_get(_entrance_int_conf->user.pw);
-   _entrance_int_conf->user.auth_cb = entrance_connect_auth_cb_add(_entrance_conf_user_auth_cb, data);
-   entrance_connect_auth_send(elm_entry_markup_to_utf8(user),
-                              pw, NULL, EINA_FALSE);
-}
 
 static Evas_Object *
 _entrance_conf_user_build(Evas_Object *obj)
 {
-   Evas_Object *o, *t, *bx, *bx2;
+   Evas_Object *t, *o, *ly;
+
+   ly = entrance_gui_theme_get(obj, "entrance/conf/login");
+   evas_object_size_hint_align_set(ly, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(ly);
+
+   o = entrance_login_add(ly, _entrance_conf_user_auth, ly);
+   elm_object_part_content_set(ly, "entrance.login", o);
+   evas_object_show(o);
    t = elm_table_add(obj);
+   elm_object_part_content_set(ly, "entrance.conf", t);
    evas_object_size_hint_weight_set(t, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    elm_table_padding_set(t, 5 , 5);
 
-   o = bx2 = elm_box_add(obj);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_horizontal_set(o, EINA_FALSE);
-   evas_object_show(o);
-
-   o = bx = elm_box_add(obj);
-   evas_object_size_hint_weight_set(o, 0, 0);
-   evas_object_size_hint_align_set(o, 0.5, 0.5);
-   elm_box_pack_end(bx2, bx);
-   evas_object_show(o);
-
-   _entrance_int_conf->user.user = o = elm_entry_add(obj); 
-   elm_entry_single_line_set(o, EINA_TRUE);
-   elm_entry_scrollable_set(o, EINA_TRUE);
-   elm_scroller_policy_set(o, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(bx, o);
-   evas_object_show(o); 
-
-   _entrance_int_conf->user.pw = o = elm_entry_add(obj);
-   elm_entry_single_line_set(o, EINA_TRUE);
-   elm_entry_scrollable_set(o, EINA_TRUE);
-   elm_scroller_policy_set(o, ELM_SCROLLER_POLICY_OFF, ELM_SCROLLER_POLICY_OFF);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_entry_password_set(o, EINA_TRUE);
-   elm_box_pack_end(bx, o);
-   evas_object_show(o); 
- 
-   o = elm_button_add(obj); 
-   elm_object_text_set(o, "Login");
-   evas_object_size_hint_min_set(o, 200, 26);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(bx, o);
-   evas_object_smart_callback_add(o, "clicked", _entrance_conf_user_auth_btn_cb, t);
-   evas_object_show(o);
-
-   elm_table_pack(t, bx2, 2, 2, 1, 1);
-
-   return t;
+   return ly;
 }
 
 static void
@@ -620,8 +568,6 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    Evas_Object *o, *gl, *bx, *hbx;
    Eina_List *l;
    int j = 0;
-   
-   elm_table_clear(t, EINA_TRUE);
 
    /* Background */
    o = elm_label_add(t);
@@ -631,41 +577,34 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_table_pack(t, o, 0, j, 1, 1);
    evas_object_show(o);
    ++j;
-
    hbx = elm_box_add(t);
    elm_box_horizontal_set(hbx, EINA_TRUE);
    elm_table_pack(t, hbx, 0, j, 2, 1);
    ++j;
-
    evas_object_size_hint_weight_set(hbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(hbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-
    gl = elm_genlist_add(hbx);
    elm_scroller_bounce_set(gl, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_box_pack_end(hbx, gl);
    evas_object_show(gl);
-
    bx = elm_box_add(hbx);
    elm_box_pack_end(hbx, bx);
    evas_object_show(bx);
-
    o = elm_layout_add(hbx);
    _entrance_int_conf->user.bg.preview = o;
    elm_box_pack_end(bx, o);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    evas_object_show(o);
-
    o = evas_object_rectangle_add(hbx);
    evas_object_color_set(o, 0, 0, 0, 0);
    evas_object_size_hint_min_set(o, 256, 0);
    elm_box_pack_end(bx, o);
    evas_object_show(o);
    evas_object_show(hbx);
-
-   l = _entrance_conf_backgrounds_get(gl, eu->login);
+   l = _entrance_conf_backgrounds_get(o, eu->login);
    entrance_fill(gl, _entrance_background_fill,
                  l, _entrance_conf_user_bg_fill_cb,
                  _entrance_conf_user_bg_sel, o);
@@ -680,7 +619,6 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(t, o, 0, j, 1, 1);
    evas_object_show(o);
-
    o = elm_hoversel_add(t);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_text_set(o, "Session");
@@ -695,7 +633,6 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(t, o, 0, j, 1, 1);
    evas_object_show(o);
-
    o = elm_actionslider_add(t);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_text_set(o, "left", "Enabled");
@@ -788,8 +725,6 @@ _entrance_conf_shutdown(void)
    PT("conf shutdown\n");
    entrance_fill_del(_entrance_background_fill);
    entrance_fill_del(_entrance_session_fill);
-   if (_entrance_int_conf->user.auth_cb)
-     entrance_connect_auth_cb_del(_entrance_int_conf->user.auth_cb);
    free(_entrance_int_conf);
 }
 
