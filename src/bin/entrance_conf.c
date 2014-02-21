@@ -541,7 +541,6 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
      }
 }
 
-
 static Evas_Object *
 _entrance_conf_user_build(Evas_Object *obj)
 {
@@ -554,6 +553,7 @@ _entrance_conf_user_build(Evas_Object *obj)
    o = entrance_login_add(ly, _entrance_conf_user_auth, ly);
    elm_object_part_content_set(ly, "entrance.login", o);
    evas_object_show(o);
+
    t = elm_table_add(obj);
    elm_object_part_content_set(ly, "entrance.conf", t);
    evas_object_size_hint_weight_set(t, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
