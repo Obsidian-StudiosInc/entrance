@@ -507,8 +507,6 @@ entrance_login_xsessions_populate(Evas_Object *widget, Eina_List *xsessions)
                  _login_xsession_clicked_cb, widget);
    login->session = eina_list_data_get(xsessions);
    _login_xsession_update(widget);
-   edje_object_signal_emit(widget,
-                           "entrance,xsession,enabled", "");
 }
 
 void
@@ -522,7 +520,7 @@ entrance_login_login_set(Evas_Object *widget, const char *user)
    o = elm_object_part_content_get(widget, "entrance.password");
    elm_object_focus_set(o, EINA_TRUE);
 
-   _login_xsession_guess(widget, user);
+  _login_xsession_guess(widget, user);
 }
 
 void
@@ -531,14 +529,19 @@ entrance_login_open_session_set(Evas_Object *widget, Eina_Bool open_session)
    Evas_Object *o;
    LOGIN_GET(widget);
    open_session = !!open_session;
-   if (login->open_session != open_session)
+   login->open_session = open_session;
+   o = elm_object_part_content_get(widget, "entrance.xsessions");
+   if (login->open_session)
      {
-        login->open_session = open_session;
-        o = elm_object_part_content_get(widget, "entrance.xsessions");
-        if (login->open_session)
-          evas_object_show(o);
-        else
-          evas_object_hide(o);
+        elm_object_signal_emit(widget,
+                               "entrance,xsession,enabled", "");
+        evas_object_show(o);
+     }
+   else
+     {
+        elm_object_signal_emit(widget,
+                               "entrance,xsession,disabled", "");
+        evas_object_hide(o);
      }
 }
 

@@ -552,6 +552,7 @@ _entrance_conf_user_build(Evas_Object *obj)
    evas_object_show(ly);
 
    o = entrance_login_add(ly, _entrance_conf_user_auth, ly);
+   entrance_login_open_session_set(o, EINA_FALSE);
    elm_object_part_content_set(ly, "entrance.login", o);
    evas_object_show(o);
    t = elm_table_add(obj);
