@@ -208,7 +208,7 @@ entrance_gui_shutdown(void)
        eina_stringshare_del(img->group);
        free(img);
      }
-   EINA_LIST_FREE(_gui->theme_icon_pool, img)
+   EINA_LIST_FREE(_gui->theme_background_pool, img)
      {
        eina_stringshare_del(img->path);
        eina_stringshare_del(img->group);
@@ -626,7 +626,6 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
 {
    unsigned int rnd = 0;
    Evas_Object *o = NULL;
-   char buf[PATH_MAX], *path;
    Entrance_Image *img;
    const Entrance_Login *el;
    Eina_List *user_icons, *sys_icons, *theme_icons;
@@ -636,6 +635,7 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    sys_icons = entrance_gui_icon_pool_get();
    theme_icons = entrance_gui_theme_icons();
 
+   srand(time(NULL));
    rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
          * (double)rand()) / (RAND_MAX + 1.0));
    if (rnd < eina_list_count(user_icons))
