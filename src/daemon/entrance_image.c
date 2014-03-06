@@ -1,4 +1,4 @@
-#include "entrance_image.h"
+#include "entrance.h"
 
 const char *extn_images[] = {".png",".jpg",NULL};
 
