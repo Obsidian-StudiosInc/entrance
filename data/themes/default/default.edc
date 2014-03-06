@@ -133,6 +133,9 @@ collections {
    group {
       name : "entrance";
 
+      data.item: "item_style_users"  "default";
+      data.item: "item_style_actions" "default";
+
       images {
       }
 

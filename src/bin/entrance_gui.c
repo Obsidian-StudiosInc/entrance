@@ -391,10 +391,15 @@ entrance_gui_users_set(Eina_List *users)
    Entrance_Screen *screen;
    Eina_List *l;
    Entrance_Fill *ef;
-   char *style = "double_label";
+   const char *style;
 
    screen = eina_list_data_get(_gui->screens);
-   style = edje_object_data_get(elm_layout_edje_get(screen->edj), "item_style"); 
+
+   style = edje_object_data_get(elm_layout_edje_get(screen->edj), "item_style_users");
+
+   if (!style)
+     style = "default"; //theme has not settet a style
+
    PT("Add users list, using item style: %s\n", style);
    ef = entrance_fill_new(style,
                           _entrance_gui_user_text_get,
@@ -755,11 +760,19 @@ _entrance_gui_actions_populate()
    Evas_Object *o;
    Eina_List *l;
    Entrance_Screen *screen;
+   const char *style;
+
+   screen = eina_list_data_get(_gui->screens);
+
+   style = edje_object_data_get(elm_layout_edje_get(screen->edj), "item_style_actions");
+
+   if (!style)
+     style = "default"; //theme has not settet a style
 
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         Entrance_Fill *ef;
-        ef = entrance_fill_new(NULL, _entrance_gui_action_text_get,
+        ef = entrance_fill_new(style, _entrance_gui_action_text_get,
                                NULL, NULL, NULL);
         o = ENTRANCE_GUI_GET(screen->edj, "entrance.actions");
         entrance_fill(o, ef, _gui->actions, NULL,
