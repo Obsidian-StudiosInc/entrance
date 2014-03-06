@@ -17,6 +17,8 @@ static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
 static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *sig, const char *src);
 static void _entrance_gui_check_wm_loaded(Ecore_X_Window *win);
+static Eina_List* _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename);
+static Eina_List* _entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename);
 
 static Entrance_Gui *_gui;
 
@@ -36,6 +38,10 @@ struct Entrance_Gui_
    Eina_List *users;
    Eina_List *actions;
    Eina_List *handlers;
+   Eina_List *background_pool;
+   Eina_List *icon_pool;
+   Eina_List *theme_background_pool;
+   Eina_List *theme_icon_pool;
    Entrance_Xsession *selected_session;
    const char *theme;
    struct
@@ -132,6 +138,10 @@ entrance_gui_init(const char *theme)
          if ((x + w) > ww) ww = x + w;
          if ((y + h) > hh) hh = y + h;
      }
+   _gui->theme_icon_pool =
+      _entrance_gui_theme_icons_cache_fill(_gui->win, _gui->theme);
+   _gui->theme_background_pool =
+      _entrance_gui_theme_background_cache_fill(_gui->win, _gui->theme);
    _entrance_gui_update();
    _gui->handlers =
       eina_list_append(_gui->handlers,
@@ -164,6 +174,7 @@ entrance_gui_shutdown(void)
    Entrance_Screen *screen;
    Entrance_Xsession *xsession;
    Ecore_Event_Handler *h;
+   Entrance_Image *img;
    PT("Gui shutdown\n");
    evas_object_del(_gui->win);
    EINA_LIST_FREE(_gui->screens, screen)
@@ -179,7 +190,111 @@ entrance_gui_shutdown(void)
      }
    EINA_LIST_FREE(_gui->handlers, h)
       ecore_event_handler_del(h);
+   EINA_LIST_FREE(_gui->background_pool, img)
+     {
+       eina_stringshare_del(img->path);
+       eina_stringshare_del(img->group);
+       free(img);
+     }
+   EINA_LIST_FREE(_gui->icon_pool, img)
+     {
+       eina_stringshare_del(img->path);
+       eina_stringshare_del(img->group);
+       free(img);
+     }
+   EINA_LIST_FREE(_gui->theme_icon_pool, img)
+     {
+       eina_stringshare_del(img->path);
+       eina_stringshare_del(img->group);
+       free(img);
+     }
+   EINA_LIST_FREE(_gui->theme_icon_pool, img)
+     {
+       eina_stringshare_del(img->path);
+       eina_stringshare_del(img->group);
+       free(img);
+     }
+
    if (_gui) free(_gui);
+}
+
+static Eina_List*
+_entrance_gui_string_to_entrance_image(Eina_List *src, char *stdfile, char *mask)
+{
+   //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
+   Eina_List *result = NULL;
+   char *src_str, path[PATH_MAX];
+   Entrance_Image *img;
+   EINA_LIST_FREE(src, src_str)
+     {
+        img = calloc(1, sizeof(Entrance_Image));
+        if (stdfile)
+          {
+            if (mask)
+              {
+                 snprintf(path, PATH_MAX, mask, src_str);
+                 img->group = eina_stringshare_add(path);
+                 eina_stringshare_del(src_str);
+              }
+            else
+              img->group = src_str;
+            img->path = eina_stringshare_add(stdfile);
+          }
+        else
+          img->path = src_str;
+        result = eina_list_append(result,img);
+     }
+   return result;
+}
+
+Eina_List*
+entrance_gui_theme_icons(void)
+{
+  return _gui->theme_icon_pool;
+}
+
+Eina_List*
+entrance_gui_theme_backgrounds(void)
+{
+  return _gui->theme_background_pool;
+}
+static Eina_List*
+_entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename)
+{
+   Evas_Object *edje, *o;
+   char buf[PATH_MAX];
+   Eina_List *icons = NULL;
+
+   edje = elm_layout_add(obj);
+   snprintf(buf, sizeof(buf),
+            PACKAGE_DATA_DIR"/themes/%s.edj", themename);
+   if (!elm_layout_file_set(edje, buf, "entrance/user"))
+     return NULL; //Can we get to this point ??
+   o = elm_layout_edje_get(edje);
+   if (!o) return NULL;
+   icons = entrance_gui_stringlist_get(edje_object_data_get(o, "items"));
+   evas_object_del(edje);
+   return _entrance_gui_string_to_entrance_image(icons, buf, "entrance/user/%s");
+}
+
+static Eina_List*
+_entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename)
+{
+   Evas_Object *edje, *o;
+   char buf[PATH_MAX];
+   Eina_List *icons = NULL;
+
+   edje = elm_layout_add(obj);
+   snprintf(buf, sizeof(buf),
+            PACKAGE_DATA_DIR"/themes/%s.edj", themename);
+   if (!elm_layout_file_set(edje, buf, "entrance/background"))
+     return NULL;
+   o = elm_layout_edje_get(edje);
+   if (!o) return NULL;
+   icons = entrance_gui_stringlist_get(edje_object_data_get(o, "items"));
+   if (!icons) return NULL;
+   evas_object_del(edje);
+   return _entrance_gui_string_to_entrance_image(icons, buf, "entrance/background/%s");
 }
 
 Evas_Object *
@@ -304,6 +419,21 @@ entrance_gui_users_get(void)
    return _gui->users;
 }
 
+const Entrance_Login*
+entrance_gui_user_get(const char* name)
+{
+   Entrance_Login *el;
+   Eina_List *l;
+   EINA_LIST_FOREACH(_gui->users, l, el)
+     {
+       if(!strcmp(name, el->login))
+         {
+            return el;
+         }
+     }
+   return NULL;
+}
+
 void
 entrance_gui_xsessions_set(Eina_List *xsessions)
 {
@@ -326,6 +456,8 @@ entrance_gui_xsessions_get(void)
 void
 entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
 {
+   _gui->background_pool = conf->background_pool;
+   _gui->icon_pool = conf->icon_pool;
    if ((conf->bg.path) && (*conf->bg.path)
        && (_gui->bg.path != conf->bg.path))
      {
@@ -359,6 +491,18 @@ const char *
 entrance_gui_theme_name_get(void)
 {
    return _gui->theme;
+}
+
+Eina_List*
+entrance_gui_background_pool_get(void)
+{
+  return _gui->background_pool;
+}
+
+Eina_List*
+entrance_gui_icon_pool_get(void)
+{
+  return _gui->icon_pool;
 }
 
 const char *
@@ -477,35 +621,46 @@ _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *ev
 ///////////////////////////////////////////////////
 
 
-static Evas_Object *
-_entrance_gui_user_icon_random_get(Evas_Object *obj)
+static Evas_Object*
+_entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
 {
-   Evas_Object *ic, *o, *r;
-   Eina_List *icons;
-   unsigned char i;
-   const char *icon;
-   char buf[PATH_MAX];
+   unsigned int rnd = 0;
+   Evas_Object *o = NULL;
+   char buf[PATH_MAX], *path;
+   Entrance_Image *img;
+   const Entrance_Login *el;
+   Eina_List *user_icons, *sys_icons, *theme_icons;
 
-   ic = entrance_gui_theme_get(obj, "entrance/user");
-   if (!ic) return NULL;
-   o = elm_layout_edje_get(ic);
-   if (!o) return NULL;
-   icons = entrance_gui_stringlist_get(edje_object_data_get(o, "items"));
-   if (icons)
+   el = entrance_gui_user_get(username);
+   user_icons = el->icon_pool;
+   sys_icons = entrance_gui_icon_pool_get();
+   theme_icons = entrance_gui_theme_icons();
+
+   rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
+         * (double)rand()) / (RAND_MAX + 1.0));
+   if (rnd < eina_list_count(user_icons))
      {
-        srand(time(NULL));
-        i = (unsigned char) ((eina_list_count(icons) * (double)rand())
-                             / (RAND_MAX + 1.0));
-        icon = eina_list_nth(icons, i);
-        snprintf(buf, sizeof(buf),
-                 "entrance/user/%s", icon);
-        entrance_gui_stringlist_free(icons);
-        r = entrance_gui_theme_get(obj, buf);
-        elm_object_part_content_set(ic, "entrance.icon", r);
-        evas_object_show(r);
-     }
+        o = elm_icon_add(obj);
+        img = eina_list_nth(user_icons, rnd);
+        elm_image_file_set(o, img->path, NULL);
 
-   return ic;
+     }
+   else if((rnd >= eina_list_count(user_icons)) && (rnd < (eina_list_count(user_icons)
+            +eina_list_count(sys_icons))))
+     {
+        o = elm_icon_add(obj);
+        img = eina_list_nth(sys_icons, (rnd - eina_list_count(user_icons)));
+        elm_image_file_set(o, img->path, NULL);
+     }
+   else
+     {
+        img = eina_list_nth(theme_icons, (rnd - (eina_list_count(user_icons)
+                                        + eina_list_count(sys_icons)))); 
+        o = elm_icon_add(obj);
+        elm_image_file_set(o, img->path, img->group);
+
+     }
+   return o;
 }
 
 static void
@@ -534,40 +689,29 @@ _entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char
 static Evas_Object *
 _entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const char *part)
 {
-   Evas_Object *ic = NULL;
+   Evas_Object *ic = NULL, *o;
    Entrance_Login *eu;
    eu = data;
-
    if (eu && !strcmp(part, "elm.swallow.icon"))
      {
-        if ((eu->image.path) && (*eu->image.path == '/') && (!eu->image.group))
+        ic = entrance_gui_theme_get(obj, "entrance/user");
+        if ((!eu->image.path) && (!eu->image.group))
           {
-             ic = elm_icon_add(obj);
-             elm_image_file_set(ic, eu->image.path, "entrance/user/icon");
-             eu->image.group = eina_stringshare_add("entrance/user/icon");
-
+             o = _entrance_gui_user_icon_random_get(obj, eu->login);
+          }
+        else if(eu->image.path && (!eu->image.group))
+          {
+             o = elm_icon_add(obj);
+             elm_image_file_set(o, eu->image.path, NULL);
           }
         else
           {
-             if (eu->image.group)
-               {
-                  ic = elm_icon_add(obj);
-                  elm_image_file_set(ic, eu->image.path, eu->image.group);
-               }
-             else
-               {
-                  const char *path, *group;
-                  ic = _entrance_gui_user_icon_random_get(obj);
-                  edje_object_file_get(
-                     elm_layout_edje_get(
-                        elm_object_part_content_get(ic, "entrance.icon")),
-                     &path, &group);
-                  eu->image.path = eina_stringshare_add(path);
-                  eu->image.group = eina_stringshare_add(group);
-               }
+             o = entrance_gui_theme_get(obj, eu->image.group);
           }
-        evas_object_size_hint_weight_set(ic, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-        evas_object_show(ic);
+        //TODO if this fails we maybe should wipe those fields in the config and use a random one
+        evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+        evas_object_show(o);
+        elm_object_part_content_set(ic ,"entrance.icon", o);
      }
    return ic;
 }

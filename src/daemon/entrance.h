@@ -23,6 +23,7 @@
 #include "entrance_server.h"
 #include "entrance_history.h"
 #include "entrance_action.h"
+#include "entrance_image.h"
 
 #define PT(f, x...)                                                     \
 do                                                                   \

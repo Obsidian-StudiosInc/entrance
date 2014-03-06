@@ -21,7 +21,8 @@ static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
 static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
 static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
 static Eet_Data_Descriptor *_entrance_event_users_dd(void);
-static Eet_Data_Descriptor *_entrance_event_conf_user_dd(void);
+static Eet_Data_Descriptor *_entrance_event_image_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_user_dd(Eina_Bool stream);
 static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
 static Eet_Data_Descriptor *_entrance_event_action_dd(void);
 static Eet_Data_Descriptor *_entrance_event_new(void);
@@ -154,11 +155,12 @@ _entrance_event_maxtries_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_conf_gui_dd(void)
 {
-   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *edd, *eddi;
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc,
                                              Entrance_Conf_Gui_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
+   eddi = _entrance_event_image_dd();
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "enabled",
                                  enabled, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "bg.path",
@@ -167,6 +169,10 @@ _entrance_event_conf_gui_dd(void)
                                  bg.group, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "vkbd_enabled",
                                  vkbd_enabled, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Conf_Gui_Event, "icon_pool",
+                                icon_pool, eddi);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Conf_Gui_Event, "background_pool",
+                                background_pool, eddi);
    return edd;
 }
 
@@ -186,12 +192,27 @@ _entrance_event_status_dd(void)
 }
 
 static Eet_Data_Descriptor *
+_entrance_event_image_dd(void)
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Image);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Image, "path",
+                                 path, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Image, "group",
+                                 group, EET_T_INT);
+   return edd;
+
+}
+
+static Eet_Data_Descriptor *
 _entrance_event_users_dd(void)
 {
    Eet_Data_Descriptor *edd, *eddl;
    Eet_Data_Descriptor_Class eddc, eddcl;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
-   edd = _entrance_event_conf_user_dd();
+   edd = _entrance_event_conf_user_dd(EINA_TRUE);
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Users_Event);
    eddl = eet_data_descriptor_stream_new(&eddcl);
    EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Entrance_Users_Event, "users",
@@ -200,10 +221,11 @@ _entrance_event_users_dd(void)
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_conf_user_dd(void)
+_entrance_event_conf_user_dd(Eina_Bool stream)
 {
-   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *edd, *eddi;
    Eet_Data_Descriptor_Class eddc;
+   eddi = _entrance_event_image_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = eet_data_descriptor_stream_new(&eddc);
 #define EET_LOGIN_ADD(NAME, TYPE) \
@@ -217,6 +239,13 @@ _entrance_event_conf_user_dd(void)
    EET_LOGIN_ADD(remember_session, EET_T_INT);
    // TODO screenshot
 
+   if (stream)
+     {
+        EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Login, "icon_pool",
+                                     icon_pool, eddi);
+        EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Login, "background_pool",
+                                     background_pool, eddi);
+     }
 #undef EET_LOGIN_ADD
    return edd;
 }
@@ -277,7 +306,7 @@ _entrance_event_new(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_USERS_NAME,
                                    _entrance_event_users_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_USER_NAME,
-                                   _entrance_event_conf_user_dd());
+                                   _entrance_event_conf_user_dd(EINA_TRUE));
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTIONS_NAME,
                                    _entrance_event_actions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTION_NAME,
@@ -335,5 +364,6 @@ entrance_event_received(const void *data, size_t size)
 Eet_Data_Descriptor *
 entrance_event_user_dd(void)
 {
-   return _entrance_event_conf_user_dd();
+  //this is used extern for the history!
+   return _entrance_event_conf_user_dd(EINA_FALSE);
 }

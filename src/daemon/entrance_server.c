@@ -14,6 +14,7 @@ static Eina_Bool
 _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    Entrance_Event eev;
+   char *buf;
 
    PT("server client connected\n");
    PT("Sending users\n");
@@ -39,7 +40,17 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
         eev.event.conf_gui.enabled = EINA_TRUE;
         eev.event.conf_gui.bg.path = entrance_config->bg.path;
         eev.event.conf_gui.bg.group = entrance_config->bg.group;
+        eev.event.conf_gui.background_pool = entrance_image_system_backgrounds();
+        eev.event.conf_gui.icon_pool = entrance_image_system_icons();
         entrance_event_send(&eev);
+        EINA_LIST_FREE(eev.event.conf_gui.background_pool, buf)
+          {
+            eina_stringshare_del(buf);
+          }
+        EINA_LIST_FREE(eev.event.conf_gui.icon_pool, buf)
+          {
+            eina_stringshare_del(buf);
+          }
      }
    return ECORE_CALLBACK_RENEW;
 }

@@ -5,6 +5,8 @@
 
 int entrance_gui_init(const char *theme);
 void entrance_gui_shutdown(void);
+Eina_List* entrance_gui_theme_icons(void);
+Eina_List* entrance_gui_theme_backgrounds(void);
 void entrance_gui_run(void);
 Evas_Object *entrance_gui_theme_get (Evas_Object *win, const char *group);
 void entrance_gui_auth_valid(void);
@@ -14,6 +16,7 @@ void entrance_gui_xsession_set(Eina_List *xsessions);
 void entrance_gui_actions_set(Eina_List *actions);
 void entrance_gui_users_set(Eina_List *users);
 const Eina_List *entrance_gui_users_get(void);
+const Entrance_Login* entrance_gui_user_get(const char* name);
 void entrance_gui_xsessions_set(Eina_List *users);
 const Eina_List *entrance_gui_xsessions_get(void);
 void entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf);
@@ -25,7 +28,8 @@ void entrance_gui_background_get(const char **path, const char **group);
 Eina_Bool entrance_gui_vkbd_enabled_get(void);
 const char *entrance_gui_theme_path_get(void);
 void entrance_gui_user_bg_set(const char *path, const char *group);
-
+Eina_List* entrance_gui_background_pool_get(void);
+Eina_List* entrance_gui_icon_pool_get(void);
 /*
 char *entrance_gui_user_get();
 char *entrance_gui_password_get();

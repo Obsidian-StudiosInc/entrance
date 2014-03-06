@@ -77,22 +77,26 @@ typedef struct Entrance_Conf_Gui_Event_
         const char *path;
      } bg;
    Eina_Bool vkbd_enabled;
+   Eina_List *background_pool;
+   Eina_List *icon_pool;
 } Entrance_Conf_Gui_Event;
 
 
-typedef struct Entrance_Background_
+typedef struct Entrance_Image_
 {
    const char *group;
    const char *path;
-} Entrance_Background;
+} Entrance_Image;
 
 typedef struct Entrance_Login_
 {
    const char *login;
    const char *lsess;
-   Entrance_Background bg;
-   Entrance_Background image;
+   Entrance_Image bg;
+   Entrance_Image image;
    Eina_Bool remember_session;
+   Eina_List *icon_pool;
+   Eina_List *background_pool;
 } Entrance_Login;
 
 typedef struct Entrance_Event_
