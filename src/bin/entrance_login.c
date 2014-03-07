@@ -29,6 +29,7 @@ static Entrance_Fill *_login_fill;
 
 struct Entrance_Gui_Login_
 {
+   Ecore_Timer *write_timer;
    Ecore_Event_Handler *handler;
    char passwd[ENTRANCE_PASSWD_LEN];
    Entrance_Xsession *session;
@@ -264,6 +265,12 @@ _login_login_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event 
    const char *hostname;
    LOGIN_GET(data);
 
+   if (login->write_timer)
+     {
+        ecore_timer_del(login->write_timer);
+        login->write_timer = NULL;
+     }
+
    o = elm_object_part_content_get(data, "entrance.login");
    hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
 
@@ -282,12 +289,41 @@ _login_password_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *eve
    _login_password_catch(data, EINA_FALSE);
 }
 
+static Eina_Bool
+_login_login_timer_cb(void *data)
+{
+   Evas_Object *o;
+   const char *hostname;
+   Entrance_Gui_Login *login;
+
+   login = evas_object_data_get(data, "entrance");
+   if (!login) return ECORE_CALLBACK_CANCEL;
+
+   o = elm_object_part_content_get(data, "entrance.login");
+
+   hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
+   _login_xsession_guess(data, hostname);
+
+   login->write_timer = NULL;
+   return ECORE_CALLBACK_CANCEL;
+}
+
 static void
 _login_login_activated_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
    elm_object_focus_set(data, EINA_TRUE);
    edje_object_signal_emit(data,
                            "entrance,auth,enable", "");
+}
+
+static void
+_login_login_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
+{
+   LOGIN_GET(data);
+
+   if (login->write_timer)
+     ecore_timer_del(login->write_timer);
+   login->write_timer = ecore_timer_add(0.5, _login_login_timer_cb, data);
 }
 
 static char *
@@ -481,6 +517,8 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
                                   _login_login_activated_cb, p);
    evas_object_smart_callback_add(h, "unfocused",
                                   _login_login_unfocused_cb, o);
+   evas_object_smart_callback_add(h, "changed,user",
+                                  _login_login_changed_cb, o);
    evas_object_smart_callback_add(p, "focused",
                                   _login_password_focused_cb, o);
    evas_object_smart_callback_add(p, "unfocused",
