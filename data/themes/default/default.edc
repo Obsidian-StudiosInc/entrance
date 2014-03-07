@@ -443,7 +443,7 @@ collections {
          }
          program {
             name: "login";
-            signal: "entrance.auth.valid";
+            signal: "entrance,auth,valid";
             source: "";
             action: STATE_SET "default" 0.0;
             transition: LINEAR 0.7;
