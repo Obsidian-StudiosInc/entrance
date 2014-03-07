@@ -138,7 +138,7 @@ entrance_pam_close_session(const Eina_Bool opened)
      {
       default:
          //case PAM_SESSION_ERROR:
-         PT("error on close session");
+         PT("error on close session\n");
          pam_setcred(_pam_handle, PAM_DELETE_CRED);
          entrance_pam_end();
       case PAM_SUCCESS:
@@ -262,7 +262,7 @@ entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value)
       return 0;
    }
 
-   PT("PAM error: %d on %d", last_result, type);
+   PT("PAM error: %d on %d\n", last_result, type);
    return 1;
 }
 
