@@ -133,6 +133,7 @@ entrance_xserver_end(void)
      kill(atoi(xpid), SIGTERM);
 
    unsetenv("ENTRANCE_XPID");
+   while (waitpid(-1, NULL, WNOHANG) > 0);
 }
 
 void
