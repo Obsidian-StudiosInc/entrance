@@ -16,7 +16,6 @@ static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *ev
 static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
 static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *sig, const char *src);
-static void _entrance_gui_check_wm_loaded(Ecore_X_Window *win);
 static Eina_List* _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename);
 static Eina_List* _entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename);
 
@@ -37,12 +36,12 @@ struct Entrance_Gui_
    Eina_List *xsessions;
    Eina_List *users;
    Eina_List *actions;
-   Eina_List *handlers;
    Eina_List *background_pool;
    Eina_List *icon_pool;
    Eina_List *theme_background_pool;
    Eina_List *theme_icon_pool;
    Entrance_Xsession *selected_session;
+   Ecore_Event_Handler *handler;
    const char *theme;
    struct
      {
@@ -52,6 +51,7 @@ struct Entrance_Gui_
    unsigned char changed;
    Eina_Bool conf_enabled : 1;
    Eina_Bool vkbd_enabled : 1;
+
 };
 
 struct Entrance_Screen_
@@ -143,14 +143,13 @@ entrance_gui_init(const char *theme)
    _gui->theme_background_pool =
       _entrance_gui_theme_background_cache_fill(_gui->win, _gui->theme);
    _entrance_gui_update();
-   _gui->handlers =
-      eina_list_append(_gui->handlers,
-                       ecore_event_handler_add(
-                          ECORE_X_EVENT_WINDOW_PROPERTY,
-                          _entrance_gui_cb_window_property,
-                          NULL));
    xw = elm_win_xwindow_get(_gui->win);
    ecore_x_window_move(xw, 0, 0);
+   ecore_x_event_mask_set(ecore_x_window_root_get(xw),
+                          ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
+   _gui->handler =
+      ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY,
+                              _entrance_gui_cb_window_property, NULL);
    evas_object_resize(_gui->win, ww, hh);
    evas_object_show(_gui->win);
      {
@@ -173,7 +172,6 @@ entrance_gui_shutdown(void)
 {
    Entrance_Screen *screen;
    Entrance_Xsession *xsession;
-   Ecore_Event_Handler *h;
    Entrance_Image *img;
    PT("Gui shutdown\n");
    evas_object_del(_gui->win);
@@ -188,8 +186,7 @@ entrance_gui_shutdown(void)
         eina_stringshare_del(xsession->command);
         eina_stringshare_del(xsession->icon);
      }
-   EINA_LIST_FREE(_gui->handlers, h)
-      ecore_event_handler_del(h);
+   ecore_event_handler_del(_gui->handler);
    EINA_LIST_FREE(_gui->background_pool, img)
      {
        eina_stringshare_del(img->path);
@@ -796,7 +793,6 @@ _entrance_gui_auth_cb(void *data EINA_UNUSED, const char *user EINA_UNUSED, Eina
              elm_object_signal_emit(screen->edj,
                                     "entrance,auth,valid", "");
 
-             _entrance_gui_check_wm_loaded(_gui->win);
           }
         else
           {
@@ -840,42 +836,6 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
         elm_exit();
      }
 
-   _entrance_gui_check_wm_loaded(ev->win);
-
    return ECORE_CALLBACK_DONE;
-}
-
-static void _entrance_gui_check_wm_loaded(Ecore_X_Window *win)
-{
-   Ecore_X_Window val;
-   char *name;
-
-   /* In case we missed the event let's first check if a SUPPORTING_WM is registered */
-   ecore_x_window_prop_window_get(ecore_x_window_root_get(win),
-                                         ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK, &val, 1);
-   if (val)
-     {
-        PT("Found a SUPPORTING_WM set\n");
-        // TODO we should check the child window exists
-
-        elm_exit();
-     }
-
-   /* Adding this avoid us to launch entrance_client with a wm anymore ... */
-   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(win),
-                                         ECORE_X_ATOM_NET_WM_NAME);
-   if (name)
-     {
-        PT("screen managed by %s though not compliant\n", name);
-        elm_exit();
-     }
-
-   name = ecore_x_window_prop_string_get(ecore_x_window_root_get(win),
-                                         ECORE_X_ATOM_WM_NAME);
-   if (name)
-     {
-        PT("screen managed by legacy %s\n", name);
-        elm_exit();
-     }
 }
 
