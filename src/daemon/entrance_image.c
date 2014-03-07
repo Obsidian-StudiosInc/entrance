@@ -2,12 +2,12 @@
 
 const char *extn_images[] = {".png",".jpg",NULL};
 
-static Eina_List *_entrance_image_readdir(char *path);
+static Eina_List *_entrance_image_readdir(const char *path);
 static Eina_List *_entrance_image_get(Eina_List *src, char *stdfile, char *mask);
 static char *_entrance_image_homedir_get(const char *usr);
 
 static Eina_List *
-_entrance_image_readdir(char *path)
+_entrance_image_readdir(const char *path)
 {
    Eina_List *files;
    Eina_List *targets = NULL;
@@ -18,7 +18,7 @@ _entrance_image_readdir(char *path)
    if (!files) return NULL;
    EINA_LIST_FREE(files, filename)
      {
-        snprintf(buf, PATH_MAX, "%s/%s", path, filename);
+        snprintf(buf, sizeof(buf), "%s/%s", path, filename);
         if ((!ecore_file_is_dir(buf)) && (filename[0] != '.'))
           {
              for (i = 0; extn_images[i];i ++)
@@ -39,7 +39,8 @@ _entrance_image_get(Eina_List *src, char *stdfile, char *mask)
 {
    //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
    Eina_List *result = NULL;
-   char *src_str, path[PATH_MAX];
+   char *src_str;
+   char path[PATH_MAX];
    Entrance_Image *img;
    EINA_LIST_FREE(src, src_str)
      {
@@ -48,7 +49,7 @@ _entrance_image_get(Eina_List *src, char *stdfile, char *mask)
           {
             if (mask)
               {
-                 snprintf(path, PATH_MAX, mask, src_str);
+                 snprintf(path, sizeof(path), mask, src_str);
                  img->group = eina_stringshare_add(path);
                  eina_stringshare_del(src_str);
               }
@@ -79,36 +80,38 @@ Eina_List *
 entrance_image_system_icons(void)
 {
    return _entrance_image_get(
-      _entrance_image_readdir(PATH_MAX,PACKAGE_DATA_DIR"/images/icons/",
+      _entrance_image_readdir(PACKAGE_DATA_DIR"/images/icons/"),
                               NULL, NULL);
-PACKAGE_DATA_DIR);
 }
+
 Eina_List *
  entrance_image_system_backgrounds(void)
 {
    return _entrance_image_get(
-      _entrance_image_readdir(
-         PATH_MAX,PACKAGE_DATA_DIR"/images/backgrounds/", NULL, NULL);
+      _entrance_image_readdir(PACKAGE_DATA_DIR"/images/backgrounds/"),
+                              NULL, NULL);
 }
 
 Eina_List *
 entrance_image_user_icons(const char *username)
 {
-   char path[PATH_MAX], *homedir;
+   char path[PATH_MAX];
+   char *homedir;
 
    homedir = _entrance_image_homedir_get(username);
    if (!homedir) return NULL;
-   snprintf(path, PATH_MAX,"%s/.config/entrance/images/icons/", homedir);
+   snprintf(path, sizeof(path),"%s/.config/entrance/images/icons/", homedir);
    return _entrance_image_get(_entrance_image_readdir(path), NULL, NULL);
 }
 
 Eina_List *
 entrance_image_user_backgrounds(const char *username)
 {
-   char path[PATH_MAX], *homedir;
+   char path[PATH_MAX];
+   char  *homedir;
 
    homedir = _entrance_image_homedir_get(username);
    if (!homedir) return NULL;
-   snprintf(path, PATH_MAX,"%s/.config/entrance/images/backgrounds/", homedir);
+   snprintf(path, sizeof(path),"%s/.config/entrance/images/backgrounds/", homedir);
    return _entrance_image_get(_entrance_image_readdir(path), NULL, NULL);
 }
