@@ -633,14 +633,15 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    Eina_List *user_icons, *sys_icons, *theme_icons;
 
    el = entrance_gui_user_get(username);
-   user_icons = el->icon_pool;
+   if (el) 
+       user_icons = el->icon_pool; 
    sys_icons = entrance_gui_icon_pool_get();
    theme_icons = entrance_gui_theme_icons();
 
    srand(time(NULL));
    rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
          * (double)rand()) / (RAND_MAX + 1.0));
-   if (rnd < eina_list_count(user_icons))
+   if ((el) && (rnd < eina_list_count(user_icons)))
      {
         o = elm_icon_add(obj);
         img = eina_list_nth(user_icons, rnd);
