@@ -582,7 +582,7 @@ _entrance_gui_update(void)
              PT("Set background %s - %s\n", _gui->bg.path, _gui->bg.group);
              if (_gui->bg.group)
                {
-                  if (_gui->bg.path) 
+                  if (_gui->bg.path)
                     {
                        bg = elm_layout_add(screen->transition);
                        success = elm_layout_file_set(bg, _gui->bg.path, _gui->bg.group);
@@ -593,7 +593,7 @@ _entrance_gui_update(void)
                                               "entrance/background/default");
                     }
                }
-             else if (_gui->bg.path) 
+             else if (_gui->bg.path)
                {
                   if (eina_str_has_extension(_gui->bg.path,".edj"))
                     {
@@ -651,11 +651,11 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    Evas_Object *o = NULL;
    Entrance_Image *img;
    const Entrance_Login *el;
-   Eina_List *user_icons, *sys_icons, *theme_icons;
+   Eina_List *user_icons = NULL, *sys_icons = NULL, *theme_icons = NULL;
 
    el = entrance_gui_user_get(username);
-   if (el) 
-       user_icons = el->icon_pool; 
+   if (el)
+       user_icons = el->icon_pool;
    sys_icons = entrance_gui_icon_pool_get();
    theme_icons = entrance_gui_theme_icons();
 
@@ -679,7 +679,7 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    else
      {
         img = eina_list_nth(theme_icons, (rnd - (eina_list_count(user_icons)
-                                        + eina_list_count(sys_icons)))); 
+                                        + eina_list_count(sys_icons))));
         o = elm_icon_add(obj);
         elm_image_file_set(o, img->path, img->group);
 
