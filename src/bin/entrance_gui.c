@@ -598,7 +598,7 @@ _entrance_gui_update(void)
                   if (eina_str_has_extension(_gui->bg.path,".edj"))
                     {
                        bg = elm_layout_add(screen->transition);
-                       elm_layout_file_set(bg, _gui->bg.path, "entrance/background/default");
+                       success = elm_layout_file_set(bg, _gui->bg.path, "entrance/background/default");
                     }
                   else
                     {
@@ -610,7 +610,8 @@ _entrance_gui_update(void)
                {
                   const char *path;
                   const char *group;
-                  PT("Failed to load new background, fallback on the theme default! \n");
+                  if ((!_gui->bg.group) || (!_gui->bg.path))
+                    PT("Failed to load new background, fallback on the theme default! \n");
                   bg = entrance_gui_theme_get(screen->transition,
                                               "entrance/background/default");
                   edje_object_file_get(elm_layout_edje_get(bg), &path, &group);
