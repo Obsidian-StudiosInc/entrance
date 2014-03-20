@@ -18,6 +18,10 @@ entrance_client.h         \
 entrance_client.c         \
 entrance_conf.h           \
 entrance_conf.c           \
+entrance_conf_main.h      \
+entrance_conf_main.c      \
+entrance_conf_user.h      \
+entrance_conf_user.c      \
 entrance_connect.h        \
 entrance_connect.c        \
 entrance_fill.h           \

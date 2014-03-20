@@ -11,11 +11,13 @@
 
 #include "../event/entrance_event.h"
 #include "entrance_gui.h"
+#include "entrance_fill.h"
 #include "entrance_conf.h"
+#include "entrance_conf_main.h"
+#include "entrance_conf_user.h"
 #include "entrance_connect.h"
 #include "entrance_client.h"
 #include "entrance_gui.h"
-#include "entrance_fill.h"
 #include "entrance_login.h"
 
 #define PT(f, x...)                                                     \
