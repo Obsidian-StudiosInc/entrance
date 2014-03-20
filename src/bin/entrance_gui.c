@@ -591,6 +591,8 @@ _entrance_gui_update(void)
                     {
                        bg = entrance_gui_theme_get(screen->transition,
                                               "entrance/background/default");
+                       if (bg)
+                         success = EINA_TRUE;
                     }
                }
              else if (_gui->bg.path)
