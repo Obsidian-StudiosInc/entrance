@@ -610,6 +610,8 @@ _entrance_gui_update(void)
                }
              if (!success)
                {
+                  if (bg)
+                    evas_object_del(bg);
                   const char *path;
                   const char *group;
                   if ((_gui->bg.group) || (_gui->bg.path))
