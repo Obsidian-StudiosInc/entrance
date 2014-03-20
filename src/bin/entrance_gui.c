@@ -610,7 +610,7 @@ _entrance_gui_update(void)
                {
                   const char *path;
                   const char *group;
-                  if ((!_gui->bg.group) || (!_gui->bg.path))
+                  if ((_gui->bg.group) || (_gui->bg.path))
                     PT("Failed to load new background, fallback on the theme default! \n");
                   bg = entrance_gui_theme_get(screen->transition,
                                               "entrance/background/default");
