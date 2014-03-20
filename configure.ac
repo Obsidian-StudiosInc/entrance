@@ -103,6 +103,10 @@ AC_MSG_RESULT([${enable_systemd}])
 AC_PROG_CC
 AC_PROG_SED
 PKG_PROG_PKG_CONFIG
+AC_CHECK_PROG(have_sudo,sudo,yes)
+if test x"$have_sudo" != x"yes" ; then
+    AC_MSG_ERROR([Please install sudo before installing.])
+fi
 
 # Set edje_cc path
 AC_ARG_WITH([edje-cc],
