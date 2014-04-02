@@ -5,7 +5,6 @@ typedef struct Entrance_Int_Conf_User_
    Entrance_Login *orig;
    struct
      {
-        Evas_Object *preview;
         const char *path;
         const char *group;
      } bg;
@@ -39,14 +38,18 @@ _entrance_conf_user_bg_sel(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED,
 {
    Entrance_Conf_Background *cbg;
    cbg = elm_object_item_data_get(event_info);
-   if (!elm_layout_file_set(_entrance_int_conf_user->bg.preview,
-                           cbg->path, cbg->group))
-     {
-        PT("Error on loading ");
-        fprintf(stderr, "%s %s\n", cbg->path, cbg->group);
-     }
    _entrance_int_conf_user->bg.path = cbg->path;
    _entrance_int_conf_user->bg.group = cbg->group;
+   entrance_conf_changed();
+}
+
+static void
+_entrance_conf_user_icon_sel(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+{
+   Entrance_Conf_Background *cbg;
+   cbg = elm_object_item_data_get(event_info);
+   _entrance_int_conf_user->image.path = cbg->path;
+   _entrance_int_conf_user->image.group = cbg->group;
    entrance_conf_changed();
 }
 
@@ -57,17 +60,41 @@ _entrance_conf_user_bg_fill_cb(void *data, Elm_Object_Item *it)
    const char *bg_path, *bg_group;
    cbg = data;
 
-   bg_path = _entrance_int_conf_user->orig->bg.path;
-   bg_group = _entrance_int_conf_user->orig->bg.group;
-   if ((cbg->path)
-       && (cbg->group)
-       && (bg_path)
-       && (bg_group)
-       && (!strcmp(cbg->path, bg_path))
-       && (!strcmp(cbg->group, bg_group)))
+   entrance_gui_background_get(&bg_path, &bg_group);
+   if (((cbg->path) && (bg_path)
+         && (!strcmp(cbg->path, bg_path))) ||
+       ((!cbg->path) && (!bg_path)))
      {
-        elm_genlist_item_selected_set(it, EINA_TRUE);
-        return EINA_TRUE;
+        if  (((cbg->group) && (bg_group)
+              && (!strcmp(cbg->group, bg_group))) ||
+            ((!cbg->group) && (!bg_group)))
+          {
+             elm_gengrid_item_selected_set(it, EINA_TRUE);
+             return EINA_TRUE;
+          }
+     }
+   return EINA_FALSE;
+}
+
+static Eina_Bool
+_entrance_conf_user_icon_fill_cb(void *data, Elm_Object_Item *it)
+{
+   Entrance_Conf_Background *cbg;
+   const char *bg_path, *bg_group;
+   cbg = data;
+   bg_path = _entrance_int_conf_user->orig->image.path;
+   bg_group = _entrance_int_conf_user->orig->image.group;
+   if (((cbg->path) && (bg_path)
+         && (!strcmp(cbg->path, bg_path))) ||
+       ((!cbg->path) && (!bg_path)))
+     {
+        if  (((cbg->group) && (bg_group)
+              && (!strcmp(cbg->group, bg_group))) ||
+            ((!cbg->group) && (!bg_group)))
+          {
+             elm_gengrid_item_selected_set(it, EINA_TRUE);
+             return EINA_TRUE;
+          }
      }
    return EINA_FALSE;
 }
@@ -179,51 +206,120 @@ static void
 _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
 {
    Evas_Object *o, *gl, *bx, *hbx;
-   Eina_List *l;
+   Eina_List *l = NULL, *tmp = NULL, *node = NULL;
+   Entrance_Conf_Background *img;
    int j = 0;
 
+   hbx = elm_box_add(t);
+   evas_object_size_hint_weight_set(hbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(hbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_horizontal_set(hbx, EINA_TRUE);
+   elm_table_pack(t, hbx, 0, j, 2, 1);
+   evas_object_show(hbx);
+   ++j;
+
    /* Background */
+   bx = elm_box_add(t);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(hbx, bx);
+   evas_object_show(bx);
+
    o = elm_label_add(t);
    elm_object_text_set(o, "Background");
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 0, j, 1, 1);
+   elm_box_pack_end(bx, o);
    evas_object_show(o);
-   ++j;
-   hbx = elm_box_add(t);
-   elm_box_horizontal_set(hbx, EINA_TRUE);
-   elm_table_pack(t, hbx, 0, j, 2, 1);
-   ++j;
-   evas_object_size_hint_weight_set(hbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(hbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   gl = elm_genlist_add(hbx);
+
+   gl = elm_gengrid_add(t);
    elm_scroller_bounce_set(gl, EINA_FALSE, EINA_TRUE);
    evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(hbx, gl);
    evas_object_show(gl);
-   bx = elm_box_add(hbx);
-   elm_box_pack_end(hbx, bx);
-   evas_object_show(bx);
-   o = elm_layout_add(hbx);
-   _entrance_int_conf_user->bg.preview = o;
-   elm_box_pack_end(bx, o);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(o);
-   o = evas_object_rectangle_add(hbx);
-   evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_size_hint_min_set(o, 256, 0);
-   elm_box_pack_end(bx, o);
-   evas_object_show(o);
-   evas_object_show(hbx);
-   l = entrance_conf_backgrounds_get(o, eu->login);
+   elm_box_pack_end(bx, gl);
+   elm_gengrid_item_size_set(gl,
+                          elm_config_scale_get() * 150,
+                          elm_config_scale_get() * 150);
+   elm_gengrid_group_item_size_set(gl,
+                          elm_config_scale_get() * 31,
+                          elm_config_scale_get() * 31);
+   img = calloc(1, sizeof(Entrance_Conf_Background));
+   img->group = NULL;
+   img->path = NULL;
+   img->name = eina_stringshare_add("None");
+
+   l = eina_list_append(l, img);
+
+#define LIST_FILL(list) \
+   tmp = NULL; \
+   IMG_LIST_FORK(list, tmp); \
+   entrance_fill(gl, entrance_conf_background_fill_get(),\
+                 tmp, _entrance_conf_user_bg_fill_cb,\
+                 _entrance_conf_user_bg_sel, o);
+
    entrance_fill(gl, entrance_conf_background_fill_get(),
                  l, _entrance_conf_user_bg_fill_cb,
                  _entrance_conf_user_bg_sel, o);
-   eina_list_free(l);
+
+
+   LIST_FILL(entrance_gui_background_pool_get());
+   LIST_FILL(entrance_gui_theme_backgrounds());
+   LIST_FILL(eu->background_pool);
+
+#undef LIST_FILL
 
    /* Icon */
+   bx = elm_box_add(t);
+   evas_object_size_hint_weight_set(bx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(bx, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(hbx, bx);
+   evas_object_show(bx);
+
+   o = elm_label_add(t);
+   elm_object_text_set(o, "Icon");
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx, o);
+   evas_object_show(o);
+
+   gl = elm_gengrid_add(t);
+   elm_scroller_bounce_set(gl, EINA_FALSE, EINA_TRUE);
+   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(gl);
+   elm_box_pack_end(bx, gl);
+   elm_gengrid_item_size_set(gl,
+                          elm_config_scale_get() * 150,
+                          elm_config_scale_get() * 150);
+   elm_gengrid_group_item_size_set(gl,
+                          elm_config_scale_get() * 31,
+                          elm_config_scale_get() * 31);
+
+   img = calloc(1, sizeof(Entrance_Conf_Background));
+   img->group = NULL;
+   img->path = NULL;
+   img->name = eina_stringshare_add("Random");
+
+   l = NULL;
+   l = eina_list_append(l, img);
+
+#define LIST_FILL(list) \
+   tmp = NULL; \
+   IMG_LIST_FORK(list, tmp); \
+   entrance_fill(gl, entrance_conf_background_fill_get(),\
+                 tmp, _entrance_conf_user_icon_fill_cb,\
+                 _entrance_conf_user_icon_sel, o);
+
+   entrance_fill(gl, entrance_conf_background_fill_get(),
+                 l, _entrance_conf_user_bg_fill_cb,
+                 _entrance_conf_user_bg_sel, o);
+
+   LIST_FILL(entrance_gui_icon_pool_get());
+   LIST_FILL(entrance_gui_theme_icons());
+   LIST_FILL(eu->icon_pool);
+
+#undef LIST_FILL
 
    /* Session to autoselect */
    o = elm_label_add(t);
@@ -233,6 +329,7 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_table_pack(t, o, 0, j, 1, 1);
    evas_object_show(o);
    o = elm_hoversel_add(t);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_text_set(o, "Session");
    elm_table_pack(t, o, 1, j, 1, 1);
@@ -247,6 +344,7 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_table_pack(t, o, 0, j, 1, 1);
    evas_object_show(o);
    o = elm_actionslider_add(t);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_text_set(o, "left", "Enabled");
    elm_object_part_text_set(o, "right", "Disabled");
@@ -255,6 +353,7 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    ++j;
 
    evas_object_show(t);
+   #undef LIST_FILL
 }
 
 
