@@ -8,6 +8,7 @@ typedef struct Entrance_Int_Conf_Main_
         const char *path;
         const char *group;
      } bg;
+   Evas_Object *display_area;
    const char *theme;
    const char *elm_profile;
    Eina_Bool vkbd_enabled : 1;
@@ -55,15 +56,17 @@ _entrance_conf_bg_fill_cb(void *data, Elm_Object_Item *it)
    cbg = data;
 
    entrance_gui_background_get(&bg_path, &bg_group);
-   if ((cbg->path)
-       && (cbg->group)
-       && (bg_path)
-       && (bg_group)
-       && (!strcmp(cbg->path, bg_path))
-       && (!strcmp(cbg->group, bg_group)))
+   if (((cbg->path) && (bg_path)
+         && (!strcmp(cbg->path, bg_path))) ||
+       ((!cbg->path) && (!bg_path)))
      {
-        elm_genlist_item_selected_set(it, EINA_TRUE);
-        return EINA_TRUE;
+        if  (((cbg->group) && (bg_group)
+              && (!strcmp(cbg->group, bg_group))) ||
+            ((!cbg->group) && (!bg_group)))
+          {
+             elm_gengrid_item_selected_set(it, EINA_TRUE);
+             return EINA_TRUE;
+          }
      }
    return EINA_FALSE;
 }
@@ -73,12 +76,6 @@ _entrance_conf_bg_sel(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void
 {
    Entrance_Conf_Background *cbg;
    cbg = elm_object_item_data_get(event_info);
-   if (!elm_layout_file_set(_entrance_int_conf_main->bg.preview,
-                           cbg->path, cbg->group))
-     {
-        PT("Error on loading ");
-        fprintf(stderr, "%s %s\n", cbg->path, cbg->group);
-     }
    _entrance_int_conf_main->bg.path = cbg->path;
    _entrance_int_conf_main->bg.group = cbg->group;
    entrance_conf_changed();
@@ -105,68 +102,43 @@ _entrance_conf_scale_changed(void *data EINA_UNUSED, Evas_Object *obj, void *eve
    entrance_conf_changed();
 }
 
-
-static Evas_Object *
-_entrance_conf_main_build(Evas_Object *obj)
+static void
+_entrance_conf_toolbar_click(void *data, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   Evas_Object *t, *bx, *hbx, *o, *gl;
-   Eina_List *l;
-   int j = 0;
+   Evas_Object *o = data, *old;
 
+   Eina_List *childs = elm_box_children_get(_entrance_int_conf_main->display_area);
+   old = eina_list_data_get(childs);
+   elm_box_unpack(_entrance_int_conf_main->display_area, old);
+
+   evas_object_hide(old);
+
+   elm_box_pack_end(_entrance_int_conf_main->display_area, o);
+   evas_object_show(o);
+}
+
+static Evas_Object*
+_entrance_conf_main_general(Evas_Object *obj)
+{
+   Evas_Object *t, *o;
+
+   /* General */
    t = elm_table_add(obj);
-   elm_table_padding_set(t, 5 , 5);
+   elm_table_padding_set(t, 0, 0);
    evas_object_size_hint_weight_set(t, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-
-   /* Background */
-   o = elm_label_add(t);
-   elm_object_text_set(o, "Background");
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 0, j, 1, 1);
-   evas_object_show(o);
-   ++j;
-
-   hbx = elm_box_add(t);
-   elm_box_horizontal_set(hbx, EINA_TRUE);
-   elm_table_pack(t, hbx, 0, j, 2, 3);
-   evas_object_size_hint_weight_set(hbx, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(hbx, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   gl = elm_genlist_add(hbx);
-   elm_scroller_bounce_set(gl, EINA_FALSE, EINA_TRUE);
-   evas_object_size_hint_weight_set(gl, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(gl, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_box_pack_end(hbx, gl);
-   evas_object_show(gl);
-   bx = elm_box_add(hbx);
-   elm_box_pack_end(hbx, bx);
-   evas_object_show(bx);
-   o = elm_layout_add(hbx);
-   _entrance_int_conf_main->bg.preview = o;
-   elm_box_pack_end(bx, o);
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(o);
-   o = evas_object_rectangle_add(hbx);
-   evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_size_hint_min_set(o, 256, 0);
-   elm_box_pack_end(bx, o);
-   evas_object_show(o);
-   evas_object_show(hbx);
-   j += 3;
-   l = entrance_conf_backgrounds_get(gl, NULL);
-   entrance_fill(gl, entrance_conf_background_fill_get(),
-                 l, _entrance_conf_bg_fill_cb, _entrance_conf_bg_sel, o);
-   eina_list_free(l);
+   evas_object_size_hint_align_set(t, EVAS_HINT_FILL, EVAS_HINT_FILL);
 
    /* Touch Screen */
-   o = elm_label_add(t);
+   o = elm_label_add(obj);
    elm_object_text_set(o, "Use a virtual keyboard");
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_weight_set(o, 1, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 0, j, 1, 1);
+   elm_table_pack(t, o, 0, 0, 1, 1);
    evas_object_show(o);
-   o = elm_actionslider_add(t);
+
+   o = elm_actionslider_add(obj);
    elm_object_style_set(o, "bar");
+   evas_object_size_hint_weight_set(o, 1, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_text_set(o, "left", "Disabled");
    elm_object_part_text_set(o, "right", "Enabled");
@@ -175,36 +147,35 @@ _entrance_conf_main_build(Evas_Object *obj)
    elm_actionslider_enabled_pos_set(o, ELM_ACTIONSLIDER_LEFT |
                                     ELM_ACTIONSLIDER_RIGHT);
    evas_object_smart_callback_add(o, "selected",
-                                  _entrance_conf_vkbd_changed, NULL);
+                                  _entrance_conf_vkbd_changed, obj);
    if (_entrance_int_conf_main->vkbd_enabled)
      elm_actionslider_indicator_pos_set(o, ELM_ACTIONSLIDER_RIGHT);
    else
      elm_actionslider_indicator_pos_set(o, ELM_ACTIONSLIDER_LEFT);
-   elm_table_pack(t, o, 1, j, 1, 1);
+   elm_table_pack(t, o, 1, 0, 1, 1);
    evas_object_show(o);
-   ++j;
 
    /* Elementary Profile */
-   o = elm_label_add(t);
-   elm_object_text_set(o, "elementary profile");
-   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   o = elm_label_add(obj);
+   elm_object_text_set(o, "elementary profile - NOT WORKING");
+   evas_object_size_hint_weight_set(o, 1, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 0, j, 1, 1);
+   elm_table_pack(t, o, 0, 1, 1, 1);
    evas_object_show(o);
-   o = elm_hoversel_add(t);
+
+   o = elm_hoversel_add(obj);
    elm_object_text_set(o, _entrance_int_conf_main->elm_profile);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 1, j, 1, 1);
+   elm_table_pack(t, o, 1, 1, 1, 1);
    evas_object_show(o);
-   ++j;
 
    /* Scaling */
    o = elm_label_add(t);
    elm_object_text_set(o, "Scaling");
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_table_pack(t, o, 0, j, 1, 1);
+   elm_table_pack(t, o, 0, 2, 1, 1);
    evas_object_show(o);
    o = elm_spinner_add(t);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
@@ -216,17 +187,124 @@ _entrance_conf_main_build(Evas_Object *obj)
    elm_spinner_step_set(o, 0.15);
    elm_spinner_label_format_set(o, "%.2f");
 
-   elm_table_pack(t, o, 1, j, 1, 1);
+   elm_table_pack(t, o, 1, 2, 1, 1);
    evas_object_show(o);
-   ++j;
-
-   o = evas_object_rectangle_add(o);
-   evas_object_color_set(o, 0, 0, 0, 0);
-   evas_object_size_hint_min_set(o, 128, 0);
-   elm_table_pack(t, o, 1, j, 1, 1);
-
-   evas_object_show(t);
    return t;
+}
+
+static Evas_Object*
+_entrance_conf_main_background(Evas_Object *obj)
+{
+   Evas_Object *o, *bx;
+   Eina_List *s_bg, *t_bg, *tmp = NULL, *node = NULL;
+
+   o = bx = elm_box_add(obj);
+   elm_box_horizontal_set(o, EINA_FALSE);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+
+   o = elm_label_add(obj);
+   elm_object_text_set(o, "Background");
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx, o);
+   evas_object_show(o);
+
+   o = elm_gengrid_add(obj);
+   elm_gengrid_item_size_set(o,
+                             elm_config_scale_get() * 150,
+                             elm_config_scale_get() * 150);
+   elm_gengrid_group_item_size_set(o,
+                                   elm_config_scale_get() * 31,
+                                   elm_config_scale_get() * 31);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx, o);
+   evas_object_show(o);
+
+   s_bg = entrance_gui_background_pool_get();
+   t_bg = entrance_gui_theme_backgrounds();
+
+#define LIST_FILL(list) \
+   tmp = NULL; \
+   IMG_LIST_FORK(list, tmp); \
+   entrance_fill(o, entrance_conf_background_fill_get(),\
+                 tmp, _entrance_conf_bg_fill_cb,\
+                 _entrance_conf_bg_sel, o);
+
+   LIST_FILL(s_bg);
+   LIST_FILL(t_bg);
+
+#undef LIST_FILL
+
+   return bx;
+}
+
+static Evas_Object*
+_entrance_conf_main_themesel(Evas_Object *obj)
+{
+   Evas_Object *o;
+   /* Theme selector */
+   o = elm_label_add(obj);
+   elm_object_text_set(o, "TODO Implement theme selector!");
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   return o;
+}
+
+static Evas_Object*
+_entrance_conf_main_graph_log(Evas_Object *obj)
+{
+   Evas_Object *o;
+   /* Graphical Log */
+   o = elm_label_add(obj);
+   elm_object_text_set(o, "TODO Implement Graphical Log !");
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   return o;
+}
+
+static Evas_Object *
+_entrance_conf_main_build(Evas_Object *obj)
+{
+   Evas_Object *tb, *bx_over, *o, *bx;
+
+   /*Main Frame*/
+   o = bx_over = elm_box_add(obj);
+   elm_box_horizontal_set(o, EINA_TRUE);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   evas_object_show(o);
+
+   o = tb = elm_toolbar_add(obj);
+   evas_object_size_hint_weight_set(o, 0, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_toolbar_horizontal_set(o, EINA_FALSE);
+   elm_toolbar_select_mode_set(o, ELM_OBJECT_SELECT_MODE_ALWAYS);
+   elm_toolbar_shrink_mode_set(o, ELM_TOOLBAR_SHRINK_SCROLL);
+   elm_toolbar_homogeneous_set(o, EINA_FALSE);
+   elm_box_pack_end(bx_over, o);
+   evas_object_show(o);
+
+   o = bx = elm_box_add(obj);
+   elm_box_horizontal_set(o, EINA_TRUE);
+   evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
+   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
+   elm_box_pack_end(bx_over, o);
+   evas_object_show(o);
+
+   _entrance_int_conf_main->display_area = o;
+
+   elm_toolbar_item_append(tb, NULL, "General",
+       _entrance_conf_toolbar_click, _entrance_conf_main_general(obj));
+   elm_toolbar_item_append(tb, NULL, "Background",
+       _entrance_conf_toolbar_click, _entrance_conf_main_background(obj));
+   elm_toolbar_item_append(tb, NULL, "Theme",
+       _entrance_conf_toolbar_click, _entrance_conf_main_themesel(obj));
+   elm_toolbar_item_append(tb, NULL, "Log",
+       _entrance_conf_toolbar_click, _entrance_conf_main_graph_log(obj));
+
+   return bx_over;
 }
 
 static Eina_Bool
@@ -251,6 +329,8 @@ _entrance_conf_main_apply(void)
 
    conf.bg.path = _entrance_int_conf_main->bg.path;
    conf.bg.group = _entrance_int_conf_main->bg.group;
+   conf.background_pool = NULL;
+   conf.icon_pool = NULL;
    conf.vkbd_enabled = _entrance_int_conf_main->vkbd_enabled;
 
    if (_entrance_int_conf_main->scale != elm_config_scale_get())
