@@ -458,9 +458,28 @@ entrance_gui_xsessions_get(void)
 void
 entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
 {
-   _gui->background_pool = conf->background_pool;
-   _gui->icon_pool = conf->icon_pool;
-   //TODO free the pool if there was one before!
+  if (_gui->background_pool)
+     {
+        Entrance_Image *img;
+        EINA_LIST_FREE(_gui->background_pool, img)
+          {
+             eina_stringshare_del(img->path);
+             eina_stringshare_del(img->group);
+             free(img);
+          }
+        _gui->background_pool = conf->background_pool;
+     }
+   if (_gui->icon_pool)
+     {
+        Entrance_Image *img;
+        EINA_LIST_FREE(_gui->icon_pool, img)
+          {
+             eina_stringshare_del(img->path);
+             eina_stringshare_del(img->group);
+             free(img);
+          }
+        _gui->icon_pool = conf->icon_pool;
+     }
    if (_gui->bg.path != conf->bg.path)
      {
         if ((conf->bg.path) && (*conf->bg.path))
