@@ -80,8 +80,7 @@ void
 entrance_conf_background_title_gen(Entrance_Conf_Background *cbg)
 {
    char buf[PATH_MAX];
-   char *group_suffix = NULL, *result;
-   const char *filename = NULL;
+   const char *group_suffix = NULL, *filename = NULL;
 
    if (cbg->path)
      {

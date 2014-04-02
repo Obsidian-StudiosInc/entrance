@@ -640,7 +640,6 @@ _entrance_gui_update(void)
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         Evas_Object *bg = NULL;
-        Eina_Bool success = EINA_FALSE;
         if (_gui->changed & ENTRANCE_CONF_WALLPAPER)
           {
              PT("Set background %s - %s\n", _gui->bg.path, _gui->bg.group);
