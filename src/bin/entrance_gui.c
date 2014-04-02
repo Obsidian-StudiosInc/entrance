@@ -561,6 +561,51 @@ entrance_gui_vkbd_enabled_get(void)
    return _gui->vkbd_enabled;
 }
 
+static Evas_Object *
+_entrance_gui_background_obj_get(Evas_Object *par, const char *path, const char *group)
+{
+   Evas_Object *bg = NULL;
+   if (group)
+     {
+        if (path)
+          {
+             bg = elm_layout_add(par);
+             if (!elm_layout_file_set(bg, path, group))
+               {
+                 evas_object_del(bg);
+                 return NULL;
+               }
+          }
+        else
+          {
+             bg = entrance_gui_theme_get(par,
+                                         "entrance/background/default");
+          }
+     }
+   else if (path)
+     {
+        if (eina_str_has_extension(path,".edj"))
+          {
+             bg = elm_layout_add(par);
+             if (!elm_layout_file_set(bg, path, "entrance/background/default"))
+               {
+                 evas_object_del(bg);
+                 return NULL;
+               }
+          }
+        else
+          {
+             bg = elm_bg_add(par);
+             if (!elm_bg_file_set(bg, path, NULL))
+               {
+                 evas_object_del(bg);
+                 return NULL;
+               }
+          }
+     }
+   return bg;
+}
+
 void
 entrance_gui_user_bg_set(const char *path, const char *group)
 {
@@ -568,12 +613,12 @@ entrance_gui_user_bg_set(const char *path, const char *group)
    Entrance_Screen *screen;
    Evas_Object *o;
 
+   PT("User Background - %s %s", path, group);
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
-        if (path && group)
+        if (path || group)
           {
-             o = elm_layout_add(screen->background);
-             elm_layout_file_set(o, path, group);
+             o = _entrance_gui_background_obj_get(screen->transition, path, group);
              elm_object_part_content_set(screen->transition,
                                          "entrance.wallpaper.user.start", o);
              evas_object_show(o);
@@ -599,38 +644,9 @@ _entrance_gui_update(void)
         if (_gui->changed & ENTRANCE_CONF_WALLPAPER)
           {
              PT("Set background %s - %s\n", _gui->bg.path, _gui->bg.group);
-             if (_gui->bg.group)
+             bg = _entrance_gui_background_obj_get(screen->transition, _gui->bg.path, _gui->bg.group);
+             if (!bg)
                {
-                  if (_gui->bg.path)
-                    {
-                       bg = elm_layout_add(screen->transition);
-                       success = elm_layout_file_set(bg, _gui->bg.path, _gui->bg.group);
-                    }
-                  else
-                    {
-                       bg = entrance_gui_theme_get(screen->transition,
-                                              "entrance/background/default");
-                       if (bg)
-                         success = EINA_TRUE;
-                    }
-               }
-             else if (_gui->bg.path)
-               {
-                  if (eina_str_has_extension(_gui->bg.path,".edj"))
-                    {
-                       bg = elm_layout_add(screen->transition);
-                       success = elm_layout_file_set(bg, _gui->bg.path, "entrance/background/default");
-                    }
-                  else
-                    {
-                       bg = elm_bg_add(screen->transition);
-                       success = elm_bg_file_set(bg, _gui->bg.path, NULL);
-                    }
-               }
-             if (!success)
-               {
-                  if (bg)
-                    evas_object_del(bg);
                   const char *path;
                   const char *group;
                   if ((_gui->bg.group) || (_gui->bg.path))
