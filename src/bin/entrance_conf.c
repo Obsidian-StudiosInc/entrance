@@ -55,6 +55,8 @@ _entrance_conf_build(Evas_Object *naviframe, Evas_Object *segment)
         if (!_entrance_conf->current)
           _entrance_conf_promote(conf);
      }
+   itc = elm_segment_control_item_get(segment, 0);
+   elm_segment_control_item_selected_set(itc, EINA_TRUE);
 }
 
 static void
