@@ -60,7 +60,8 @@ _entrance_conf_user_bg_fill_cb(void *data, Elm_Object_Item *it)
    const char *bg_path, *bg_group;
    cbg = data;
 
-   entrance_gui_background_get(&bg_path, &bg_group);
+   bg_path = _entrance_int_conf_user->bg.path;
+   bg_group = _entrance_int_conf_user->bg.group;
    if (((cbg->path) && (bg_path)
          && (!strcmp(cbg->path, bg_path))) ||
        ((!cbg->path) && (!bg_path)))
@@ -312,8 +313,8 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
                  _entrance_conf_user_icon_sel, o);
 
    entrance_fill(gl, entrance_conf_background_fill_get(),
-                 l, _entrance_conf_user_bg_fill_cb,
-                 _entrance_conf_user_bg_sel, o);
+                 l, _entrance_conf_user_icon_fill_cb,
+                 _entrance_conf_user_icon_sel, o);
 
    LIST_FILL(entrance_gui_icon_pool_get());
    LIST_FILL(entrance_gui_theme_icons());
