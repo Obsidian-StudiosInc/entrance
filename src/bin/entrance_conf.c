@@ -76,7 +76,44 @@ _entrance_conf_end(Evas_Object *win)
    _entrance_conf->current = NULL;
 }
 
-static void
+void
+entrance_conf_background_title_gen(Entrance_Conf_Background *cbg)
+{
+   char buf[PATH_MAX];
+   char *group_suffix = NULL, *result;
+   const char *filename = NULL;
+
+   if (cbg->path)
+     {
+        filename = ecore_file_file_get(cbg->path);
+     }
+
+   if (cbg->group)
+     {
+        group_suffix = ecore_file_file_get(cbg->group);
+     }
+
+   if ((group_suffix) && (filename))
+     {
+        snprintf(buf, sizeof(buf), "%s - %s", filename, group_suffix);
+     }
+   else if (group_suffix)
+     {
+        snprintf(buf, sizeof(buf), "%s", group_suffix);
+     }
+   else if(filename)
+     {
+        snprintf(buf, sizeof(buf), "%s", filename);
+     }
+   else
+     {
+        snprintf(buf, sizeof(buf), "None");
+     }
+
+   cbg->name = eina_stringshare_add(buf);
+}
+
+  static void
 _entrance_conf_promote(Entrance_Conf_Module *conf)
 {
    elm_naviframe_item_promote(conf->item);
@@ -126,12 +163,15 @@ _entrance_conf_bg_content_get(void *data, Evas_Object *obj, const char *part)
    cbg = data;
    if (part && !strcmp("elm.swallow.icon", part))
      {
-        o = elm_image_add(obj);
-        elm_image_file_set(o, cbg->path, cbg->group);
-        elm_image_smooth_set(o, EINA_FALSE);
-        evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND,
-                                         EVAS_HINT_EXPAND);
-        evas_object_show(o);
+        if (cbg->path || cbg->group)
+          {
+             o = elm_image_add(obj);
+             elm_image_file_set(o, cbg->path, cbg->group);
+             elm_image_smooth_set(o, EINA_FALSE);
+             evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND,
+                                              EVAS_HINT_EXPAND);
+             evas_object_show(o);
+          }
      }
    return o;
 }
@@ -160,7 +200,7 @@ entrance_conf_init(void)
    PT("conf init\n");
    _entrance_conf = calloc(1, sizeof(Entrance_Int_Conf));
    _entrance_conf->background_fill =
-      entrance_fill_new("default",
+      entrance_fill_new("thumb",
                         _entrance_conf_bg_text_get,
                         _entrance_conf_bg_content_get,
                         _entrance_conf_bg_state_get,
@@ -303,71 +343,6 @@ entrance_conf_changed(void)
         elm_object_disabled_set(_entrance_conf->btn_ok, EINA_TRUE);
         elm_object_disabled_set(_entrance_conf->btn_apply, EINA_TRUE);
      }
-}
-
-Eina_List *
-entrance_conf_backgrounds_get(Evas_Object *obj, const char *user)
-{
-   Evas_Object *o, *edj;
-   Eina_List *list, *l, *nl = NULL;
-   Entrance_Conf_Background *cbg;
-   const char *str;
-   const char *path;
-   char buf[PATH_MAX];
-   Eina_Iterator *it;
-
-   o = entrance_gui_theme_get(obj, "entrance/background");
-   edj = elm_layout_edje_get(o);
-   edje_object_file_get(edj, &path, NULL);
-   list = entrance_gui_stringlist_get(edje_object_data_get(edj, "items"));
-   EINA_LIST_FOREACH(list, l, str)
-     {
-        cbg = calloc(1, sizeof(Entrance_Conf_Background));
-        snprintf(buf, sizeof(buf),
-                 "entrance/background/%s", str);
-
-        cbg->path = eina_stringshare_add(path);
-        cbg->group = eina_stringshare_add(buf);
-        cbg->name = eina_stringshare_add(str);
-        nl = eina_list_append(nl, cbg);
-     }
-   entrance_gui_stringlist_free(list);
-   evas_object_del(o);
-
-   it = eina_file_ls(PACKAGE_DATA_DIR"/backgrounds");
-   EINA_ITERATOR_FOREACH(it, str)
-     {
-        int len;
-        len = strlen(str);
-        if (len < 4) continue;
-        if (!strcmp(&str[len-4], ".edj"))
-          {
-             cbg = calloc(1, sizeof(Entrance_Conf_Background));
-             snprintf(buf, sizeof(buf),
-                      "entrance/background/%s", str);
-             cbg->path = str;
-             /* TODO use entrance/desktop/background or e/desktop/background */
-             cbg->group = eina_stringshare_add("e/desktop/background");
-               {
-                  char *name, *p;
-                  name = strrchr(str, '/');
-                  if (name)
-                    {
-                       name++;
-                       name = strdupa(name);
-                       p = strrchr(name, '.');
-                       if (p) *p = '\0';
-                    }
-                  cbg->name = eina_stringshare_add(name);
-               }
-             nl = eina_list_append(nl, cbg);
-          }
-        else
-          eina_stringshare_del(str);
-     }
-   eina_iterator_free(it);
-
-   return nl;
 }
 
 Entrance_Fill *
