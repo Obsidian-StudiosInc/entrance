@@ -613,7 +613,7 @@ entrance_gui_user_bg_set(const char *path, const char *group)
    Entrance_Screen *screen;
    Evas_Object *o;
 
-   PT("User Background - %s %s", path, group);
+   PT("User Background - %s %s\n", path, group);
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         if (path || group)
