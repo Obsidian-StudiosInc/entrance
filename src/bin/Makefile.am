@@ -20,6 +20,10 @@ entrance_conf.h           \
 entrance_conf.c           \
 entrance_conf_main.h      \
 entrance_conf_main.c      \
+entrance_conf_theme.h     \
+entrance_conf_theme.c     \
+entrance_conf_log.h       \
+entrance_conf_log.c       \
 entrance_conf_user.h      \
 entrance_conf_user.c      \
 entrance_connect.h        \
