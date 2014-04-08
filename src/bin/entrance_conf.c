@@ -91,7 +91,9 @@ entrance_conf_background_title_gen(Entrance_Conf_Background *cbg)
 
    if (cbg->group)
      {
-        group_suffix = ecore_file_file_get(cbg->group);
+        group_suffix = strrchr(cbg->group, '/');
+        //no "/" char
+        group_suffix ++;
      }
 
    if ((group_suffix) && (filename))
