@@ -354,7 +354,6 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    ++j;
 
    evas_object_show(t);
-   #undef LIST_FILL
 }
 
 
