@@ -18,9 +18,9 @@ struct Entrance_Fill_
 
 ///////////////// LIST ///////////////////////////////
 static void
-_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
+_entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef,const  Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
-   Eina_List *l;
+   const Eina_List *l;
    void *content;
 
    EINA_LIST_FOREACH(contents, l, content)
@@ -39,9 +39,9 @@ _entrance_fill_list(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, En
 
 ///////////////// GENLIST /////////////////////////////
 static void
-_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
+_entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
-   Eina_List *l;
+   const Eina_List *l;
    Elm_Genlist_Item_Class *glc;
    void *content;
 
@@ -73,9 +73,9 @@ _entrance_fill_genlist(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents,
 
 ///////////////// GENGRID /////////////////////////////
 static void
-_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
+_entrance_fill_gengrid(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
-   Eina_List *l;
+   const Eina_List *l;
    Elm_Gengrid_Item_Class *ggc;
    void *content;
 
@@ -116,9 +116,9 @@ _entrance_fill_hoversell_func_cb(void *data EINA_UNUSED, Evas_Object *obj, void 
 }
 
 static void
-_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
+_entrance_fill_hoversell(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
-   Eina_List *l;
+   const Eina_List *l;
    void *content;
    char *str = NULL;
    char *ic = NULL;
@@ -173,7 +173,7 @@ entrance_fill_del(Entrance_Fill *ef)
 }
 
 void
-entrance_fill(Evas_Object *obj, Entrance_Fill *ef, Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
+entrance_fill(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, Entrance_Fill_Cb_Func fill_cb, Evas_Smart_Cb func, void *data)
 {
    const char *type;
    if (!obj) return;
