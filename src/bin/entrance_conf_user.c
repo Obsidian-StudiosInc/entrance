@@ -159,11 +159,14 @@ _entrance_conf_session_text_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UN
    exs = data;
    if (!part)
      return strdup(exs->name);
-   else
-     if (exs->icon)
-       return strdup(exs->icon);
-     else
-       return NULL;
+   else if((part) && (!strcmp(part, "icon")))
+     {
+        if (exs->icon)
+          return strdup(exs->icon);
+        else
+          return NULL;
+     }
+   return NULL;
 }
 
 static Evas_Object *
