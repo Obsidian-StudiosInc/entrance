@@ -189,6 +189,34 @@ _entrance_conf_session_del(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED)
 }
 
 static void
+_entrance_conf_remembersession_update(Evas_Object *acs)
+{
+   Elm_Actionslider_Pos pos;
+   if (_entrance_int_conf_user->remember_session)
+     pos = ELM_ACTIONSLIDER_LEFT;
+   else
+     pos = ELM_ACTIONSLIDER_RIGHT;
+   elm_actionslider_magnet_pos_set(acs,pos);
+}
+
+static void
+_entrance_conf_remembersession_changed(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+{
+   if ((event_info) && !strcmp(event_info, "Enabled"))
+     {
+        PT("Turned remember session on\n");
+        _entrance_int_conf_user->remember_session = EINA_TRUE;
+     }
+   else
+     {
+        PT("Turned remember session off\n");
+        _entrance_int_conf_user->remember_session = EINA_FALSE;
+     }
+   _entrance_conf_remembersession_update(obj);
+   entrance_conf_changed();
+}
+
+static void
 _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
 {
    Evas_Object *t;
@@ -416,9 +444,14 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_object_part_text_set(o, "left", "Enabled");
    elm_object_part_text_set(o, "right", "Disabled");
+   elm_actionslider_enabled_pos_set(o, ELM_ACTIONSLIDER_LEFT |
+                                         ELM_ACTIONSLIDER_RIGHT);
+   evas_object_smart_callback_add(o, "selected",
+       _entrance_conf_remembersession_changed, NULL);
    elm_table_pack(t, o, 1, j, 1, 1);
    evas_object_show(o);
    ++j;
+   _entrance_conf_remembersession_update(o);
 
    evas_object_show(t);
 }
