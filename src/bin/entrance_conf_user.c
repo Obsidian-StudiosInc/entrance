@@ -116,14 +116,16 @@ _entrance_conf_session_update(Evas_Object *session_sel)
      elm_object_text_set(session_sel, "None");
 
    if (_entrance_int_conf_user->lsess)
-     EINA_LIST_FOREACH(sessions, node, session)
-       {
-          if ((_entrance_int_conf_user->lsess) &&
-              !strcmp(_entrance_int_conf_user->lsess,session->name))
-            {
-               icon = session->icon;
-            }
-       }
+     {
+        EINA_LIST_FOREACH(sessions, node, session)
+         {
+            if ((_entrance_int_conf_user->lsess) &&
+                !strcmp(_entrance_int_conf_user->lsess,session->name))
+              {
+                 icon = session->icon;
+              }
+         }
+     }
    //create the icon
    ic = elm_object_part_content_get(session_sel, "icon");
    if (icon)
