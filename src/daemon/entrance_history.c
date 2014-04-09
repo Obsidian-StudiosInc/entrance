@@ -162,7 +162,7 @@ void
 entrance_history_user_update(const Entrance_Login *eu)
 {
    Eina_List *l;
-   Entrance_Login *el;
+   Entrance_Login *el, *eln;
 
    PT("Updating user info\n");
 
@@ -182,7 +182,10 @@ entrance_history_user_update(const Entrance_Login *eu)
              if (!strcmp(eu->login, el->login))
                {
                   PT("Append user in history\n");
-                  _entrance_history_user_set(el, eu);
+                  eln = calloc(1, sizeof(Entrance_Login));
+                  memcpy(eln, el, sizeof(Entrance_Login));
+                  _entrance_history_user_set(eln, eu);
+                  _entrance_history->history = eina_list_append(_entrance_history->history, eln);
                   break;
                }
           }
