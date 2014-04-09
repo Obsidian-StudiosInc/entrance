@@ -100,10 +100,64 @@ _entrance_conf_user_icon_fill_cb(void *data, Elm_Object_Item *it)
    return EINA_FALSE;
 }
 
+static void
+_entrance_conf_session_update(Evas_Object *session_sel)
+{
+   const Eina_List *sessions, *node;
+   Entrance_Xsession *session;
+   const char *icon = NULL;
+   Evas_Object *ic;
+
+   sessions = entrance_gui_xsessions_get();
+   //search the correct struct
+   elm_object_text_set(session_sel, _entrance_int_conf_user->lsess);
+   EINA_LIST_FOREACH(sessions, node, session)
+     {
+        if (!strcmp(_entrance_int_conf_user->lsess,session->name))
+          {
+             icon = session->icon;
+          }
+     }
+   //create the icon
+   ic = elm_object_part_content_get(session_sel, "icon");
+   if (icon)
+     {
+        if (!ic)
+          ic = elm_icon_add(session_sel);
+        elm_image_file_set(ic, icon, NULL);
+        elm_object_part_content_set(session_sel, "icon", ic);
+     }
+   else
+     {
+        if (ic)
+          evas_object_del(ic);
+        elm_object_part_content_set(ic, "icon", NULL);
+     }
+
+}
+
+static void
+_entrance_conf_session_sel(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+{
+   Entrance_Xsession *exs;
+   exs = elm_object_item_data_get(event_info);
+   _entrance_int_conf_user->lsess = exs->name;
+   _entrance_conf_session_update(obj);
+   entrance_conf_changed();
+}
+
 static char *
 _entrance_conf_session_text_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
 {
-   return NULL;
+   Entrance_Xsession *exs;
+   exs = data;
+   if (!part)
+     return strdup(exs->name);
+   else
+     if (exs->icon)
+       return strdup(exs->icon);
+     else
+       return NULL;
 }
 
 static Evas_Object *
@@ -336,6 +390,8 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_table_pack(t, o, 1, j, 1, 1);
    evas_object_show(o);
    ++j;
+   entrance_fill(o, _entrance_session_fill, entrance_gui_xsessions_get(), NULL, _entrance_conf_session_sel, NULL);
+   _entrance_conf_session_update(o);
 
    /* Remember last session */
    o = elm_label_add(t);
