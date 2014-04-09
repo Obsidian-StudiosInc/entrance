@@ -183,6 +183,7 @@ entrance_history_user_update(const Entrance_Login *eu)
                {
                   PT("Append user in history\n");
                   _entrance_history_user_set(el, eu);
+                  _entrance_history->history = eina_list_append(_entrance_history->history, el);
                   break;
                }
           }
