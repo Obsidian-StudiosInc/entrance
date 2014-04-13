@@ -11,6 +11,7 @@ typedef struct Entrance_Int_Conf_Main_
    Evas_Object *display_area;
    const char *theme;
    const char *elm_profile;
+   Entrance_Fill *elm_profile_fill;
    Eina_Bool vkbd_enabled : 1;
    double scale;
    Eina_Bool update : 1;
@@ -22,6 +23,12 @@ static Eina_Bool _entrance_conf_bg_fill_cb(void *data, Elm_Object_Item *it);
 static void _entrance_conf_bg_sel(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_conf_vkbd_changed(void *data, Evas_Object *obj, void *event);
 static void _entrance_conf_scale_changed(void *data, Evas_Object *obj, void *event);
+static void _entrance_conf_profile_update(Evas_Object *sel);
+static void _entrance_conf_profile_sel(void *data, Evas_Object *obj, void *event_info);
+static char *_entrance_conf_profile_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part);
+static Evas_Object *_entrance_conf_profile_content_get(void *data, Evas_Object *obj, const char *part);
+static Eina_Bool _entrance_conf_profile_state_get(void *data, Evas_Object *obj, const char *part);
+static void _entrance_conf_profile_del(void *data, Evas_Object *obj);
 static Evas_Object *_entrance_conf_main_build(Evas_Object *obj);
 static Eina_Bool _entrance_conf_main_check(void);
 static void _entrance_conf_main_apply(void);
@@ -39,12 +46,17 @@ _entrance_conf_main_begin(void)
    _entrance_int_conf_main->vkbd_enabled = entrance_gui_vkbd_enabled_get();
    _entrance_int_conf_main->scale = elm_config_scale_get();
    _entrance_int_conf_main->elm_profile = elm_config_profile_get();
-
+   _entrance_int_conf_main->elm_profile_fill = entrance_fill_new(NULL,
+                                                                 _entrance_conf_profile_text_get,
+                                                                 _entrance_conf_profile_content_get,
+                                                                 _entrance_conf_profile_state_get,
+                                                                 _entrance_conf_profile_del);
 }
 
 static void
 _entrance_conf_main_end(void)
 {
+   entrance_fill_del(_entrance_int_conf_main->elm_profile_fill);
    free(_entrance_int_conf_main);
 }
 
@@ -102,11 +114,58 @@ _entrance_conf_scale_changed(void *data EINA_UNUSED, Evas_Object *obj, void *eve
    entrance_conf_changed();
 }
 
+/* elementary profile changed */
+static void
+_entrance_conf_profile_update(Evas_Object *sel)
+{
+   elm_object_text_set(sel, _entrance_int_conf_main->elm_profile);
+}
+
+static void
+_entrance_conf_profile_sel(void *data EINA_UNUSED, Evas_Object *obj, void *event_info)
+{
+   char *name;
+   name = elm_object_item_data_get(event_info);
+   _entrance_int_conf_main->elm_profile = name;
+   _entrance_conf_profile_update(obj);
+   entrance_conf_changed();
+}
+static char *
+_entrance_conf_profile_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part)
+{
+   char *name;
+   name = data;
+   if (!part)
+     return strdup(name);
+   return NULL;
+}
+
+static Evas_Object *
+_entrance_conf_profile_content_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
+{
+     return NULL;
+}
+
+static Eina_Bool
+_entrance_conf_profile_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
+{
+     return EINA_FALSE;
+}
+
+static void
+_entrance_conf_profile_del(void *data, Evas_Object *obj EINA_UNUSED)
+{
+   char *name;
+   name = data;
+   eina_stringshare_del(name);
+}
+
 static Evas_Object *
 _entrance_conf_main_build(Evas_Object *obj)
 {
    Evas_Object *tb, *bx_over, *o, *bx, *t;
-   Eina_List *s_bg, *t_bg, *tmp = NULL, *node = NULL;
+   Eina_List *s_bg, *t_bg, *tmp = NULL, *node = NULL, *profiles, *tmp_profiles = NULL;
+   char *ctmp;
 
 
    /*Main Frame*/
@@ -204,7 +263,7 @@ _entrance_conf_main_build(Evas_Object *obj)
 
    /* Elementary Profile */
    o = elm_label_add(obj);
-   elm_object_text_set(o, "elementary profile - NOT WORKING");
+   elm_object_text_set(o, "elementary profile");
    evas_object_size_hint_weight_set(o, 1, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(t, o, 0, 1, 1, 1);
@@ -215,6 +274,14 @@ _entrance_conf_main_build(Evas_Object *obj)
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, 0);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(t, o, 1, 1, 1, 1);
+   profiles = elm_config_profile_list_get();
+   EINA_LIST_FOREACH(profiles, node, ctmp)
+     {
+        tmp_profiles = eina_list_append(tmp_profiles, eina_stringshare_add(ctmp));
+     }
+   entrance_fill(o, _entrance_int_conf_main->elm_profile_fill,
+                 tmp_profiles, NULL, _entrance_conf_profile_sel, NULL);
+   elm_config_profile_list_free(profiles);
    evas_object_show(o);
 
    /* Scaling */
@@ -274,6 +341,12 @@ _entrance_conf_main_apply(void)
    if (_entrance_int_conf_main->theme != entrance_gui_theme_name_get())
      {
         entrance_gui_theme_name_set(_entrance_int_conf_main->theme);
+     }
+   if (strcmp(elm_config_profile_get(), _entrance_int_conf_main->elm_profile))
+     {
+        elm_config_profile_set(_entrance_int_conf_main->elm_profile);
+        elm_config_all_flush();
+        elm_config_save();
      }
    entrance_gui_conf_set(&conf);
    entrance_connect_conf_gui_send(&conf);
