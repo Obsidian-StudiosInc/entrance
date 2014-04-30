@@ -185,7 +185,7 @@ entrance_fill(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, En
           _entrance_fill_genlist(obj, ef, contents, fill_cb, func, data);
         else if (!strcasecmp(type, "elm_gengrid"))
           _entrance_fill_gengrid(obj, ef, contents, fill_cb, func, data);
-        else if (!strcasecmp(type, "elc_hoversel"))
+        else if (!strcasecmp(type, "elm_hoversel"))
           _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
           {
