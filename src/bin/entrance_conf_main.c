@@ -325,6 +325,7 @@ static void
 _entrance_conf_main_apply(void)
 {
    Entrance_Conf_Gui_Event conf;
+   Eina_Bool elementary_update = EINA_FALSE;
 
    conf.bg.path = _entrance_int_conf_main->bg.path;
    conf.bg.group = _entrance_int_conf_main->bg.group;
@@ -335,8 +336,7 @@ _entrance_conf_main_apply(void)
    if (_entrance_int_conf_main->scale != elm_config_scale_get())
      {
         elm_config_scale_set(_entrance_int_conf_main->scale);
-        elm_config_all_flush();
-        elm_config_save();
+        elementary_update = EINA_TRUE;
      }
    if (_entrance_int_conf_main->theme != entrance_gui_theme_name_get())
      {
@@ -345,6 +345,10 @@ _entrance_conf_main_apply(void)
    if (strcmp(elm_config_profile_get(), _entrance_int_conf_main->elm_profile))
      {
         elm_config_profile_set(_entrance_int_conf_main->elm_profile);
+        elementary_update = EINA_TRUE;
+     }
+   if (elementary_update)
+     {
         elm_config_all_flush();
         elm_config_save();
      }
