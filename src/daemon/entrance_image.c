@@ -1,6 +1,5 @@
+#include <Evas.h>
 #include "entrance.h"
-
-const char *extn_images[] = {".png",".jpg",NULL};
 
 static Eina_List *_entrance_image_readdir(const char *path);
 static Eina_List *_entrance_image_get(Eina_List *src, char *stdfile, char *mask);
@@ -12,7 +11,6 @@ _entrance_image_readdir(const char *path)
    Eina_List *files;
    Eina_List *targets = NULL;
    char *filename, buf[PATH_MAX];
-   int i = 0;
 
    files = ecore_file_ls(path);
    if (!files) return NULL;
@@ -21,16 +19,11 @@ _entrance_image_readdir(const char *path)
         snprintf(buf, sizeof(buf), "%s/%s", path, filename);
         if ((!ecore_file_is_dir(buf)) && (filename[0] != '.'))
           {
-             for (i = 0; extn_images[i];i ++)
-               {
-                  if (eina_str_has_extension(filename, extn_images[i]))
-                    {
-                       targets = eina_list_append(targets, eina_stringshare_add(buf));
-                    }
-               }
-
+             if (evas_object_image_extension_can_load_get(filename))
+                 targets = eina_list_append(targets, eina_stringshare_add(buf));
           }
      }
+
    return targets;
 }
 
