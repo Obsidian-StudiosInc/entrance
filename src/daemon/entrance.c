@@ -144,6 +144,34 @@ _entrance_wait(void)
 }
 
 static Eina_Bool
+_entrance_client_error(void *d EINA_UNUSED, int t EINA_UNUSED, Ecore_Exe_Event_Data *ev)
+{
+   char buf[4096];
+   size_t size = ev->size;
+
+   if ((unsigned int)ev->size > sizeof(buf) - 1)
+     size = sizeof(buf) - 1;
+
+   strncpy(buf, (char*)ev->data, size);
+   PT("Client error: %s", buf);
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, Ecore_Exe_Event_Data *ev)
+{
+   char buf[4096];
+   size_t size = ev->size;
+
+   if ((unsigned int)ev->size > sizeof(buf) - 1)
+     size = sizeof(buf) - 1;
+
+   strncpy(buf, (char*)ev->data, size);
+   PT("Client output: %s", buf);
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
 _entrance_main(const char *dname)
 {
    PT("starting...\n");
@@ -154,13 +182,17 @@ _entrance_main(const char *dname)
              char buf[PATH_MAX];
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
+             ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,
+                                     (Ecore_Event_Handler_Cb)_entrance_client_error, NULL);
+             ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
+                                     (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
              snprintf(buf, sizeof(buf),
                       "sudo -u nobody "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
              PT("Exec entrance_client: %s\n", buf);
 
-             _entrance_client = ecore_exe_run(buf, NULL);
+             _entrance_client = ecore_exe_pipe_run(buf, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR, NULL);
           }
      }
    else
