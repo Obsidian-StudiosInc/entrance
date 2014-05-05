@@ -163,7 +163,7 @@ _entrance_conf_profile_del(void *data, Evas_Object *obj EINA_UNUSED)
 static Evas_Object *
 _entrance_conf_main_build(Evas_Object *obj)
 {
-   Evas_Object *tb, *bx_over, *o, *bx, *t;
+   Evas_Object *bx_over, *o, *bx, *t;
    Eina_List *s_bg, *t_bg, *tmp = NULL, *node = NULL, *profiles, *tmp_profiles = NULL;
    char *ctmp;
 
@@ -173,16 +173,6 @@ _entrance_conf_main_build(Evas_Object *obj)
    elm_box_horizontal_set(o, EINA_TRUE);
    evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   evas_object_show(o);
-
-   o = tb = elm_toolbar_add(obj);
-   evas_object_size_hint_weight_set(o, 0, EVAS_HINT_EXPAND);
-   evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
-   elm_toolbar_horizontal_set(o, EINA_FALSE);
-   elm_toolbar_select_mode_set(o, ELM_OBJECT_SELECT_MODE_ALWAYS);
-   elm_toolbar_shrink_mode_set(o, ELM_TOOLBAR_SHRINK_SCROLL);
-   elm_toolbar_homogeneous_set(o, EINA_FALSE);
-   elm_box_pack_end(bx_over, o);
    evas_object_show(o);
 
    o = bx = elm_box_add(obj);
