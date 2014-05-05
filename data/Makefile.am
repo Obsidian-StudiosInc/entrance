@@ -11,6 +11,9 @@ pam_DATA = entrance
 confdir = $(sysconfdir)
 conf_DATA = entrance.conf
 
+sudoersdir = $(sysconfdir)/sudoers.d
+sudoers_DATA = sudoers/entrance
+
 if HAVE_SYSTEMD
 systemddir = /usr/lib/systemd/system/
 systemd_DATA = entrance.service
