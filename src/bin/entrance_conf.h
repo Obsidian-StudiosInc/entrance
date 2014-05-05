@@ -12,7 +12,8 @@ typedef struct Entrance_Conf_Background_
   do { \
   Entrance_Image *ptr; \
   Entrance_Conf_Background *tmp_ptr; \
-  EINA_LIST_FOREACH(l_src, node, ptr) \
+  Eina_List *img_list; \
+  EINA_LIST_FOREACH(l_src, img_list, ptr) \
    { \
      tmp_ptr = malloc(sizeof(Entrance_Conf_Background)); \
      tmp_ptr->path = eina_stringshare_add(ptr->path); \

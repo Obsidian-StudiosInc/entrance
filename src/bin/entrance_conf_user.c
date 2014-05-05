@@ -300,7 +300,7 @@ static void
 _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
 {
    Evas_Object *o, *gl, *bx, *hbx;
-   Eina_List *l = NULL, *tmp = NULL, *node = NULL;
+   Eina_List *l = NULL;
    Entrance_Conf_Background *img;
    int j = 0;
 
@@ -338,30 +338,18 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_gengrid_group_item_size_set(gl,
                           elm_config_scale_get() * 31,
                           elm_config_scale_get() * 31);
+
    img = calloc(1, sizeof(Entrance_Conf_Background));
-   img->group = NULL;
-   img->path = NULL;
    img->name = eina_stringshare_add("None");
-
    l = eina_list_append(l, img);
-
-#define LIST_FILL(list) \
-   tmp = NULL; \
-   IMG_LIST_FORK(list, tmp); \
-   entrance_fill(gl, entrance_conf_background_fill_get(),\
-                 tmp, _entrance_conf_user_bg_fill_cb,\
-                 _entrance_conf_user_bg_sel, o);
-
+   IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
+   IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
+   IMG_LIST_FORK(entrance_gui_theme_backgrounds(), l);
+   IMG_LIST_FORK(eu->background_pool, l);
    entrance_fill(gl, entrance_conf_background_fill_get(),
                  l, _entrance_conf_user_bg_fill_cb,
                  _entrance_conf_user_bg_sel, o);
-
-
-   LIST_FILL(entrance_gui_background_pool_get());
-   LIST_FILL(entrance_gui_theme_backgrounds());
-   LIST_FILL(eu->background_pool);
-
-#undef LIST_FILL
+   eina_list_free(l);
 
    /* Icon */
    bx = elm_box_add(t);
@@ -391,29 +379,15 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
                           elm_config_scale_get() * 31);
 
    img = calloc(1, sizeof(Entrance_Conf_Background));
-   img->group = NULL;
-   img->path = NULL;
    img->name = eina_stringshare_add("Random");
-
-   l = NULL;
-   l = eina_list_append(l, img);
-
-#define LIST_FILL(list) \
-   tmp = NULL; \
-   IMG_LIST_FORK(list, tmp); \
-   entrance_fill(gl, entrance_conf_background_fill_get(),\
-                 tmp, _entrance_conf_user_icon_fill_cb,\
-                 _entrance_conf_user_icon_sel, o);
-
+   l = eina_list_append(NULL, img);
+   IMG_LIST_FORK(entrance_gui_icon_pool_get(), l);
+   IMG_LIST_FORK(entrance_gui_theme_icons(), l);
+   IMG_LIST_FORK(eu->icon_pool, l);
    entrance_fill(gl, entrance_conf_background_fill_get(),
                  l, _entrance_conf_user_icon_fill_cb,
                  _entrance_conf_user_icon_sel, o);
-
-   LIST_FILL(entrance_gui_icon_pool_get());
-   LIST_FILL(entrance_gui_theme_icons());
-   LIST_FILL(eu->icon_pool);
-
-#undef LIST_FILL
+   eina_list_free(l);
 
    /* Session to autoselect */
    o = elm_label_add(t);

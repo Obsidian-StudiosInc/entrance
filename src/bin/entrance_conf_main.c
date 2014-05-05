@@ -163,7 +163,7 @@ static Evas_Object *
 _entrance_conf_main_build(Evas_Object *obj)
 {
    Evas_Object *bx_over, *o, *bx, *t;
-   Eina_List *s_bg, *t_bg, *tmp = NULL, *node = NULL, *profiles, *tmp_profiles = NULL;
+   Eina_List *s_bg, *t_bg, *l = NULL, *profiles, *tmp_profiles = NULL;
    char *ctmp;
 
 
@@ -203,17 +203,12 @@ _entrance_conf_main_build(Evas_Object *obj)
    s_bg = entrance_gui_background_pool_get();
    t_bg = entrance_gui_theme_backgrounds();
 
-#define LIST_FILL(list) \
-   tmp = NULL; \
-   IMG_LIST_FORK(list, tmp); \
-   entrance_fill(o, entrance_conf_background_fill_get(),\
-                 tmp, _entrance_conf_bg_fill_cb,\
+   IMG_LIST_FORK(s_bg, l);
+   IMG_LIST_FORK(t_bg, l);
+   entrance_fill(o, entrance_conf_background_fill_get(),
+                 l, _entrance_conf_bg_fill_cb,
                  _entrance_conf_bg_sel, o);
-
-   LIST_FILL(s_bg);
-   LIST_FILL(t_bg);
-
-#undef LIST_FILL
+   eina_list_free(l);
 
    /* General */
    t = elm_table_add(obj);
@@ -264,7 +259,7 @@ _entrance_conf_main_build(Evas_Object *obj)
    evas_object_size_hint_align_set(o, EVAS_HINT_FILL, EVAS_HINT_FILL);
    elm_table_pack(t, o, 1, 1, 1, 1);
    profiles = elm_config_profile_list_get();
-   EINA_LIST_FOREACH(profiles, node, ctmp)
+   EINA_LIST_FOREACH(profiles, l, ctmp)
      {
         tmp_profiles = eina_list_append(tmp_profiles, eina_stringshare_add(ctmp));
      }
