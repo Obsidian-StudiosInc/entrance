@@ -27,6 +27,7 @@ sed_process = @SED@ \
 -e 's,@includedir\@,$(includedir),g' \
 -e 's,@pkgincludedir\@,$(pkgincludedir),g' \
 -e 's,@SBINDIR\@,$(sbindir),g' \
+-e 's,@SYSCONFDIR\@,$(sysconfdir),g' \
 < $< > $@ || rm $@
 
 pc_verbose = $(pc_verbose_@AM_V@)
@@ -34,6 +35,10 @@ pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
 pc_verbose_0 = @echo " SED " $@;
 
 sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
+	$(AM_V_at)rm -f $@
+	$(pc_verbose)$(sed_process)
+
+entrance.conf: $(top_srcdir)/data/entrance.conf.in Makefile
 	$(AM_V_at)rm -f $@
 	$(pc_verbose)$(sed_process)
 

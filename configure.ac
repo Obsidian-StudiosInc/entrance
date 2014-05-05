@@ -202,7 +202,6 @@ src/Makefile
 src/bin/Makefile
 src/daemon/Makefile
 data/Makefile
-data/entrance.conf
 data/themes/Makefile
 data/themes/default/Makefile
 ])
