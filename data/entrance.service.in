@@ -5,7 +5,7 @@ After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service
 
 [Service]
 
-Environment="LD_LIBRARY_PATH=@libdir@" "PATH=$PATH:@bindir@"
+Environment="LD_LIBRARY_PATH=@libdir@"
 IgnoreSIGPIPE=no
 ExecStart=@SBINDIR@/entrance --nodaemon
 Restart= always
