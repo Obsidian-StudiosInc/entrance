@@ -9,7 +9,11 @@ pamdir = $(sysconfdir)/pam.d/
 pam_DATA = entrance
 
 confdir = $(sysconfdir)/entrance
-conf_DATA = entrance.conf Xsession
+conf_DATA = entrance.conf
+
+internal_bindir=$(sysconfdir)/entrance
+internal_bin_SCRIPTS = Xsession
+
 
 sudoersdir = $(sysconfdir)/sudoers.d
 sudoers_DATA = sudoers/entrance
