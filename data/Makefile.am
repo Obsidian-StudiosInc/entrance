@@ -29,6 +29,10 @@ sed_process = @SED@ \
 -e 's,@SBINDIR\@,$(sbindir),g' \
 < $< > $@ || rm $@
 
+pc_verbose = $(pc_verbose_@AM_V@)
+pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
+pc_verbose_0 = @echo " SED " $@;
+
 sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
 	$(AM_V_at)rm -f $@
 	$(pc_verbose)$(sed_process)
@@ -36,10 +40,6 @@ sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
 if HAVE_SYSTEMD
 systemddir = /usr/lib/systemd/system/
 systemd_DATA = entrance.service
-
-pc_verbose = $(pc_verbose_@AM_V@)
-pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
-pc_verbose_0 = @echo " SED " $@;
 
 entrance.service: $(top_srcdir)/data/entrance.service.in Makefile
 	$(AM_V_at)rm -f $@
