@@ -8,20 +8,20 @@ typedef struct Entrance_Conf_Background_
    const char *name;
 } Entrance_Conf_Background;
 
-#define IMG_LIST_FORK(l_src, l_dest) \
-  do { \
-  Entrance_Image *ptr; \
-  Entrance_Conf_Background *tmp_ptr; \
-  Eina_List *img_list; \
-  EINA_LIST_FOREACH(l_src, img_list, ptr) \
-   { \
-     tmp_ptr = malloc(sizeof(Entrance_Conf_Background)); \
-     tmp_ptr->path = eina_stringshare_add(ptr->path); \
-     tmp_ptr->group = eina_stringshare_add(ptr->group); \
-     entrance_conf_background_title_gen(tmp_ptr);\
-     l_dest = eina_list_append(l_dest, tmp_ptr); \
-   } \
-  }while(0);
+#define IMG_LIST_FORK(l_src, l_dest)                       \
+  do {                                                     \
+    Entrance_Image *ptr;                                   \
+    Entrance_Conf_Background *tmp_ptr;                     \
+    Eina_List *img_list;                                   \
+    EINA_LIST_FOREACH(l_src, img_list, ptr)                \
+     {                                                     \
+       tmp_ptr = malloc(sizeof(Entrance_Conf_Background)); \
+       tmp_ptr->path = eina_stringshare_add(ptr->path);    \
+       tmp_ptr->group = eina_stringshare_add(ptr->group);  \
+       entrance_conf_background_title_gen(tmp_ptr);        \
+       l_dest = eina_list_append(l_dest, tmp_ptr);         \
+     }                                                     \
+  } while(0);
 
 typedef void (*Entrance_Conf_Begin) (void);
 typedef void (*Entrance_Conf_End) (void);
