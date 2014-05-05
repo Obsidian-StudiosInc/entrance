@@ -14,10 +14,6 @@ conf_DATA = entrance.conf Xsession
 sudoersdir = $(sysconfdir)/sudoers.d
 sudoers_DATA = sudoers/entrance
 
-if HAVE_SYSTEMD
-systemddir = /usr/lib/systemd/system/
-systemd_DATA = entrance.service
-
 sed_process = @SED@ \
 -e 's,@VERSION\@,$(VERSION),g' \
 -e 's,@VMAJ\@,$(VMAJ),g' \
@@ -28,6 +24,14 @@ sed_process = @SED@ \
 -e 's,@pkgincludedir\@,$(pkgincludedir),g' \
 -e 's,@SBINDIR\@,$(sbindir),g' \
 < $< > $@ || rm $@
+
+sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
+	$(AM_V_at)rm -f $@
+	$(pc_verbose)$(sed_process)
+
+if HAVE_SYSTEMD
+systemddir = /usr/lib/systemd/system/
+systemd_DATA = entrance.service
 
 pc_verbose = $(pc_verbose_@AM_V@)
 pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
