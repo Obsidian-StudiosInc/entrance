@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 -DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
+-DSUDO=\"@SUDO@\" \
 @ENTRANCE_CFLAGS@
 
 if HAVE_CONSOLEKIT

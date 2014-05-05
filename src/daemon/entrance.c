@@ -187,7 +187,7 @@ _entrance_main(const char *dname)
              ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
                                      (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
              snprintf(buf, sizeof(buf),
-                      "sudo -u nobody "
+                      SUDO" -u nobody "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
              PT("Exec entrance_client: %s\n", buf);
