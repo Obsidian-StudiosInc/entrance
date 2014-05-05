@@ -353,9 +353,12 @@ _login_xsession_update(Evas_Object *obj)
    icon = elm_object_part_content_get(o, "icon");
    if (login->session->icon)
      {
+       Eina_Stringshare *path;
        if (!icon)
           icon = elm_icon_add(o);
-        elm_image_file_set(icon, login->session->icon, NULL);
+        path = entrance_gui_theme_path_get();
+        elm_image_file_set(icon, path, login->session->icon);
+        eina_stringshare_del(path);
         elm_object_part_content_set(o, "icon", icon);
      }
    else
