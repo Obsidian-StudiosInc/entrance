@@ -15,7 +15,7 @@ group "Entrance_Config" struct {
     /* Commands executed  before starting a session */
     value "session_start" string: "/usr/bin/sessreg -a -l :0.0";
     /* Commands executed  to launch a session */
-    value "session_login" string: "@prefix@/etc/entrance/Xsession";
+    value "session_login" string: "@sysconfdir@/entrance/Xsession";
     /* Commands executed when exiting a session */
     value "session_stop" string: "/usr/bin/sessreg -d -l :0.0";
 
