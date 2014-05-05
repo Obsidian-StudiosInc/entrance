@@ -2,18 +2,17 @@
 
 typedef struct Entrance_Int_Conf_Main_
 {
+   Entrance_Fill *elm_profile_fill;
    struct
      {
         Evas_Object *preview;
         const char *path;
         const char *group;
      } bg;
-   Evas_Object *display_area;
    const char *theme;
    const char *elm_profile;
-   Entrance_Fill *elm_profile_fill;
-   Eina_Bool vkbd_enabled : 1;
    double scale;
+   Eina_Bool vkbd_enabled : 1;
    Eina_Bool update : 1;
 } Entrance_Int_Conf_Main;
 
