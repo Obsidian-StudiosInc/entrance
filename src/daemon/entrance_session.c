@@ -181,8 +181,8 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         snprintf(buf, sizeof(buf), PACKAGE_BIN_DIR"/entrance_ck_launch %s > %s/.entrance_session.log 2>&1",
                  cmd, pwd->pw_dir);
 #else
-        snprintf(buf, sizeof(buf), "%s > %s/.entrance_session.log 2>&1",
-                 cmd, pwd->pw_dir);
+        snprintf(buf, sizeof(buf), "%s %s > %s/.entrance_session.log 2>&1",
+                 entrance_config->command.session_login, cmd, pwd->pw_dir);
 #endif
         PT("Executing: %s --login -c %s \n", pwd->pw_shell, buf);
         execle(pwd->pw_shell, pwd->pw_shell, "--login", "-c", buf, NULL, env);
@@ -374,13 +374,7 @@ _entrance_session_find_command(const char *path, const char *session)
              if (!strcmp(xsession->name, session))
                {
                   if (xsession->command)
-                    {
-                       if (entrance_config->xsessions
-                           == ENTRANCE_SESSION_DESKTOP_FILE_CMD_ARGS)
-                         break;
-                       else
-                         return xsession->command;
-                    }
+                    return xsession->command;
                }
           }
      }

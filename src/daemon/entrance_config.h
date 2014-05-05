@@ -5,13 +5,6 @@
 
 typedef struct _Entrance_Config Entrance_Config;
 
-typedef enum
-{
-   ENTRANCE_SESSION_DESKTOP_NONE = 0,
-   ENTRANCE_SESSION_DESKTOP_FILE_CMD = 1,
-   ENTRANCE_SESSION_DESKTOP_FILE_CMD_ARGS = 2
-} Entrance_Session_Type;
-
 struct _Entrance_Config
 {
    const char *session_path;
@@ -22,6 +15,7 @@ struct _Entrance_Config
         const char *xauth_path;
         const char *xauth_file;
         const char *session_start;
+        const char *session_login;
         const char *session_stop;
         const char *shutdown;
         const char *reboot;
@@ -37,7 +31,7 @@ struct _Entrance_Config
         const char *path;
         const char *group;
      } bg;
-   unsigned char xsessions;
+   Eina_Bool xsessions;
    Eina_Bool daemonize;
    Eina_Bool numlock;
    Eina_Bool autologin;

@@ -26,7 +26,7 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
    eev.type = ENTRANCE_EVENT_ACTIONS;
    eev.event.actions.actions = entrance_action_get();
    entrance_event_send(&eev);
-   if (entrance_config->xsessions != ENTRANCE_SESSION_DESKTOP_NONE)
+   if (entrance_config->xsessions)
      {
         PT("Sending xsessions\n");
         eev.type = ENTRANCE_EVENT_XSESSIONS;
