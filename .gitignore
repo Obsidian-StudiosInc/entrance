@@ -17,6 +17,7 @@ config.sub
 configure
 data/Makefile
 data/Makefile.in
+data/entrance.conf
 data/sudoers/entrance
 data/themes/Makefile
 data/themes/Makefile.in
