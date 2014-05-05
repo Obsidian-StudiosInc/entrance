@@ -4,7 +4,7 @@ After=systemd-user-sessions.service
 
 [Service]
 
-Environment="LD_LIBRARY_PATH=@prefix@/lib" "PATH=$PATH:@prefix@/bin"
+Environment="LD_LIBRARY_PATH=@libdir@" "PATH=$PATH:@bindir@"
 
 ExecStart=@SBINDIR@/entrance --nodaemon
 Restart= always
