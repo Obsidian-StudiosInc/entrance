@@ -212,7 +212,6 @@ entrance_conf_init(void)
    entrance_conf_main_init();
    entrance_conf_user_init();
    entrance_conf_theme_init();
-   entrance_conf_log_init();
 }
 
 void
@@ -224,7 +223,6 @@ entrance_conf_shutdown(void)
    entrance_conf_user_shutdown();
    entrance_conf_main_shutdown();
    entrance_conf_theme_shutdown();
-   entrance_conf_log_shutdown();
    EINA_LIST_FREE(_entrance_conf->modules, conf)
      {
         eina_stringshare_del(conf->label);

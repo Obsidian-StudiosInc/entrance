@@ -14,7 +14,6 @@
 #include "entrance_fill.h"
 #include "entrance_conf.h"
 #include "entrance_conf_main.h"
-#include "entrance_conf_log.h"
 #include "entrance_conf_theme.h"
 #include "entrance_conf_user.h"
 #include "entrance_connect.h"
