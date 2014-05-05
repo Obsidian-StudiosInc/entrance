@@ -412,7 +412,6 @@ main (int argc, char ** argv)
    ecore_shutdown();
    PT("session shutdown\n");
    entrance_session_shutdown();
-   free(dname);
    if (entrance_session_logged_get())
      {
         PT("user logged, waiting...\n");
