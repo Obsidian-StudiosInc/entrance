@@ -188,6 +188,7 @@ _entrance_main(const char *dname)
                                      (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
              snprintf(buf, sizeof(buf),
                       SUDO" -u nobody "
+                      "LD_LIBRARY_PATH="PACKAGE_LIB_DIR" "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
              PT("Exec entrance_client: %s\n", buf);

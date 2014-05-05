@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/daemon \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 -DSYSTEM_CONFIG_DIR=\"$(sysconfdir)\" \
+-DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 -DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
 -DSUDO=\"@SUDO@\" \
