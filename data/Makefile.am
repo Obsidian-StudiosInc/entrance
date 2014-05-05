@@ -1,15 +1,15 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = entrance entrance.conf entrance.other entrance.service.in
+EXTRA_DIST = entrance entrance.conf entrance.other entrance.service.in Xsession
 
 SUBDIRS = themes
 
 pamdir = $(sysconfdir)/pam.d/
 pam_DATA = entrance
 
-confdir = $(sysconfdir)
-conf_DATA = entrance.conf
+confdir = $(sysconfdir)/entrance
+conf_DATA = entrance.conf Xsession
 
 sudoersdir = $(sysconfdir)/sudoers.d
 sudoers_DATA = sudoers/entrance

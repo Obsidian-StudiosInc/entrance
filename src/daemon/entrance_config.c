@@ -50,11 +50,11 @@ _users_get(void)
    if (!ef)
      ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
                    EET_FILE_MODE_WRITE);
-   f = fopen(SYSTEM_CONFIG_DIR"/entrance.conf", "rb");
+   f = fopen(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", "rb");
    if (!f)
      {
         fprintf(stderr,
-                PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/entrance.conf\n");
+                PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/entrance/entrance.conf\n");
         return;
      }
 
@@ -176,7 +176,7 @@ entrance_config_init()
      }
    else
      {
-        stat(SYSTEM_CONFIG_DIR"/entrance.conf", &conf);
+        stat(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", &conf);
         if (cache.st_mtime < conf.st_mtime)
           {
              _users_get();
