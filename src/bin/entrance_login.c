@@ -180,11 +180,11 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
 
    if (!strcmp(ev->key, "KP_Enter"))
      {
-       elm_object_signal_emit(data, "entrance,auth,check", "");
+        _login_check_auth(data);
      }
    else if (!strcmp(ev->key, "Return"))
      {
-       elm_object_signal_emit(data, "entrance,auth,check", "");
+        _login_check_auth(data);
      }
    else if (!strcmp(ev->key, "BackSpace"))
      {
