@@ -1,7 +1,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST = entrance entrance.conf entrance.other entrance.service.in Xsession
+EXTRA_DIST = entrance entrance.conf entrance.other entrance.service.in sudoers/entrance.in Xsession
 
 SUBDIRS = themes
 
@@ -35,11 +35,12 @@ pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
 pc_verbose_0 = @echo " SED " $@;
 
 sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
-	$(AM_V_at)rm -f $@
+	$(AM_V_at)$(RM) $@
+	$(AM_V_at)$(MKDIR_P) sudoers/
 	$(pc_verbose)$(sed_process)
 
 entrance.conf: $(top_srcdir)/data/entrance.conf.in Makefile
-	$(AM_V_at)rm -f $@
+	$(AM_V_at)$(RM) $@
 	$(pc_verbose)$(sed_process)
 
 if HAVE_SYSTEMD
@@ -47,7 +48,10 @@ systemddir = /usr/lib/systemd/system/
 systemd_DATA = entrance.service
 
 entrance.service: $(top_srcdir)/data/entrance.service.in Makefile
-	$(AM_V_at)rm -f $@
+	$(AM_V_at)$(RM) $@
 	$(pc_verbose)$(sed_process)
 
 endif
+
+clean-local:
+	$(RM) entrance.conf entrance.service sudoers/entrance
