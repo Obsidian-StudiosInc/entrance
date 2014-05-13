@@ -8,22 +8,20 @@ static char *_entrance_image_homedir_get(const char *usr);
 static Eina_List *
 _entrance_image_readdir(const char *path)
 {
-   Eina_List *files;
+   Eina_Iterator *files;
    Eina_List *targets = NULL;
-   char *filename, buf[PATH_MAX];
+   Eina_File_Direct_Info *file_stat;
+   char *buf;
 
-   files = ecore_file_ls(path);
+   files = eina_file_stat_ls(path);
    if (!files) return NULL;
-   EINA_LIST_FREE(files, filename)
+   EINA_ITERATOR_FOREACH(files, file_stat)
      {
-        snprintf(buf, sizeof(buf), "%s/%s", path, filename);
-        if ((!ecore_file_is_dir(buf)) && (filename[0] != '.'))
-          {
-             if (evas_object_image_extension_can_load_get(filename))
-                 targets = eina_list_append(targets, eina_stringshare_add(buf));
-          }
+        buf = file_stat->path;
+        if (file_stat->type == EINA_FILE_REG && evas_object_image_extension_can_load_get(buf))
+          targets = eina_list_append(targets, eina_stringshare_add(buf));
      }
-
+   eina_iterator_free(files);
    return targets;
 }
 
