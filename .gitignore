@@ -30,7 +30,6 @@ install-sh
 missing
 src/Makefile
 src/Makefile.in
-src/bin/.deps/
 src/bin/Makefile
 src/bin/Makefile.in
 src/bin/entrance_client
@@ -42,3 +41,7 @@ src/daemon/entrance_wait
 src/daemon/entrance_ck_launch
 data/entrance.service
 stamp-h1
+.dirstamp
+.deps
+entrance-*.tar.gz
+entrance-*.tar.bz2

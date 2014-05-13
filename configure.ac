@@ -198,12 +198,6 @@ AC_FUNC_ALLOCA
 
 AC_OUTPUT([
 Makefile
-src/Makefile
-src/bin/Makefile
-src/daemon/Makefile
-data/Makefile
-data/themes/Makefile
-data/themes/default/Makefile
 ])
 
 
