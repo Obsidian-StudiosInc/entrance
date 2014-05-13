@@ -101,6 +101,7 @@ AC_MSG_RESULT([${enable_systemd}])
 
 ### Checks for programs
 AC_PROG_CC
+AM_PROG_CC_C_O
 AC_PROG_SED
 PKG_PROG_PKG_CONFIG
 AC_PATH_PROG([SUDO],[sudo],[no])
