@@ -99,8 +99,8 @@ typedef struct Entrance_Login_
 typedef struct Entrance_User_Pool_
 {
    const char *name;
-    Eina_List *icon_pool;
-    Eina_List *background_pool;
+   Eina_List *icon_pool;
+   Eina_List *background_pool;
 } Entrance_User_Pool;
 
 typedef struct Entrance_Pools_
