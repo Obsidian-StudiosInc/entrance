@@ -345,7 +345,7 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
    IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
    IMG_LIST_FORK(entrance_gui_theme_backgrounds(), l);
-   IMG_LIST_FORK(entrance_gui_user_background_pool_get(eu->login), l);
+   IMG_LIST_FORK(eu->background_pool, l);
    entrance_fill(gl, entrance_conf_background_fill_get(),
                  l, _entrance_conf_user_bg_fill_cb,
                  _entrance_conf_user_bg_sel, o);
@@ -383,7 +383,7 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    l = eina_list_append(NULL, img);
    IMG_LIST_FORK(entrance_gui_icon_pool_get(), l);
    IMG_LIST_FORK(entrance_gui_theme_icons(), l);
-   IMG_LIST_FORK(entrance_gui_user_icon_pool_get(eu->login), l);
+   IMG_LIST_FORK(eu->icon_pool, l);
    entrance_fill(gl, entrance_conf_background_fill_get(),
                  l, _entrance_conf_user_icon_fill_cb,
                  _entrance_conf_user_icon_sel, o);
