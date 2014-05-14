@@ -98,18 +98,10 @@ typedef struct Entrance_Login_
    Eina_List *background_pool;
 } Entrance_Login;
 
-typedef struct Entrance_User_Pool_
-{
-   const char *name;
-   Eina_List *icon_pool;
-   Eina_List *background_pool;
-} Entrance_User_Pool;
-
 typedef struct Entrance_Pools_
 {
    Eina_List *icon_pool;
    Eina_List *background_pool;
-   Eina_List *user_pools;
 } Entrance_Pools;
 
 typedef struct Entrance_Event_

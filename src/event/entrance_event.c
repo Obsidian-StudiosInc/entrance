@@ -280,37 +280,18 @@ _entrance_event_action_dd(void)
    return edd;
 }
 static Eet_Data_Descriptor *
-_entrance_event_user_pool_dd(void)
-{
-   Eet_Data_Descriptor *edd, *eddi;
-   Eet_Data_Descriptor_Class eddc;
-   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_User_Pool);
-   edd = eet_data_descriptor_stream_new(&eddc);
-   eddi = _entrance_event_image_dd();
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Pool, "name",
-                                 name, EET_T_STRING);
-   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_User_Pool, "icon_pool",
-                                icon_pool, eddi);
-   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_User_Pool, "background_pool",
-                                background_pool, eddi);
-   return edd;
-}
-static Eet_Data_Descriptor *
 _entrance_event_pools_dd(void)
 {
-   Eet_Data_Descriptor *edd, *eddi, *eddup;
+   Eet_Data_Descriptor *edd, *eddi;
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Pools);
    edd = eet_data_descriptor_stream_new(&eddc);
    eddi = _entrance_event_image_dd();
-   eddup = _entrance_event_user_pool_dd();
 
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "icon_pool",
                                 icon_pool, eddi);
    EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "background_pool",
                                 background_pool, eddi);
-   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "user_pools",
-                                user_pools, eddup);
    return edd;
 }
 

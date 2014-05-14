@@ -45,7 +45,6 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
    eev.type = ENTRANCE_EVENT_POOLS;
    eev.event.pools.icon_pool = entrance_image_system_icons();
    eev.event.pools.background_pool = entrance_image_system_backgrounds();
-   eev.event.pools.user_pools = NULL;
    entrance_event_send(&eev);
    return ECORE_CALLBACK_RENEW;
 }

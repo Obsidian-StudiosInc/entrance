@@ -511,15 +511,6 @@ entrance_gui_pools_set(const Entrance_Pools *pool)
         free(img);
      }
    _gui->icon_pool = pool->icon_pool;
-
-   EINA_LIST_FREE(_gui->user_pools, img)
-     {
-        eina_stringshare_del(img->path);
-        eina_stringshare_del(img->group);
-        free(img);
-     }
-   _gui->user_pools = pool->user_pools;
-
 }
 
 void
