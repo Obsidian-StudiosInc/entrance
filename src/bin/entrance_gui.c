@@ -38,6 +38,7 @@ struct Entrance_Gui_
    Eina_List *actions;
    Eina_List *background_pool;
    Eina_List *icon_pool;
+   Eina_List *user_pools;
    Eina_List *theme_background_pool;
    Eina_List *theme_icon_pool;
    Entrance_Xsession *selected_session;
@@ -458,30 +459,6 @@ entrance_gui_xsessions_get(void)
 void
 entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
 {
-   Entrance_Image *img;
-
-   if (conf->background_pool)
-     {
-        EINA_LIST_FREE(_gui->background_pool, img)
-          {
-             eina_stringshare_del(img->path);
-             eina_stringshare_del(img->group);
-             free(img);
-          }
-        _gui->background_pool = conf->background_pool;
-     }
-
-   if (conf->icon_pool)
-     {
-        EINA_LIST_FREE(_gui->icon_pool, img)
-          {
-             eina_stringshare_del(img->path);
-             eina_stringshare_del(img->group);
-             free(img);
-          }
-        _gui->icon_pool = conf->icon_pool;
-     }
-
    if (_gui->bg.path != conf->bg.path)
      {
         if ((conf->bg.path) && (*conf->bg.path))
@@ -513,6 +490,36 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
 
    _gui->changed = ~(ENTRANCE_CONF_NONE);
    _entrance_gui_update();
+}
+
+void
+entrance_gui_pools_set(const Entrance_Pools *pool)
+{
+   Entrance_Image *img;
+   EINA_LIST_FREE(_gui->background_pool, img)
+     {
+        eina_stringshare_del(img->path);
+        eina_stringshare_del(img->group);
+        free(img);
+     }
+   _gui->background_pool = pool->background_pool;
+
+   EINA_LIST_FREE(_gui->icon_pool, img)
+     {
+        eina_stringshare_del(img->path);
+        eina_stringshare_del(img->group);
+        free(img);
+     }
+   _gui->icon_pool = pool->icon_pool;
+
+   EINA_LIST_FREE(_gui->user_pools, img)
+     {
+        eina_stringshare_del(img->path);
+        eina_stringshare_del(img->group);
+        free(img);
+     }
+   _gui->user_pools = pool->user_pools;
+
 }
 
 void
