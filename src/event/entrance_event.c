@@ -22,7 +22,7 @@ static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
 static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
 static Eet_Data_Descriptor *_entrance_event_users_dd(void);
 static Eet_Data_Descriptor *_entrance_event_image_dd(void);
-static Eet_Data_Descriptor *_entrance_event_conf_user_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_user_dd(Eina_Bool stream);
 static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
 static Eet_Data_Descriptor *_entrance_event_action_dd(void);
 static Eet_Data_Descriptor *_entrance_event_new(void);
@@ -212,7 +212,7 @@ _entrance_event_users_dd(void)
    Eet_Data_Descriptor *edd, *eddl;
    Eet_Data_Descriptor_Class eddc, eddcl;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
-   edd = _entrance_event_conf_user_dd();
+   edd = _entrance_event_conf_user_dd(EINA_TRUE);
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Users_Event);
    eddl = eet_data_descriptor_stream_new(&eddcl);
    EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Entrance_Users_Event, "users",
@@ -221,7 +221,7 @@ _entrance_event_users_dd(void)
 }
 
 static Eet_Data_Descriptor *
-_entrance_event_conf_user_dd(void)
+_entrance_event_conf_user_dd(Eina_Bool stream)
 {
    Eet_Data_Descriptor *edd, *eddi;
    Eet_Data_Descriptor_Class eddc;
@@ -306,7 +306,7 @@ _entrance_event_new(void)
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_USERS_NAME,
                                    _entrance_event_users_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_USER_NAME,
-                                   _entrance_event_conf_user_dd());
+                                   _entrance_event_conf_user_dd(EINA_TRUE));
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTIONS_NAME,
                                    _entrance_event_actions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTION_NAME,
@@ -365,5 +365,5 @@ Eet_Data_Descriptor *
 entrance_event_user_dd(void)
 {
   //this is used extern for the history!
-   return _entrance_event_conf_user_dd();
+   return _entrance_event_conf_user_dd(EINA_FALSE);
 }
