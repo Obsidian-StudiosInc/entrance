@@ -245,6 +245,8 @@ _entrance_user_init(void)
                }
           }
         eina_stringshare_del(user);
+        eu->icon_pool = entrance_image_user_icons(eu->login);
+        eu->background_pool = entrance_image_user_backgrounds(eu->login);
         _lusers = eina_list_append(_lusers, eu);
      }
 }
@@ -253,6 +255,7 @@ static void
 _entrance_user_shutdown(void)
 {
    Entrance_Login *eu;
+   char *buf;
    EINA_LIST_FREE(_lusers, eu)
      {
         if (!_entrance_history_match(eu->login))
@@ -263,6 +266,14 @@ _entrance_user_shutdown(void)
              eina_stringshare_del(eu->image.group);
              eina_stringshare_del(eu->bg.path);
              eina_stringshare_del(eu->bg.group);
+             EINA_LIST_FREE(eu->background_pool, buf)
+               {
+                 eina_stringshare_del(buf);
+               }
+             EINA_LIST_FREE(eu->icon_pool, buf)
+               {
+                 eina_stringshare_del(buf);
+               }
              free(eu);
           }
      }
