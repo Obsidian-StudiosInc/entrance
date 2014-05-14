@@ -18,7 +18,9 @@ _entrance_image_readdir(const char *path)
    EINA_ITERATOR_FOREACH(files, file_stat)
      {
         buf = file_stat->path;
-        if (file_stat->type == EINA_FILE_REG && evas_object_image_extension_can_load_get(buf))
+        if (file_stat->path[file_stat->name_start] != '.'
+            && file_stat->type == EINA_FILE_REG
+            && evas_object_image_extension_can_load_get(buf))
           targets = eina_list_append(targets, eina_stringshare_add(buf));
      }
    eina_iterator_free(files);
