@@ -97,6 +97,11 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
              PT("Gui conf received\n");
              entrance_gui_conf_set(&(eev->event.conf_gui));
           }
+        else if (eev->type == ENTRANCE_EVENT_POOLS)
+          {
+             PT("Pools received\n");
+             entrance_gui_pools_set(&(eev->event.pools));
+          }
         else
           {
              PT("UNKNOW signal ");
@@ -146,8 +151,6 @@ entrance_connect_conf_gui_send(Entrance_Conf_Gui_Event *ev)
    PT("Send gui config\n");
    eev.event.conf_gui.bg.path = ev->bg.path;
    eev.event.conf_gui.bg.group = ev->bg.group;
-   eev.event.conf_gui.background_pool = NULL;
-   eev.event.conf_gui.icon_pool = NULL;
 
    eev.type = ENTRANCE_EVENT_CONF_GUI;
    entrance_event_send(&eev);
@@ -165,8 +168,6 @@ entrance_connect_conf_user_send(Entrance_Login *el)
    eev.event.conf_user.bg.path = el->bg.path;
    eev.event.conf_user.bg.group = el->bg.group;
    eev.event.conf_user.remember_session = el->remember_session;
-   eev.event.conf_user.icon_pool = NULL;
-   eev.event.conf_user.background_pool = NULL;
    eev.type = ENTRANCE_EVENT_CONF_USER;
    entrance_event_send(&eev);
 }

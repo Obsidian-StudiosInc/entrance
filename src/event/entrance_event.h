@@ -13,6 +13,7 @@ typedef enum Entrance_Event_Type_
    ENTRANCE_EVENT_ACTION,
    ENTRANCE_EVENT_MAXTRIES,
    ENTRANCE_EVENT_CONF_GUI,
+   ENTRANCE_EVENT_POOLS
 } Entrance_Event_Type;
 
 typedef struct Entrance_Xsession_
@@ -77,8 +78,6 @@ typedef struct Entrance_Conf_Gui_Event_
         const char *path;
      } bg;
    Eina_Bool vkbd_enabled;
-   Eina_List *background_pool;
-   Eina_List *icon_pool;
 } Entrance_Conf_Gui_Event;
 
 
@@ -95,9 +94,21 @@ typedef struct Entrance_Login_
    Entrance_Image bg;
    Entrance_Image image;
    Eina_Bool remember_session;
+} Entrance_Login;
+
+typedef struct Entrance_User_Pool_
+{
+   const char *name;
    Eina_List *icon_pool;
    Eina_List *background_pool;
-} Entrance_Login;
+} Entrance_User_Pool;
+
+typedef struct Entrance_Pools_
+{
+   Eina_List *icon_pool;
+   Eina_List *background_pool;
+   Eina_List *user_pools;
+} Entrance_Pools;
 
 typedef struct Entrance_Event_
 {
@@ -113,6 +124,7 @@ typedef struct Entrance_Event_
         Entrance_Actions_Event actions;
         Entrance_Action_Event action;
         Entrance_Conf_Gui_Event conf_gui;
+        Entrance_Pools pools;
      } event;
 } Entrance_Event;
 
