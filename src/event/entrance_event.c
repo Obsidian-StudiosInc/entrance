@@ -12,6 +12,7 @@
 #define ENTRANCE_EVENT_ACTION_NAME "EntranceEventAction"
 #define ENTRANCE_EVENT_CONF_GUI_NAME "EntranceEventConfGui"
 #define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
+#define ENTRANCE_EVENT_POOLS_NAME "EntranceEventPools"
 
 static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
@@ -61,6 +62,8 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
      *ev = ENTRANCE_EVENT_ACTION;
    else if (!strcmp(type, ENTRANCE_EVENT_CONF_GUI_NAME))
      *ev = ENTRANCE_EVENT_CONF_GUI;
+   else if (!strcmp(type, ENTRANCE_EVENT_POOLS_NAME))
+     *ev = ENTRANCE_EVENT_POOLS;
    else
      {
         printf("error on type set %s\n", type);
@@ -92,6 +95,8 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
      return ENTRANCE_EVENT_ACTION_NAME;
    else if (*ev == ENTRANCE_EVENT_CONF_GUI)
      return ENTRANCE_EVENT_CONF_GUI_NAME;
+   else if (*ev == ENTRANCE_EVENT_POOLS)
+     return ENTRANCE_EVENT_POOLS_NAME;
    else
      {
         printf("error on type get %d\n", *ev);
@@ -279,6 +284,41 @@ _entrance_event_action_dd(void)
                                  action, EET_T_UCHAR);
    return edd;
 }
+static Eet_Data_Descriptor *
+_entrance_event_user_pool_dd(void)
+{
+   Eet_Data_Descriptor *edd, *eddi;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_User_Pool);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   eddi = _entrance_event_image_dd();
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_User_Pool, "name",
+                                 name, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_User_Pool, "icon_pool",
+                                icon_pool, eddi);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_User_Pool, "background_pool",
+                                background_pool, eddi);
+   return edd;
+}
+static Eet_Data_Descriptor *
+_entrance_event_pools_dd(void)
+{
+   Eet_Data_Descriptor *edd, *eddi, *eddup;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Pools);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   eddi = _entrance_event_image_dd();
+   eddup = _entrance_event_user_pool_dd();
+
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "icon_pool",
+                                icon_pool, eddi);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "background_pool",
+                                background_pool, eddi);
+   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Pools, "user_pools",
+                                user_pools, eddup);
+   return edd;
+}
+
 
 static Eet_Data_Descriptor *
 _entrance_event_new(void)
@@ -313,6 +353,8 @@ _entrance_event_new(void)
                                    _entrance_event_action_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_GUI_NAME,
                                    _entrance_event_conf_gui_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_POOLS_NAME,
+                                   _entrance_event_pools_dd());
 
    EET_DATA_DESCRIPTOR_ADD_UNION(edd, Entrance_Event, "event",
                                  event, type, unified);
