@@ -724,19 +724,16 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    unsigned int rnd = 0;
    Evas_Object *o = NULL;
    Entrance_Image *img;
-   const Entrance_Login *el;
    Eina_List *user_icons = NULL, *sys_icons = NULL, *theme_icons = NULL;
 
-   el = entrance_gui_user_get(username);
-   if (el)
-       user_icons = el->icon_pool;
+   user_icons = entrance_gui_user_icon_pool_get(username);
    sys_icons = entrance_gui_icon_pool_get();
    theme_icons = entrance_gui_theme_icons();
 
    srand(time(NULL));
    rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
          * (double)rand()) / (RAND_MAX + 1.0));
-   if ((el) && (rnd < eina_list_count(user_icons)))
+   if ((rnd < eina_list_count(user_icons)))
      {
         o = elm_icon_add(obj);
         img = eina_list_nth(user_icons, rnd);
