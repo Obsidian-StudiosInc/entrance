@@ -160,12 +160,11 @@ _entrance_event_maxtries_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_conf_gui_dd(void)
 {
-   Eet_Data_Descriptor *edd, *eddi;
+   Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc,
                                              Entrance_Conf_Gui_Event);
    edd = eet_data_descriptor_stream_new(&eddc);
-   eddi = _entrance_event_image_dd();
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "enabled",
                                  enabled, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "bg.path",
@@ -174,10 +173,6 @@ _entrance_event_conf_gui_dd(void)
                                  bg.group, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "vkbd_enabled",
                                  vkbd_enabled, EET_T_UCHAR);
-   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Conf_Gui_Event, "icon_pool",
-                                icon_pool, eddi);
-   EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Conf_Gui_Event, "background_pool",
-                                background_pool, eddi);
    return edd;
 }
 

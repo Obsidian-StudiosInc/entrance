@@ -14,7 +14,6 @@ static Eina_Bool
 _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
    Entrance_Event eev;
-   Entrance_Image *img;
 
    PT("server client connected\n");
    PT("Sending users\n");

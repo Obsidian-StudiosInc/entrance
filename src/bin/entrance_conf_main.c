@@ -313,8 +313,6 @@ _entrance_conf_main_apply(void)
 
    conf.bg.path = _entrance_int_conf_main->bg.path;
    conf.bg.group = _entrance_int_conf_main->bg.group;
-   conf.background_pool = NULL;
-   conf.icon_pool = NULL;
    conf.vkbd_enabled = _entrance_int_conf_main->vkbd_enabled;
 
    if (_entrance_int_conf_main->scale != elm_config_scale_get())

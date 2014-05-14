@@ -78,8 +78,6 @@ typedef struct Entrance_Conf_Gui_Event_
         const char *path;
      } bg;
    Eina_Bool vkbd_enabled;
-   Eina_List *background_pool;
-   Eina_List *icon_pool;
 } Entrance_Conf_Gui_Event;
 
 
