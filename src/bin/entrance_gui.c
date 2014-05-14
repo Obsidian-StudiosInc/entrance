@@ -491,6 +491,32 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
    _gui->changed = ~(ENTRANCE_CONF_NONE);
    _entrance_gui_update();
 }
+static Entrance_User_Pool*
+_entrance_gui_user_pool_get(const char *name)
+{
+   Eina_List *node;
+   Entrance_User_Pool *pool;
+   EINA_LIST_FOREACH(_gui->user_pools, node, pool)
+     {
+        if (!strcmp(pool->name, name))
+          {
+             return pool;
+          }
+     }
+   return NULL;
+}
+
+Eina_List*
+entrance_gui_user_icon_pool_get(const char *name)
+{
+   return _entrance_gui_user_pool_get(name)->icon_pool;
+}
+
+Eina_List*
+entrance_gui_user_background_pool_get(const char *name)
+{
+   return _entrance_gui_user_pool_get(name)->background_pool;
+}
 
 void
 entrance_gui_pools_set(const Entrance_Pools *pool)
