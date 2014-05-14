@@ -223,9 +223,8 @@ _entrance_event_users_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_conf_user_dd(Eina_Bool stream)
 {
-   Eet_Data_Descriptor *edd, *eddi;
+   Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
-   eddi = _entrance_event_image_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = eet_data_descriptor_stream_new(&eddc);
 #define EET_LOGIN_ADD(NAME, TYPE) \
@@ -238,14 +237,6 @@ _entrance_event_conf_user_dd(Eina_Bool stream)
    EET_LOGIN_ADD(lsess, EET_T_STRING);
    EET_LOGIN_ADD(remember_session, EET_T_INT);
    // TODO screenshot
-
-   if (stream)
-     {
-        EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Login, "icon_pool",
-                                     icon_pool, eddi);
-        EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Login, "background_pool",
-                                     background_pool, eddi);
-     }
 #undef EET_LOGIN_ADD
    return edd;
 }
