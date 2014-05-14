@@ -97,6 +97,11 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
              PT("Gui conf received\n");
              entrance_gui_conf_set(&(eev->event.conf_gui));
           }
+        else if (eev->type == ENTRANCE_EVENT_POOLS)
+          {
+             PT("Pools received\n");
+             entrance_gui_pools_set(&(eev->event.pools));
+          }
         else
           {
              PT("UNKNOW signal ");
