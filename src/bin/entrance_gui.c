@@ -761,6 +761,8 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const c
         if ((!eu->image.path) && (!eu->image.group))
           {
              o = _entrance_gui_user_icon_random_get(obj, eu->login);
+             elm_image_file_get(o,&(eu->image.path),&(eu->image.group));
+             eu->tmp_icon = EINA_TRUE;
           }
         else if(eu->image.path && (!eu->image.group))
           {
