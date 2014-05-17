@@ -82,16 +82,20 @@ _entrance_conf_user_icon_fill_cb(void *data, Elm_Object_Item *it)
 {
    Entrance_Conf_Background *cbg;
    const char *bg_path, *bg_group;
+   Eina_Bool tmp_icon;
    cbg = data;
+   tmp_icon = _entrance_int_conf_user->orig->tmp_icon;
    bg_path = _entrance_int_conf_user->orig->image.path;
    bg_group = _entrance_int_conf_user->orig->image.group;
    if (((cbg->path) && (bg_path)
-         && (!strcmp(cbg->path, bg_path))) ||
-       ((!cbg->path) && (!bg_path)))
+         && (!strcmp(cbg->path, bg_path)) && !tmp_icon)
+       || ((!cbg->path) && (!bg_path))
+       || ((!cbg->path) && tmp_icon))
      {
         if  (((cbg->group) && (bg_group)
-              && (!strcmp(cbg->group, bg_group))) ||
-            ((!cbg->group) && (!bg_group)))
+              && (!strcmp(cbg->group, bg_group)) && !tmp_icon)
+            ||((!cbg->group) && (!bg_group))
+            ||((!cbg->group) && tmp_icon))
           {
              elm_gengrid_item_selected_set(it, EINA_TRUE);
              return EINA_TRUE;
