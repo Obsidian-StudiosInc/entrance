@@ -343,7 +343,6 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    img->name = eina_stringshare_add("None");
    l = eina_list_append(l, img);
    IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
-   IMG_LIST_FORK(entrance_gui_background_pool_get(), l);
    IMG_LIST_FORK(entrance_gui_theme_backgrounds(), l);
    IMG_LIST_FORK(eu->background_pool, l);
    entrance_fill(gl, entrance_conf_background_fill_get(),
