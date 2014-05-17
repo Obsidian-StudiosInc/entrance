@@ -167,6 +167,8 @@ entrance_connect_conf_user_send(Entrance_Login *el)
    eev.event.conf_user.image.path = el->image.path;
    eev.event.conf_user.bg.path = el->bg.path;
    eev.event.conf_user.bg.group = el->bg.group;
+   eev.event.conf_user.icon_pool = NULL;
+   eev.event.conf_user.background_pool = NULL;
    eev.event.conf_user.remember_session = el->remember_session;
    eev.type = ENTRANCE_EVENT_CONF_USER;
    entrance_event_send(&eev);
