@@ -102,6 +102,11 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
              PT("Pools received\n");
              entrance_gui_pools_set(&(eev->event.pools));
           }
+        else if (eev->type == ENTRANCE_EVENT_THEMES)
+          {
+             PT("Themes received\n");
+             entrance_gui_themes_set(eev->event.themes.themes);
+          }
         else
           {
              PT("UNKNOW signal ");

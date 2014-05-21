@@ -41,6 +41,7 @@ struct Entrance_Gui_
    Eina_List *user_pools;
    Eina_List *theme_background_pool;
    Eina_List *theme_icon_pool;
+   Eina_List *themes;
    Entrance_Xsession *selected_session;
    Ecore_Event_Handler *handler;
    const char *theme;
@@ -511,6 +512,18 @@ entrance_gui_pools_set(const Entrance_Pools *pool)
         free(img);
      }
    _gui->icon_pool = pool->icon_pool;
+}
+
+void
+entrance_gui_themes_set(Eina_List *list)
+{
+   _gui->themes = list;
+}
+
+Eina_List*
+entrance_gui_themes_get(void)
+{
+   return _gui->themes;
 }
 
 void

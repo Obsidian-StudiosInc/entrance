@@ -31,6 +31,8 @@ void entrance_gui_user_bg_set(const char *path, const char *group);
 Eina_List* entrance_gui_background_pool_get(void);
 Eina_List* entrance_gui_icon_pool_get(void);
 void entrance_gui_pools_set(const Entrance_Pools *pool);
+void entrance_gui_themes_set(Eina_List *list);
+Eina_List* entrance_gui_themes_get(void);
 
 /*
 char *entrance_gui_user_get();
