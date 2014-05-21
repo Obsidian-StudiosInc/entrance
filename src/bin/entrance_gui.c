@@ -18,6 +18,7 @@ static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool grante
 static void _entrance_gui_user_bg_cb(void *data, Evas_Object *obj, const char *sig, const char *src);
 static Eina_List* _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename);
 static Eina_List* _entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename);
+static void _entrance_gui_users_populate(void);
 
 static Entrance_Gui *_gui;
 
@@ -406,12 +407,12 @@ entrance_gui_auth_max_tries(void)
    */
 }
 
-void
-entrance_gui_users_set(Eina_List *users)
+static void
+_entrance_gui_users_populate(void)
 {
-   Evas_Object *ol;
    Entrance_Screen *screen;
    Eina_List *l;
+   Evas_Object *ol;
    Entrance_Fill *ef;
    const char *style;
 
@@ -428,16 +429,24 @@ entrance_gui_users_set(Eina_List *users)
                           _entrance_gui_user_content_get,
                           _entrance_gui_user_state_get,
                           _entrance_gui_user_del);
+
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         ol = ENTRANCE_GUI_GET(screen->edj, "entrance.users");
         if (!ol) continue;
-        entrance_fill(ol, ef, users, NULL,
+        entrance_fill(ol, ef, _gui->users, NULL,
                       _entrance_gui_user_sel_cb, screen->login);
         elm_object_signal_emit(screen->edj,
                                 "entrance,users,enabled", "");
      }
+   entrance_fill_del(ef);
+}
+
+void
+entrance_gui_users_set(Eina_List *users)
+{
    _gui->users = users;
+   _entrance_gui_users_populate();
 }
 
 const Eina_List *
