@@ -156,6 +156,7 @@ entrance_connect_conf_gui_send(Entrance_Conf_Gui_Event *ev)
    PT("Send gui config\n");
    eev.event.conf_gui.bg.path = ev->bg.path;
    eev.event.conf_gui.bg.group = ev->bg.group;
+   eev.event.conf_gui.theme = ev->theme;
 
    eev.type = ENTRANCE_EVENT_CONF_GUI;
    entrance_event_send(&eev);

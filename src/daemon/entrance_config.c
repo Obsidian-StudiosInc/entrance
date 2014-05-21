@@ -224,7 +224,12 @@ entrance_config_set(const Entrance_Conf_Gui_Event *conf)
         if (!update)
           update = EINA_TRUE;
      }
-
+   if (conf->theme != entrance_config->theme)
+     {
+        entrance_config->theme = conf->theme;
+        if (!update)
+          update = EINA_TRUE;
+     }
    if (update)
      {
         PT("Config save\n");
