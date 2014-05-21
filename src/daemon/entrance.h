@@ -24,6 +24,7 @@
 #include "entrance_history.h"
 #include "entrance_action.h"
 #include "entrance_image.h"
+#include "entrance_theme.h"
 
 #define PT(f, x...)                                                     \
 do                                                                   \

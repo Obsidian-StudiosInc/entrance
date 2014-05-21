@@ -20,6 +20,8 @@ src/daemon/entrance_action.h \
 src/daemon/entrance_action.c \
 src/daemon/entrance_image.h \
 src/daemon/entrance_image.c \
+src/daemon/entrance_theme.h \
+src/daemon/entrance_theme.c \
 src/daemon/entrance.h \
 src/daemon/entrance.c
 
