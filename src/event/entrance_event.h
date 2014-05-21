@@ -13,7 +13,8 @@ typedef enum Entrance_Event_Type_
    ENTRANCE_EVENT_ACTION,
    ENTRANCE_EVENT_MAXTRIES,
    ENTRANCE_EVENT_CONF_GUI,
-   ENTRANCE_EVENT_POOLS
+   ENTRANCE_EVENT_POOLS,
+   ENTRANCE_EVENT_THEMES
 } Entrance_Event_Type;
 
 typedef struct Entrance_Xsession_
@@ -87,6 +88,11 @@ typedef struct Entrance_Image_
    const char *path;
 } Entrance_Image;
 
+typedef struct Entrance_Themes_
+{
+   Eina_List *themes;
+} Entrance_Themes;
+
 typedef struct Entrance_Login_
 {
    const char *login;
@@ -120,6 +126,7 @@ typedef struct Entrance_Event_
         Entrance_Action_Event action;
         Entrance_Conf_Gui_Event conf_gui;
         Entrance_Pools pools;
+        Entrance_Themes themes;
      } event;
 } Entrance_Event;
 

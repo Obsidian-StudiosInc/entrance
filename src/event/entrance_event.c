@@ -13,6 +13,7 @@
 #define ENTRANCE_EVENT_CONF_GUI_NAME "EntranceEventConfGui"
 #define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
 #define ENTRANCE_EVENT_POOLS_NAME "EntranceEventPools"
+#define ENTRANCE_EVENT_THEMES_NAME "EntranceEventThemes"
 
 static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
@@ -64,6 +65,8 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
      *ev = ENTRANCE_EVENT_CONF_GUI;
    else if (!strcmp(type, ENTRANCE_EVENT_POOLS_NAME))
      *ev = ENTRANCE_EVENT_POOLS;
+   else if (!strcmp(type, ENTRANCE_EVENT_THEMES_NAME))
+     *ev = ENTRANCE_EVENT_THEMES;
    else
      {
         printf("error on type set %s\n", type);
@@ -97,6 +100,8 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
      return ENTRANCE_EVENT_CONF_GUI_NAME;
    else if (*ev == ENTRANCE_EVENT_POOLS)
      return ENTRANCE_EVENT_POOLS_NAME;
+   else if (*ev == ENTRANCE_EVENT_THEMES)
+     return ENTRANCE_EVENT_THEMES_NAME;
    else
      {
         printf("error on type get %d\n", *ev);
@@ -173,6 +178,20 @@ _entrance_event_conf_gui_dd(void)
                                  bg.group, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "vkbd_enabled",
                                  vkbd_enabled, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Conf_Gui_Event, "theme",
+                                 theme, EET_T_STRING);
+   return edd;
+}
+
+static Eet_Data_Descriptor *
+_entrance_event_themes_dd(void)
+{
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor_Class eddc;
+   EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Themes);
+   edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_LIST_STRING(edd, Entrance_Themes, "themes",
+                                 themes);
    return edd;
 }
 
@@ -331,6 +350,8 @@ _entrance_event_new(void)
                                    _entrance_event_conf_gui_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_POOLS_NAME,
                                    _entrance_event_pools_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_THEMES_NAME,
+                                   _entrance_event_themes_dd());
 
    EET_DATA_DESCRIPTOR_ADD_UNION(edd, Entrance_Event, "event",
                                  event, type, unified);
