@@ -170,29 +170,6 @@ entrance_gui_init(const char *theme)
    return j;
 }
 
-static void
-_entrance_gui_theme_update(void)
-{
-   Eina_List *node;
-   Entrance_Screen *screen;
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf),
-            PACKAGE_DATA_DIR"/themes/%s.edj", _gui->theme);
-   EINA_LIST_FOREACH(_gui->screens, node, screen)
-     {
-        elm_layout_file_set(screen->transition, buf, "entrance/wallpaper/default");
-        elm_layout_file_set(screen->edj, buf, "entrance");
-        elm_layout_file_set(screen->login, buf, "entrance/login");
-        evas_object_smart_callback_add(
-                ENTRANCE_GUI_GET(screen->edj, "entrance.conf"),
-                "clicked",
-                _entrance_gui_conf_clicked_cb,
-                screen->transition);
-     }
-   _entrance_gui_actions_populate();
-   _entrance_gui_users_populate();
-}
-
 void
 entrance_gui_shutdown(void)
 {
@@ -522,8 +499,7 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
      }
    if (_gui->theme != conf->theme)
      {
-       entrance_gui_theme_name_set(conf->theme);
-       _entrance_gui_theme_update();
+       _gui->theme = conf->theme;
      }
    _gui->changed = ~(ENTRANCE_CONF_NONE);
    _entrance_gui_update();
@@ -565,7 +541,7 @@ entrance_gui_themes_get(void)
 void
 entrance_gui_theme_name_set(const char *theme)
 {
-   _gui->theme = theme;
+   /* TODO */
 }
 
 const char *
