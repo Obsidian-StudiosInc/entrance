@@ -311,6 +311,7 @@ _entrance_conf_main_apply(void)
    Entrance_Conf_Gui_Event conf;
    Eina_Bool elementary_update = EINA_FALSE;
 
+   conf.theme = entrance_gui_theme_name_get();
    conf.bg.path = _entrance_int_conf_main->bg.path;
    conf.bg.group = _entrance_int_conf_main->bg.group;
    conf.vkbd_enabled = _entrance_int_conf_main->vkbd_enabled;
