@@ -176,7 +176,7 @@ _entrance_conf_theme_apply(void)
    entrance_gui_background_get(&conf.bg.path, &conf.bg.group);
 
    entrance_connect_conf_gui_send(&conf);
-   entrance_gui_conf_set(&conf);
+   entrance_gui_theme_name_set(conf.theme);
    entrance_conf_changed();
 }
 

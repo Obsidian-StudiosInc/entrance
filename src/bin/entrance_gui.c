@@ -525,10 +525,6 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
         _gui->vkbd_enabled = conf->vkbd_enabled;
         _gui->changed &= ENTRANCE_CONF_VKBD;
      }
-   if (_gui->theme != conf->theme)
-     {
-       entrance_gui_theme_name_set(conf->theme);
-     }
    _gui->changed = ~(ENTRANCE_CONF_NONE);
    _entrance_gui_update();
 }
