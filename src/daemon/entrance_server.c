@@ -39,7 +39,6 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
         eev.event.conf_gui.enabled = EINA_TRUE;
         eev.event.conf_gui.bg.path = entrance_config->bg.path;
         eev.event.conf_gui.bg.group = entrance_config->bg.group;
-        eev.event.conf_gui.theme = entrance_config->theme;
         entrance_event_send(&eev);
      }
    PT("Sending pools\n");
