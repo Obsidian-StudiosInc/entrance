@@ -474,7 +474,7 @@ _entrance_tp_del(Evas_Object *obj)
    Entrance_Theme_Preview *pre = evas_object_smart_data_get(obj);
    String_Animation *ani;
 
-  if (pre->active_timer)
+  if ((pre) && pre->active_timer)
     {
        ani = ecore_timer_del(pre->active_timer);
        free(ani);
