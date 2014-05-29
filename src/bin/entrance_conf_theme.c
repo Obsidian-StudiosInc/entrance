@@ -79,8 +79,11 @@ _entrance_conf_theme_update_preview(const char *name)
 static void
 _entrance_conf_theme_end(void)
 {
+   Evas_Object *o;
+   o = elm_object_part_content_get(_entrance_int_conf_theme->preview, "default");
+   if (o)
+     _entrance_tp_del(o);
    free(_entrance_int_conf_theme);
-   evas_object_del(_entrance_int_conf_theme->preview);
 }
 
 static Eina_Bool
