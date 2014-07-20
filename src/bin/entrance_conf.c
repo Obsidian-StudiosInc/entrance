@@ -72,10 +72,10 @@ _entrance_conf_end(Evas_Object *win)
    Eina_List *l;
 
    PT("Delete config panel\n");
+   evas_object_del(win);
    EINA_LIST_FOREACH(_entrance_conf->modules, l, conf)
       conf->end();
    _entrance_conf->current = NULL;
-   evas_object_del(win);
 }
 
 void
