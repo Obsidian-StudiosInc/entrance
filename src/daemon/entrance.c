@@ -394,7 +394,7 @@ main (int argc, char ** argv)
      _entrance_main(dname);
    PT("history init\n");
    entrance_history_init();
-   if (entrance_config->autologin && !entrance_user)
+   if (entrance_config->autologin)
      {
         PT("autologin init\n");
         xcb_connection_t *disp = NULL;
@@ -404,10 +404,13 @@ main (int argc, char ** argv)
         PT("auth user\n");
 #ifdef HAVE_PAM
         entrance_pam_init(PACKAGE, dname, NULL);
-        entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER, entrance_config->userlogin);
+        entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER,
+                              entrance_config->userlogin);
 #endif
         PT("login user\n");
-        entrance_session_login(NULL, EINA_FALSE);
+        entrance_session_login(
+           entrance_history_user_session_get(entrance_config->userlogin),
+           EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
      }
