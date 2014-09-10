@@ -403,6 +403,7 @@ main (int argc, char ** argv)
         ecore_main_loop_begin();
         PT("auth user\n");
 #ifdef HAVE_PAM
+        entrance_pam_init(PACKAGE, dname, NULL);
         entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER, entrance_config->userlogin);
 #endif
         PT("login user\n");
