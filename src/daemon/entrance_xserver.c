@@ -124,16 +124,35 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
 }
 
 void
+entrance_xserver_wait(void)
+{
+   const char *xpid;
+   int pid;
+
+   PT("xserver end");
+   xpid = getenv("ENTRANCE_XPID");
+   if (xpid)
+     {
+        pid = atoi(xpid);
+        while (waitpid(pid, NULL, WUNTRACED | WCONTINUED) > 0)
+          {
+             printf(".");
+             sleep(1);
+          }
+        unsetenv("ENTRANCE_XPID");
+     }
+   printf("\n");
+}
+
+void
 entrance_xserver_end(void)
 {
    const char *xpid;
    PT("xserver end\n");
    xpid = getenv("ENTRANCE_XPID");
-   if (xpid) 
+   if (xpid)
      kill(atoi(xpid), SIGTERM);
 
-   unsetenv("ENTRANCE_XPID");
-   while (waitpid(-1, NULL, WNOHANG) > 0);
 }
 
 void

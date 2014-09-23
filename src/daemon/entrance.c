@@ -352,6 +352,7 @@ main (int argc, char ** argv)
    if (entrance_user)
      {
         char *quit;
+        entrance_xserver_wait();
         entrance_session_init(dname);
         entrance_session_end(entrance_user);
         entrance_session_shutdown();
@@ -361,8 +362,6 @@ main (int argc, char ** argv)
              unsetenv("ENTRANCE_QUIT");
              PT("Last DE Session quit with error!\n");
           }
-        PT("ending xserver\n");
-        entrance_xserver_end();
         _remove_lock();
         PT("Entrance will quit, bye bye :).\n");
         entrance_close_log();
@@ -466,6 +465,7 @@ main (int argc, char ** argv)
         PT("ending xserver\n");
         kill(pid, SIGTERM);
         entrance_xserver_end();
+        entrance_xserver_wait();
      }
    else
      PT("No session to wait, exiting\n");
