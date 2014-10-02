@@ -3,10 +3,6 @@
 #include <Ecore_X.h>
 #include <Ecore_Getopt.h>
 
-time_t current_time;
-struct tm *local_time;
-char entrance_time_d[4096];
-
 static const Ecore_Getopt options =
 {
    "entrance_client",
@@ -49,37 +45,38 @@ main(int argc, char **argv)
      return EXIT_FAILURE;
    if (quit_option)
      return EXIT_SUCCESS;
+   eina_init();
    if (!display)
      {
-        fprintf(stderr, "A display is required!\n");
+        PT("A display is required!");
+        eina_shutdown();
         return EXIT_FAILURE;
      }
-   eina_init();
    ecore_init();
    ecore_x_init(display);
    elm_init(argc, argv);
-   PT("login init\n");
+   PT("login init");
    entrance_login_init();
-   PT("gui init\n");
+   PT("gui init");
    if (!entrance_gui_init(theme)) return EXIT_FAILURE;
-   PT("conf init\n");
+   PT("conf init");
    entrance_conf_init();
-   PT("connect init\n");
+   PT("connect init");
    entrance_connect_init();
    elm_run();
-   PT("connect shutdown\n");
+   PT("connect shutdown");
    entrance_connect_shutdown();
-   PT("conf shutdown\n");
+   PT("conf shutdown");
    entrance_conf_init();
-   PT("gui shutdown\n");
+   PT("gui shutdown");
    entrance_gui_shutdown();
-   PT("login shutdown\n");
+   PT("login shutdown");
    entrance_login_shutdown();
    elm_shutdown();
    ecore_x_shutdown();
    ecore_shutdown();
    eina_shutdown();
-   PT("exit\n");
+   PT("exit");
    return EXIT_SUCCESS;
 }
 

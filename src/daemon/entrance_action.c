@@ -136,7 +136,7 @@ _entrance_action_shutdown(void *data EINA_UNUSED)
 static void
 _entrance_action_reboot(void *data EINA_UNUSED)
 {
-   PT("Reboot\n");
+   PT("Reboot");
    _action_exe = ecore_exe_run(entrance_config->command.reboot, NULL);
 }
 
@@ -149,7 +149,7 @@ _entrance_action_exe_event_del_cb(void *data EINA_UNUSED, int type EINA_UNUSED, 
    if (!ev->exe) return ret;
    if (ev->exe == _action_exe)
      {
-        PT("action quit requested by user\n");
+        PT("action quit requested by user");
         ecore_main_loop_quit();
         ret = ECORE_CALLBACK_DONE;
      }
@@ -204,12 +204,15 @@ _entrance_action_grub2_get(void)
 
    PT("trying to open "GRUB2_FILE);
    f = eina_file_open(GRUB2_FILE, EINA_FALSE);
-   if (!f) return ;
-   fprintf(stderr, " o");
+   if (!f)
+     {
+        PT("Unable to open "GRUB2_FILE);
+        return ;
+     }
 
    data = eina_file_map_all(f, EINA_FILE_SEQUENTIAL);
    if (!data) goto on_error;
-   fprintf(stderr, "k\n");
+   PT("open "GRUB2_FILE" ok");
 
    s = data;
    r2 = NULL;
@@ -241,7 +244,7 @@ _entrance_action_grub2_get(void)
         if (!grub2_ok)
           {
              grub2_ok = 1;
-             PT("GRUB2 save mode found\n");
+             PT("GRUB2 save mode found");
           }
         else
           {
@@ -268,7 +271,7 @@ _entrance_action_grub2_get(void)
              if (!action) goto end_line;
 
              sprintf(action, "Reboot on %s", local);
-             PT("GRUB2 '%s'\n", action);
+             PT("GRUB2 '%s'", action);
              _entrance_actions =
                 eina_list_append(_entrance_actions,
                                  _entrance_action_add(action,

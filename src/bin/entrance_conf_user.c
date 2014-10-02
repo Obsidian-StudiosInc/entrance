@@ -208,12 +208,12 @@ _entrance_conf_remembersession_changed(void *data EINA_UNUSED, Evas_Object *obj,
 {
    if ((event_info) && !strcmp(event_info, "Enabled"))
      {
-        PT("Turned remember session on\n");
+        PT("Turned remember session on");
         _entrance_int_conf_user->remember_session = EINA_TRUE;
      }
    else
      {
-        PT("Turned remember session off\n");
+        PT("Turned remember session off");
         _entrance_int_conf_user->remember_session = EINA_FALSE;
      }
    _entrance_conf_remembersession_update(obj);
@@ -244,7 +244,7 @@ _entrance_conf_user_auth(void *data, const char *user, Eina_Bool granted)
                   _entrance_int_conf_user->remember_session =
                      eu->remember_session;
                   /*
-                  printf("init %s %s | %s %s | %s | %d\n",
+                  printf("init %s %s | %s %s | %s | %d",
                          _entrance_int_conf_user->bg.path,
                          _entrance_int_conf_user->bg.group,
                          _entrance_int_conf_user->image.path,
@@ -469,7 +469,7 @@ _entrance_conf_user_apply(void)
      eina_stringshare_replace(&eu->lsess, _entrance_int_conf_user->lsess);
    entrance_connect_conf_user_send(eu);
    /*
-      printf("%s | %s\n%s | %s\n%s | %s\n%s | %s\n%d | %d\n%s | %s\n",
+      printf("%s | %s%s | %s%s | %s%s | %s%d | %d%s | %s",
       eu->bg.path, _entrance_int_conf->bg.path,
       eu->bg.group, _entrance_int_conf->bg.group,
       eu->image.path, _entrance_int_conf->image.path,
@@ -482,7 +482,7 @@ _entrance_conf_user_apply(void)
 void
 entrance_conf_user_init(void)
 {
-   PT("conf user init\n");
+   PT("conf user init");
    _entrance_session_fill =
       entrance_fill_new("default",
                         _entrance_conf_session_text_get,
@@ -501,7 +501,7 @@ entrance_conf_user_init(void)
 void
 entrance_conf_user_shutdown(void)
 {
-   PT("conf user shutdown\n");
+   PT("conf user shutdown");
    entrance_fill_del(_entrance_session_fill);
 }
 

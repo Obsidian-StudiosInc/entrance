@@ -77,12 +77,11 @@ entrance_gui_init(const char *theme)
    int x, y, w, h;
    int ww = 0, hh = 0;
 
-   PT("Gui init: ");
-   fprintf(stderr, "%s\n", theme);
+   PT("Gui init: %s", theme);
    _gui = calloc(1, sizeof(Entrance_Gui));
    if (!_gui)
      {
-        PT("Not Enough memory\n");
+        PT("Not Enough memory");
         return 1;
      }
    _gui->theme = eina_stringshare_add(theme);
@@ -91,8 +90,7 @@ entrance_gui_init(const char *theme)
    char *tmp = getenv("DISPLAY");
    if (tmp && *tmp)
      {
-        PT("client Using display name");
-        fprintf(stderr, " %s\n", tmp);
+        PT("client Using display name %s", tmp);
      }
 #endif
 
@@ -116,8 +114,7 @@ entrance_gui_init(const char *theme)
          screen->edj = ol;
          if (!ol)
            {
-              PT("Tut Tut Tut no theme");
-              fprintf(stderr, "%s\n", "entrance");
+              PT("Tut Tut Tut no theme for entrance");
               return j;
            }
          elm_object_part_content_set(o, "entrance.screen", ol);
@@ -204,7 +201,7 @@ entrance_gui_shutdown(void)
    Entrance_Screen *screen;
    Entrance_Xsession *xsession;
    Entrance_Image *img;
-   PT("Gui shutdown\n");
+   PT("Gui shutdown");
    evas_object_del(_gui->win);
    EINA_LIST_FREE(_gui->screens, screen)
      {
@@ -338,7 +335,7 @@ entrance_gui_theme_get (Evas_Object *win, const char *group)
                  PACKAGE_DATA_DIR"/themes/%s.edj", _gui->theme);
         if (!elm_layout_file_set(edje, buf, group))
           {
-             PT("Can't load %s theme fallback to default\n", _gui->theme);
+             PT("Can't load %s theme fallback to default", _gui->theme);
              elm_layout_file_set(edje, PACKAGE_DATA_DIR"/themes/default.edj",
                                  group);
           }
@@ -386,7 +383,7 @@ void
 entrance_gui_actions_set(Eina_List *actions)
 {
    if (!actions) return;
-   PT("Actions set\n");
+   PT("Actions set");
    _gui->actions = actions;
    _entrance_gui_actions_populate();
 }
@@ -428,7 +425,7 @@ _entrance_gui_users_populate(void)
    if (!style)
      style = "default"; //theme has not settet a style
 
-   PT("Add users list, using item style: %s\n", style);
+   PT("Add users list, using item style: %s", style);
    ef = entrance_fill_new(style,
                           _entrance_gui_user_text_get,
                           _entrance_gui_user_content_get,
@@ -666,7 +663,7 @@ entrance_gui_user_bg_set(const char *path, const char *group)
    Entrance_Screen *screen;
    Evas_Object *o;
 
-   PT("User Background - %s %s\n", path, group);
+   PT("User Background - %s %s", path, group);
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         if (path || group)
@@ -695,14 +692,14 @@ _entrance_gui_update(void)
         Evas_Object *bg = NULL;
         if (_gui->changed & ENTRANCE_CONF_WALLPAPER)
           {
-             PT("Set background %s - %s\n", _gui->bg.path, _gui->bg.group);
+             PT("Set background %s - %s", _gui->bg.path, _gui->bg.group);
              bg = _entrance_gui_background_obj_get(screen->transition, _gui->bg.path, _gui->bg.group);
              if (!bg)
                {
                   const char *path;
                   const char *group;
                   if ((_gui->bg.group) || (_gui->bg.path))
-                    PT("Failed to load new background, fallback on the theme default! \n");
+                    PT("Failed to load new background, fallback on the theme default! ");
                   bg = entrance_gui_theme_get(screen->transition,
                                               "entrance/background/default");
                   edje_object_file_get(elm_layout_edje_get(bg), &path, &group);
@@ -948,7 +945,7 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
    ev = event_info;
    if (ev->atom == ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK)
      {
-        PT("screen managed\n");
+        PT("screen managed");
         elm_exit();
      }
 

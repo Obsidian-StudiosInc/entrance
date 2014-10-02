@@ -189,8 +189,7 @@ entrance_fill(Evas_Object *obj, Entrance_Fill *ef, const Eina_List *contents, En
           _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
           {
-             PT("Unknow object type to fill ");
-             fprintf(stderr, "%s\n", type);
+             PT("Unknow object type to fill %s", type);
           }
      }
 }

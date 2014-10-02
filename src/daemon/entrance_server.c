@@ -15,38 +15,38 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
 {
    Entrance_Event eev;
 
-   PT("server client connected\n");
-   PT("Sending users\n");
+   PT("server client connected");
+   PT("Sending users");
    eev.type = ENTRANCE_EVENT_USERS;
    eev.event.users.users = entrance_history_get();
    entrance_event_send(&eev);
 
-   PT("Sending actions\n");
+   PT("Sending actions");
    eev.type = ENTRANCE_EVENT_ACTIONS;
    eev.event.actions.actions = entrance_action_get();
    entrance_event_send(&eev);
    if (entrance_config->xsessions)
      {
-        PT("Sending xsessions\n");
+        PT("Sending xsessions");
         eev.type = ENTRANCE_EVENT_XSESSIONS;
         eev.event.xsessions.xsessions = entrance_session_list_get();
         entrance_event_send(&eev);
      }
    if (entrance_config->custom_conf)
      {
-        PT("Sending custom settings is enabled\n");
+        PT("Sending custom settings is enabled");
         eev.type = ENTRANCE_EVENT_CONF_GUI;
         eev.event.conf_gui.enabled = EINA_TRUE;
         eev.event.conf_gui.bg.path = entrance_config->bg.path;
         eev.event.conf_gui.bg.group = entrance_config->bg.group;
         entrance_event_send(&eev);
      }
-   PT("Sending pools\n");
+   PT("Sending pools");
    eev.type = ENTRANCE_EVENT_POOLS;
    eev.event.pools.icon_pool = entrance_image_system_icons();
    eev.event.pools.background_pool = entrance_image_system_backgrounds();
    entrance_event_send(&eev);
-   PT("Sending themes\n");
+   PT("Sending themes");
    eev.type = ENTRANCE_EVENT_THEMES;
    eev.event.themes.themes = entrance_theme_themes_get();
    entrance_event_send(&eev);
@@ -57,7 +57,7 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
 static Eina_Bool
 _entrance_server_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
-   PT("server client disconnected\n");
+   PT("server client disconnected");
 
    return ECORE_CALLBACK_RENEW;
 }
@@ -87,12 +87,12 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
         if (entrance_session_authenticate(eev->event.auth.login,
                                           eev->event.auth.password))
           {
-             PT("server authenticate granted\n");
+             PT("server authenticate granted");
              neev.event.status.login = entrance_session_login_get();
              neev.event.status.granted = EINA_TRUE;
              if (eev->event.auth.open_session)
                {
-                  PT("opening session now ...\n");
+                  PT("opening session now ...");
                   entrance_session_login(eev->event.auth.session, EINA_TRUE);
                }
              else
@@ -103,28 +103,28 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
              entrance_session_close(EINA_FALSE);
              neev.event.status.login = NULL;
              neev.event.status.granted = EINA_FALSE;
-             PT("server authenticate error\n");
+             PT("server authenticate error");
           }
         entrance_event_send(&neev);
 
      }
    else if (eev->type == ENTRANCE_EVENT_ACTION)
      {
-        PT("Action received\n");
+        PT("Action received");
         entrance_action_run(eev->event.action.action);
      }
    else if (eev->type == ENTRANCE_EVENT_CONF_GUI)
      {
-        PT("Conf Gui received\n");
+        PT("Conf Gui received");
         entrance_config_set(&eev->event.conf_gui);
      }
    else if (eev->type == ENTRANCE_EVENT_CONF_USER)
      {
-        PT("Conf user received\n");
+        PT("Conf user received");
         entrance_history_user_update(&eev->event.conf_user);
      }
    else
-     PT("UNKNOW signal server\n");
+     PT("UNKNOW signal server");
    return EINA_TRUE;
 }
 
@@ -151,7 +151,7 @@ entrance_server_init(void)
    _entrance_server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM,
                                         "entrance", 42, NULL);
    if (!_entrance_server)
-     PT("server init fail\n");
+     PT("server init fail");
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
                                _entrance_server_add, NULL);

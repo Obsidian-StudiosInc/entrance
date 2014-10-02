@@ -47,26 +47,25 @@ _entrance_pam_conv(int num_msg, const struct pam_message **msg,
           {
            case PAM_PROMPT_ECHO_ON:
               // We assume PAM is asking for the username
-              PT("echo on\n");
+              PT("echo on");
               resp[i]->resp = _login;
               break;
 
            case PAM_PROMPT_ECHO_OFF:
-              PT("echo off\n");
+              PT("echo off");
               resp[i]->resp = _passwd;
               _passwd = NULL;
               break;
            case PAM_ERROR_MSG:
-              PT("error msg\n");
+              PT("error msg");
            case PAM_TEXT_INFO:
-              PT("info ");
-              fprintf(stderr, "%s\n", msg[i]->msg);
+              PT("info %s", msg[i]->msg);
               break;
            case PAM_SUCCESS:
-              PT("success :)\n");
+              PT("success :)");
               break;
            default:
-              PT("default\n");
+              PT("default");
           }
         if (result != PAM_SUCCESS) break;
      }
@@ -104,14 +103,14 @@ entrance_pam_open_session(void)
      {
       case PAM_CRED_ERR:
       case PAM_USER_UNKNOWN:
-         PT("PAM user unknow\n");
+         PT("PAM user unknow");
          return 1;
       case PAM_AUTH_ERR:
       case PAM_PERM_DENIED:
-         PT("PAM error on login password\n");
+         PT("PAM error on login password");
          return 1;
       default:
-         PT("PAM open warning unknow error\n");
+         PT("PAM open warning unknow error");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -132,13 +131,13 @@ entrance_pam_open_session(void)
 void
 entrance_pam_close_session(const Eina_Bool opened)
 {
-   PT("PAM close session\n");
+   PT("PAM close session");
    last_result = pam_close_session(_pam_handle, PAM_SILENT);
    switch (last_result)
      {
       default:
          //case PAM_SESSION_ERROR:
-         PT("error on close session\n");
+         PT("error on close session");
          pam_setcred(_pam_handle, PAM_DELETE_CRED);
          entrance_pam_end();
       case PAM_SUCCESS:
@@ -178,24 +177,24 @@ entrance_pam_authenticate(void)
      {
       case PAM_ABORT:
       case PAM_AUTHINFO_UNAVAIL:
-         PT("PAM error !\n");
+         PT("PAM error !");
          entrance_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         PT("PAM user unknow error !\n");
+         PT("PAM user unknow error !");
          return 1;
       case PAM_MAXTRIES:
-         PT("PAM max tries error !\n");
+         PT("PAM max tries error !");
          entrance_server_client_wait();
          return 1;
       case PAM_CRED_INSUFFICIENT:
-         PT("PAM don't have sufficient credential to authenticate !\n");
+         PT("PAM don't have sufficient credential to authenticate !");
          return 1;
       case PAM_AUTH_ERR:
-         PT("PAM authenticate error !\n");
+         PT("PAM authenticate error !");
          return 1;
       default:
-         PT("PAM auth warning unknow error\n");
+         PT("PAM auth warning unknow error");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -206,18 +205,18 @@ entrance_pam_authenticate(void)
       default:
          //case PAM_NEW_AUTHTOKEN_REQD:
       case PAM_ACCT_EXPIRED:
-         PT("PAM user acct expired error\n");
+         PT("PAM user acct expired error");
          entrance_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         PT("PAM user unknow error\n");
+         PT("PAM user unknow error");
          entrance_pam_end();
          return 1;
       case PAM_AUTH_ERR:
-         PT("PAM auth error\n");
+         PT("PAM auth error");
          return 1;
       case PAM_PERM_DENIED:
-         PT("PAM perm_denied error\n");
+         PT("PAM perm_denied error");
          return 1;
       case PAM_SUCCESS:
          break;
@@ -250,7 +249,7 @@ entrance_pam_init(const char *service, const char *display, const char *user)
    return 0;
 
 pam_error:
-   PT("PAM error !!!\n");
+   PT("PAM error !!!");
    return 1;
 }
 
@@ -262,7 +261,7 @@ entrance_pam_item_set(ENTRANCE_PAM_ITEM_TYPE type, const void *value)
       return 0;
    }
 
-   PT("PAM error: %d on %d\n", last_result, type);
+   PT("PAM error: %d on %d", last_result, type);
    return 1;
 }
 
@@ -275,7 +274,7 @@ entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type)
       default:
       case PAM_SYSTEM_ERR:
          entrance_pam_end();
-         PT("error on pam item get\n");
+         PT("error on pam item get");
       case PAM_PERM_DENIED: /* Here data was NULL */
       case PAM_SUCCESS:
          break;

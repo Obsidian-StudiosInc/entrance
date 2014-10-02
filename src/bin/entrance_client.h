@@ -21,20 +21,12 @@
 #include "entrance_gui.h"
 #include "entrance_login.h"
 
-#define PT(f, x...)                                                     \
-do                                                                   \
-{                                                                    \
-   current_time = time(NULL);                                        \
-   local_time = localtime(&current_time);                            \
-   memset(entrance_time_d, 0, sizeof(entrance_time_d));              \
-   strftime(entrance_time_d, sizeof(entrance_time_d),                \
-            "%b %_2d %T", local_time);                               \
-   fprintf(stderr, "(%s) "PACKAGE"_client: "f, entrance_time_d, ##x); \
+#define PT(f, x...)                                                        \
+do                                                                         \
+{                                                                          \
+   printf(__FILE__"%d : "f"", __LINE__, ##x); \
+   fflush(stdout);                               \
 } while (0)
-
-extern   time_t current_time;
-extern   struct tm *local_time;
-extern   char entrance_time_d[4096];
 
 int entrance_client_main(void);
 

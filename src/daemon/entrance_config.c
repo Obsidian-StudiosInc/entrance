@@ -54,8 +54,7 @@ _users_get(void)
    f = fopen(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", "rb");
    if (!f)
      {
-        fprintf(stderr,
-                PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/entrance/entrance.conf\n");
+        PT(PACKAGE": Could not open "SYSTEM_CONFIG_DIR"/entrance/entrance.conf");
         return;
      }
 
@@ -80,7 +79,7 @@ _users_get(void)
 
    fclose(f);
    if (eet_data_undump(ef, ENTRANCE_CONFIG_KEY, text, textlen, 1))
-     fprintf(stderr, PACKAGE": Updating configuration\n");
+     PT(PACKAGE": Updating configuration");
    free(text);
    eet_close(ef);
 }
@@ -104,7 +103,7 @@ _cache_get(void)
    if (!config)
      {
         PT(": Warning no configuration found! This must "
-           "not append, we will go back to default configuration\n");
+           "not append, we will go back to default configuration");
         config = (Entrance_Config *) calloc(1, sizeof(Entrance_Config));
         _defaults_set(config);
      }
@@ -117,7 +116,7 @@ _cache_get(void)
 static void
 _config_free(Entrance_Config *config)
 {
-   PT("Config free\n");
+   PT("Config free");
    eina_stringshare_del(config->session_path);
    eina_stringshare_del(config->command.xinit_path);
    eina_stringshare_del(config->command.xinit_args);
@@ -232,7 +231,7 @@ entrance_config_set(const Entrance_Conf_Gui_Event *conf)
      }
    if (update)
      {
-        PT("Config save\n");
+        PT("Config save");
         if (!ecore_file_is_dir("/var/cache/"PACKAGE))
           ecore_file_mkdir("/var/cache/"PACKAGE);
         file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,

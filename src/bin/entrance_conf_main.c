@@ -98,7 +98,7 @@ _entrance_conf_vkbd_changed(void *data EINA_UNUSED, Evas_Object *obj, void *even
 {
    Elm_Actionslider_Pos p;
 
-   PT("User change vkbd state\n");
+   PT("User change vkbd state");
 
    p = elm_actionslider_indicator_pos_get(obj);
    _entrance_int_conf_main->vkbd_enabled = !!(p == ELM_ACTIONSLIDER_RIGHT);
@@ -343,7 +343,7 @@ _entrance_conf_main_apply(void)
 void
 entrance_conf_main_init(void)
 {
-   PT("conf main init\n");
+   PT("conf main init");
    entrance_conf_module_register("Main",
                                  _entrance_conf_main_begin,
                                  _entrance_conf_main_end,
@@ -355,6 +355,6 @@ entrance_conf_main_init(void)
 void
 entrance_conf_main_shutdown(void)
 {
-   PT("conf main shutdown\n");
+   PT("conf main shutdown");
 }
 

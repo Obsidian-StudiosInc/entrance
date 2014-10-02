@@ -2,21 +2,24 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <Eina.h>
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
 
 #define ENTRANCE_DISPLAY ":0.0"
 #define ENTRANCE_XEPHYR ":1.0"
-time_t current_time;
-struct tm *local_time;
-char entrance_time_d[4096];
 
 static Eina_Bool _open_log();
 static Eina_Bool _entrance_main(const char *dname);
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
+static void _entrance_autologin_lock_set(void);
+static Eina_Bool _entrance_autologin_lock_get(void);
+static Eina_Bool _entrance_client_error(void *data, int type, void *event);
+static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
+static void _entrance_wait(void);
 
 static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
@@ -27,7 +30,7 @@ static Ecore_Exe *_entrance_client = NULL;
 static void
 _signal_cb(int sig)
 {
-   PT("signal %d received\n", sig);
+   PT("signal %d received", sig);
    //FIXME  if I don't have main loop at this time ?
    if (_entrance_client)
      ecore_exe_terminate(_entrance_client);
@@ -38,7 +41,7 @@ _signal_cb(int sig)
 static void
 _signal_log(int sig EINA_UNUSED)
 {
-   PT("reopen the log file\n");
+   PT("reopen the log file");
    entrance_close_log();
    _open_log();
 }
@@ -58,14 +61,14 @@ _get_lock()
         f = fopen(entrance_config->lockfile, "w");
         if (!f)
           {
-             PT("Couldn't create lockfile!\n");
+             PT("Couldn't create lockfile!");
              return (EINA_FALSE);
           }
-        snprintf(buf, sizeof(buf), "%d\n", my_pid);
+        snprintf(buf, sizeof(buf), "%d", my_pid);
         if (!fwrite(buf, strlen(buf), 1, f))
           {
              fclose(f);
-             PT("Couldn't write the lockfile\n");
+             PT("Couldn't write the lockfile");
              return EINA_FALSE;
           }
         fclose(f);
@@ -80,7 +83,7 @@ _get_lock()
         if (pid == my_pid)
           return EINA_TRUE;
 
-        PT("A lock file are present another instance are present ?\n");
+        PT("A lock file are present another instance are present ?");
         return EINA_FALSE;
      }
 
@@ -93,9 +96,9 @@ _update_lock()
    FILE *f;
    char buf[128];
    f = fopen(entrance_config->lockfile, "w");
-   snprintf(buf, sizeof(buf), "%d\n", getpid());
+   snprintf(buf, sizeof(buf), "%d", getpid());
    if (!fwrite(buf, strlen(buf), 1, f))
-     PT("Coudn't update lockfile\n");
+     PT("Coudn't update lockfile");
    fclose(f);
 }
 
@@ -112,15 +115,15 @@ _open_log()
    elog = fopen(entrance_config->logfile, "a");
    if (!elog)
      {
-        PT("could not open logfile !\n");
+        PT("could not open logfile !");
         return EINA_FALSE;
      }
    fclose(elog);
    if (!freopen(entrance_config->logfile, "a", stdout))
-     PT("Error on reopen stdout\n");
+     PT("Error on reopen stdout");
    setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
    if (!freopen(entrance_config->logfile, "a", stderr))
-     PT("Error on reopen stderr\n");
+     PT("Error on reopen stderr");
    setvbuf(stderr, NULL, _IONBF, BUFSIZ);
    return EINA_TRUE;
 }
@@ -139,42 +142,51 @@ _entrance_wait(void)
 {
    // XXX: use eina_prefix! hardcoding paths . :(
    execl(PACKAGE_BIN_DIR"/entrance_wait", PACKAGE_SBIN_DIR"/entrance", NULL);
-   PT("HUM HUM HUM can't wait ...\n\n\n");
+   PT("HUM HUM HUM can't wait ...");
    _exit(1);
 }
 
 static Eina_Bool
-_entrance_client_error(void *d EINA_UNUSED, int t EINA_UNUSED, Ecore_Exe_Event_Data *ev)
+_entrance_client_error(void *data EINA_UNUSED, int type, void *event)
 {
    char buf[4096];
-   size_t size = ev->size;
+   Ecore_Exe_Event_Data *ev;
+   size_t size;
+
+   ev = event;
+   size = ev->size;
 
    if ((unsigned int)ev->size > sizeof(buf) - 1)
      size = sizeof(buf) - 1;
 
    strncpy(buf, (char*)ev->data, size);
-   PT("Client error: %s", buf);
+   EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
-_entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, Ecore_Exe_Event_Data *ev)
+_entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, void *event)
 {
    char buf[4096];
-   size_t size = ev->size;
+   Ecore_Exe_Event_Data *ev;
+   size_t size;
+
+   ev = event;
+   size = ev->size;
+
 
    if ((unsigned int)ev->size > sizeof(buf) - 1)
      size = sizeof(buf) - 1;
 
-   strncpy(buf, (char*)ev->data, size);
-   PT("Client output: %s", buf);
+   snprintf(buf, size + 1, "%s", (char*)ev->data);
+   EINA_LOG_DOM_INFO(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
 }
 
 static Eina_Bool
 _entrance_main(const char *dname)
 {
-   PT("starting...\n");
+   PT("starting...");
    if (!entrance_config->autologin)
      {
         if (!_entrance_client)
@@ -183,7 +195,7 @@ _entrance_main(const char *dname)
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,
-                                     (Ecore_Event_Handler_Cb)_entrance_client_error, NULL);
+                                     _entrance_client_error, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
                                      (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
              snprintf(buf, sizeof(buf),
@@ -191,7 +203,7 @@ _entrance_main(const char *dname)
                       "LD_LIBRARY_PATH="PACKAGE_LIB_DIR" "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
                       dname, entrance_config->theme);
-             PT("Exec entrance_client: %s\n", buf);
+             PT("Exec entrance_client: %s", buf);
 
              _entrance_client = ecore_exe_pipe_run(buf, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR, NULL);
           }
@@ -209,12 +221,42 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    ev = event;
    if (ev->exe != _entrance_client)
      return ECORE_CALLBACK_PASS_ON;
-   PT("client have terminated\n");
+   PT("client have terminated");
    ecore_main_loop_quit();
    _entrance_client = NULL;
 
    return ECORE_CALLBACK_DONE;
 }
+
+static void
+_entrance_autologin_lock_set(void)
+{
+   system("touch /var/cache/entrance/login");
+}
+
+static Eina_Bool
+_entrance_autologin_lock_get(void)
+{
+   FILE *f;
+   char buf[4096];
+   double uptime, sleep_time;
+   struct stat st_login;
+
+   f = fopen("/proc/uptime", "r");
+   if (f)
+     {
+        fgets(buf,  sizeof(buf), f);
+        fscanf(f, "%lf %lf", &uptime, &sleep_time);
+        fclose(f);
+        if (stat("/var/run/entrance/login", &st_login) > 0)
+           return EINA_FALSE;
+        else
+           return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
+
+
 
 
 static const Ecore_Getopt options =
@@ -222,7 +264,7 @@ static const Ecore_Getopt options =
    PACKAGE,
    "%prog [options]",
    VERSION,
-   "(C) 2011 Enlightenment, see AUTHORS",
+   "(C) 201e Enlightenment, see AUTHORS",
    "GPL, see COPYING",
    "Entrance is a login manager, written using core efl libraries",
    EINA_TRUE,
@@ -230,8 +272,8 @@ static const Ecore_Getopt options =
       ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
       ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
       ECORE_GETOPT_STORE_TRUE('e', "fastexit", "Will change the way entrance \
-handles the exit of the created session.\n If set, entrance will exit if the session \
-quits.\n If not, entrance will restart if the session is quit because of an error, \
+handles the exit of the created session. If set, entrance will exit if the session \
+quits. If not, entrance will restart if the session is quit because of an error, \
 or if the environment variable ENTRANCE_RESTART is set."),
       ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
       ECORE_GETOPT_HELP ('h', "help"),
@@ -266,10 +308,18 @@ main (int argc, char ** argv)
         ECORE_GETOPT_VALUE_NONE
      };
 
+   eina_init();
+   eina_log_threads_enable();
+   ecore_init();
+   _entrance_log = eina_log_domain_register("entrance", EINA_COLOR_CYAN);
+   _entrance_client_log = eina_log_domain_register("entrance_client", EINA_COLOR_CYAN);
+   eina_log_domain_level_set("entrance", 5);
+   eina_log_domain_level_set("entrance_client", 5);
+
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
      {
-        PT("ERROR: could not parse options.\n");
+        PT("ERROR: could not parse options.");
         return -1;
      }
 
@@ -278,7 +328,7 @@ main (int argc, char ** argv)
 
    if (getuid() != 0)
      {
-        fprintf(stderr, "Sorry, only root can run this program!\n");
+        fprintf(stderr, "Sorry, only root can run this program!");
         return 1;
      }
    if (!_xephyr && getenv("ENTRANCE_XEPHYR"))
@@ -287,7 +337,7 @@ main (int argc, char ** argv)
    if (fastexit)
      {
         putenv(strdup("ENTRANCE_FAST_QUIT=1"));
-        PT("Fast exit enabled !\n");
+        PT("Fast exit enabled !");
      }
 
    if (_xephyr)
@@ -323,7 +373,7 @@ main (int argc, char ** argv)
      {
         if (daemon(0, 1) == -1)
           {
-             PT("Error on daemonize !\n");
+             PT("Error on daemonize !");
              quit_option = EINA_TRUE;
           }
         _update_lock();
@@ -342,7 +392,7 @@ main (int argc, char ** argv)
      }
    if (!_testing && !_open_log())
      {
-        PT("Can't open log file !!!!\n");
+        PT("Can't open log file !!!!");
         entrance_config_shutdown();
         exit(1);
      }
@@ -353,6 +403,7 @@ main (int argc, char ** argv)
      {
         char *quit;
         entrance_xserver_wait();
+        sleep(5);
         entrance_session_init(dname);
         entrance_session_end(entrance_user);
         entrance_session_shutdown();
@@ -360,14 +411,14 @@ main (int argc, char ** argv)
         if (quit)
           {
              unsetenv("ENTRANCE_QUIT");
-             PT("Last DE Session quit with error!\n");
+             PT("Last DE Session quit with error!");
           }
         _remove_lock();
-        PT("Entrance will quit, bye bye :).\n");
+        PT("Entrance will quit, bye bye :).");
         entrance_close_log();
         exit(1);
      }
-   PT("Welcome\n");
+   PT("Welcome");
    ecore_init();
    efreet_init();
    /* Initialise event handler */
@@ -381,32 +432,35 @@ main (int argc, char ** argv)
    signal(SIGALRM, _signal_cb);
    signal(SIGUSR2, _signal_log);
 
-   PT("session init\n");
+   PT("session init");
    entrance_session_init(dname);
    entrance_session_cookie();
    if (!_xephyr)
      {
-        PT("xserver init\n");
+        PT("xserver init");
         pid = entrance_xserver_init(_entrance_main, dname);
      }
    else
-     _entrance_main(dname);
-   PT("history init\n");
-   entrance_history_init();
-   if (entrance_config->autologin)
      {
-        PT("autologin init\n");
+        putenv(strdup("ENTRANCE_XPID=-1"));
+        _entrance_main(dname);
+     }
+   PT("history init");
+   entrance_history_init();
+   if ((entrance_config->autologin) && _entrance_autologin_lock_get())
+     {
+        PT("autologin init");
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(dname, NULL);
-        PT("main loop begin\n");
+        PT("main loop begin");
         ecore_main_loop_begin();
-        PT("auth user\n");
+        PT("auth user");
 #ifdef HAVE_PAM
         entrance_pam_init(PACKAGE, dname, NULL);
         entrance_pam_item_set(ENTRANCE_PAM_ITEM_USER,
                               entrance_config->userlogin);
 #endif
-        PT("login user\n");
+        PT("login user");
         entrance_session_login(
            entrance_history_user_session_get(entrance_config->userlogin),
            EINA_FALSE);
@@ -415,60 +469,61 @@ main (int argc, char ** argv)
      }
    else
      {
-        PT("action init\n");
+        PT("action init");
         entrance_action_init();
-        PT("server init\n");
+        PT("server init");
         entrance_server_init();
-        PT("starting main loop\n");
+        PT("starting main loop");
         ecore_main_loop_begin();
-        PT("main loop end\n");
+        PT("main loop end");
         entrance_server_shutdown();
-        PT("server shutdown\n");
+        PT("server shutdown");
         entrance_action_shutdown();
-        PT("action shutdown\n");
+        PT("action shutdown");
      }
    entrance_history_shutdown();
-   PT("history shutdown\n");
+   PT("history shutdown");
    if (_xephyr)
      {
         //ecore_exe_terminate(xephyr);
-        PT("Xephyr shutdown\n");
+        PT("Xephyr shutdown");
      }
    else
      {
         entrance_xserver_shutdown();
-        PT("xserver shutdown\n");
+        PT("xserver shutdown");
      }
 #ifdef HAVE_PAM
    entrance_pam_shutdown();
-   PT("pam shutdown\n");
+   PT("pam shutdown");
 #endif
+   _entrance_autologin_lock_set();
    efreet_shutdown();
-   PT("ecore shutdown\n");
+   PT("ecore shutdown");
    ecore_shutdown();
-   PT("session shutdown\n");
+   PT("session shutdown");
    entrance_session_shutdown();
    if (entrance_session_logged_get())
      {
-        PT("user logged, waiting...\n");
+        PT("user logged, waiting...");
         _entrance_wait();
         /* no more running here */
      }
    _remove_lock();
-   PT("config shutdown\n");
+   PT("config shutdown");
    entrance_config_shutdown();
-   PT("eet shutdown\n");
+   PT("eet shutdown");
    eet_shutdown();
    free(dname);
    if (!_xephyr)
      {
-        PT("ending xserver\n");
+        PT("ending xserver");
         kill(pid, SIGTERM);
         entrance_xserver_end();
         entrance_xserver_wait();
      }
    else
-     PT("No session to wait, exiting\n");
+     PT("No session to wait, exiting");
    entrance_close_log();
    return 0;
 }

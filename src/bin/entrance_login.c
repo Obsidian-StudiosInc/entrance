@@ -160,13 +160,13 @@ _login_password_catch(Evas_Object *widget, Eina_Bool catch)
      {
         if (catch)
           {
-             PT("catch password\n");
+             PT("catch password");
              login->handler = ecore_event_handler_add(
                 ECORE_EVENT_KEY_DOWN, _login_key_down_cb, widget);
           }
         else
           {
-             PT("uncatch password\n");
+             PT("uncatch password");
              ecore_event_handler_del(login->handler);
              login->handler = NULL;
           }
@@ -219,12 +219,12 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
      {
         if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
           {
-             PT("focus previous\n");
+             PT("focus previous");
              elm_object_focus_next(data, ELM_FOCUS_PREVIOUS);
           }
         else
           {
-             PT("focus next\n");
+             PT("focus next");
              elm_object_focus_next(data, ELM_FOCUS_NEXT);
           }
      }
@@ -548,7 +548,7 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 void
 entrance_login_xsessions_populate(Evas_Object *widget, Eina_List *xsessions)
 {
-   PT("Session set\n");
+   PT("Session set");
    Evas_Object *o;
    LOGIN_GET(widget);
 

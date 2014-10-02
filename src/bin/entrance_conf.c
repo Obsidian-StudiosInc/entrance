@@ -71,7 +71,7 @@ _entrance_conf_end(Evas_Object *win)
    Entrance_Conf_Module *conf;
    Eina_List *l;
 
-   PT("Delete config panel\n");
+   PT("Delete config panel");
    evas_object_del(win);
    EINA_LIST_FOREACH(_entrance_conf->modules, l, conf)
       conf->end();
@@ -200,7 +200,7 @@ _entrance_conf_bg_del(void *data, Evas_Object *obj EINA_UNUSED)
 void
 entrance_conf_init(void)
 {
-   PT("conf init\n");
+   PT("conf init");
    _entrance_conf = calloc(1, sizeof(Entrance_Int_Conf));
    _entrance_conf->background_fill =
       entrance_fill_new("thumb",
@@ -219,7 +219,7 @@ entrance_conf_shutdown(void)
 {
    Entrance_Conf_Module *conf;
 
-   PT("conf shutdown\n");
+   PT("conf shutdown");
    entrance_conf_user_shutdown();
    entrance_conf_main_shutdown();
    entrance_conf_theme_shutdown();
@@ -248,7 +248,7 @@ entrance_conf_module_register(const char *label, Entrance_Conf_Begin begin, Entr
 void
 entrance_conf_begin(Evas_Object *obj, Evas_Object *parent)
 {
-   PT("Build config panel\n");
+   PT("Build config panel");
    Evas_Object *win, *bg, *bx, *hbx, *sc, *nf, *o;
    Entrance_Conf_Module *conf;
    Eina_List *l;

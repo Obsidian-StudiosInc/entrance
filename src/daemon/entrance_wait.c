@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <stdio.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -38,6 +39,7 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
    pid = getenv("ENTRANCE_XPID");
    if (!pid) return -1;
    _x_pid = atoi(pid);
+   printf("waiting\n");
 
    action.sa_sigaction = _entrance_wait_action;
    action.sa_flags = SA_RESTART | SA_SIGINFO;

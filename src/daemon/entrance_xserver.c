@@ -35,7 +35,7 @@ _xserver_start(void)
    char **args = NULL;
    pid_t pid;
 
-   PT("Launching xserver\n");
+   PT("Launching xserver");
    pid = fork();
    if (!pid)
      {
@@ -86,7 +86,7 @@ _xserver_start(void)
         execv(args[0], args);
         if (buf) free(buf);
         if (args) free(args);
-        PT("Couldn't launch Xserver ...\n");
+        PT("Couldn't launch Xserver ...");
      }
    return pid;
 xserver_error:
@@ -96,7 +96,7 @@ xserver_error:
 static Eina_Bool
 _xserver_started(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
 {
-   PT("xserver started\n");
+   PT("xserver started");
    _env_set(_xserver->dname);
    _xserver->start(_xserver->dname);
    return ECORE_CALLBACK_PASS_ON;
@@ -116,7 +116,7 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
    pid = _xserver_start();
    snprintf(buf, sizeof(buf), "ENTRANCE_XPID=%d", pid);
    putenv(strdup(buf));
-   PT("xserver adding signal user handler\n");
+   PT("xserver adding signal user handler");
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
                                             NULL);
@@ -136,19 +136,18 @@ entrance_xserver_wait(void)
         pid = atoi(xpid);
         while (waitpid(pid, NULL, WUNTRACED | WCONTINUED) > 0)
           {
-             printf(".");
+             PT("Waiting ...");
              sleep(1);
           }
         unsetenv("ENTRANCE_XPID");
      }
-   printf("\n");
 }
 
 void
 entrance_xserver_end(void)
 {
    const char *xpid;
-   PT("xserver end\n");
+   PT("xserver end");
    xpid = getenv("ENTRANCE_XPID");
    if (xpid)
      kill(atoi(xpid), SIGTERM);

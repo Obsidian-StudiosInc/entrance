@@ -31,10 +31,10 @@ main (int argc, char **argv)
                        ck_connector_get_cookie(ck), 1);
           }
         else
-          fprintf(stderr, "entrance_ck: error connecting to ConsoleKit\n");
+          fprintf(stderr, "entrance_ck: error connecting to ConsoleKit");
      }
    else
-     fprintf(stderr, "entrance_ck: can't set up connection to ConsoleKit\n");
+     fprintf(stderr, "entrance_ck: can't set up connection to ConsoleKit");
 
 
    if (argc > 1)

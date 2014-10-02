@@ -184,7 +184,7 @@ _entrance_conf_theme_apply(void)
 void
 entrance_conf_theme_init(void)
 {
-   PT("conf theme init\n");
+   PT("conf theme init");
    entrance_conf_module_register("Theme Selector",
                                  _entrance_conf_theme_begin,
                                  _entrance_conf_theme_end,
@@ -196,7 +196,7 @@ entrance_conf_theme_init(void)
 void
 entrance_conf_theme_shutdown(void)
 {
-   PT("conf theme shutdown\n");
+   PT("conf theme shutdown");
 }
 
 

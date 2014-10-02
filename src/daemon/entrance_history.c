@@ -70,7 +70,7 @@ _entrance_history_read(void)
    if (!(ef)
        || !(_entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY)))
      {
-        PT("Error on reading last session login\n");
+        PT("Error on reading last session login");
         _entrance_history = calloc(1, sizeof(Entrance_History));
      }
    eet_close(ef);
@@ -83,7 +83,7 @@ _entrance_history_write(void)
 
    if (_history_update)
      {
-        PT("writing history file\n");
+        PT("writing history file");
         ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
                       EET_FILE_MODE_READ_WRITE);
         if (!ef)
@@ -92,7 +92,7 @@ _entrance_history_write(void)
 
         if (!eet_data_write(ef, _eddh, ENTRANCE_SESSION_KEY,
                             _entrance_history, 1))
-          PT("Error on updating last session login\n");
+          PT("Error on updating last session login");
 
         eet_close(ef);
      }
@@ -118,12 +118,12 @@ entrance_history_push(const char *login, const char *session)
    Eina_List *l;
    Entrance_Login *el;
 
-   PT("history push for user %s session %s\n", login, session);
+   PT("history push for user %s session %s", login, session);
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
         if (!strcmp(login, el->login))
           {
-             PT("History updating\n");
+             PT("History updating");
              if (el->remember_session)
                {
                   if (!session)
@@ -142,7 +142,7 @@ entrance_history_push(const char *login, const char *session)
      }
    if (!el)
      {
-        PT("History create a new entry for %s\n", login);
+        PT("History create a new entry for %s", login);
         if ((el = calloc(1, sizeof(Entrance_Login))))
           {
              el->login = eina_stringshare_add(login);
@@ -178,13 +178,13 @@ entrance_history_user_update(const Entrance_Login *eu)
    Eina_List *l;
    Entrance_Login *el;
 
-   PT("Updating user info\n");
+   PT("Updating user info");
 
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
         if (!strcmp(eu->login, el->login))
           {
-             PT("Find user in history\n");
+             PT("Find user in history");
              _entrance_history_user_set(el, eu);
             break;
           }
@@ -195,7 +195,7 @@ entrance_history_user_update(const Entrance_Login *eu)
           {
              if (!strcmp(eu->login, el->login))
                {
-                  PT("Append user in history\n");
+                  PT("Append user in history");
                   _entrance_history_user_set(el, eu);
                   _entrance_history->history = eina_list_append(_entrance_history->history, el);
                   break;
@@ -232,7 +232,7 @@ _entrance_user_init(void)
    char *user;
    int uid;
 
-   PT("scan for users\n");
+   PT("scan for users");
    f = fopen("/etc/passwd", "r");
    if (f)
      {

@@ -26,20 +26,14 @@
 #include "entrance_image.h"
 #include "entrance_theme.h"
 
-#define PT(f, x...)                                                     \
-do                                                                   \
-{                                                                    \
-   current_time = time(NULL);                                        \
-   local_time = localtime(&current_time);                            \
-   memset(entrance_time_d, 0, sizeof(entrance_time_d));              \
-   strftime(entrance_time_d, sizeof(entrance_time_d),                \
-            "%b %_2d %T", local_time);                               \
-   fprintf(stderr, "(%s) "PACKAGE": "f, entrance_time_d, ##x); \
-} while (0)
+int _entrance_log;
+int _entrance_client_log;
 
-extern   time_t current_time;
-extern   struct tm *local_time;
-extern   char entrance_time_d[4096];
+#define PT(f, x...)                          \
+do                                           \
+{                                            \
+   EINA_LOG_DOM_INFO(_entrance_log, f, ##x); \
+} while (0)
 
 void entrance_close_log();
 

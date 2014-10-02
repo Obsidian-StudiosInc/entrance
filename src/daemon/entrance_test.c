@@ -21,14 +21,14 @@ _theme_get(Evas_Object *win, const char *group)
 static void
 _signal(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *sig, const char *src)
 {
-   printf("Event: %s - %s \n", sig, src);
+   printf("Event: %s - %s ", sig, src);
 }
 
 
 static void
 _shutdown(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info EINA_UNUSED)
 {
-   printf("Quit\n");
+   printf("Quit");
    elm_exit();
 }
 
