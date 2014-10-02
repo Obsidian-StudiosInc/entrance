@@ -24,7 +24,7 @@
 #define PT(f, x...)                                                        \
 do                                                                         \
 {                                                                          \
-   printf(__FILE__"%d : "f"", __LINE__, ##x); \
+   printf(__FILE__":%d "f"\n", __LINE__, ##x); \
    fflush(stdout);                               \
 } while (0)
 
