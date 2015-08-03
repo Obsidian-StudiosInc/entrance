@@ -15,7 +15,7 @@ static void kill_wait();
 static pid_t _x_pid = 0;
 
 static void
-_entrance_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
+_entrance_wait_action(int sig __UNUSED__, siginfo_t * si __UNUSED__, void *data __UNUSED__)
 {
     kill_wait();
     setenv("ENTRANCE_QUIT", "1", 1);
