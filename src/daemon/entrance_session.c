@@ -194,7 +194,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
      }
    else
      {
-        ERR("Failed to start session");
+        PT("Failed to start session");
      }
 }
 
