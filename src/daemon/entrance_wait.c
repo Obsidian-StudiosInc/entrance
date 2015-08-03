@@ -62,9 +62,13 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
              if ((errno == ECHILD) || (errno == EINVAL))
                return -1;
           }
-        else if (rpid == _x_pid || rpid == spid)
+        else if (rpid == _x_pid)
           {
-             break; 
+             break;
+          }
+        else if (rpid == spid)
+          {
+             kill_wait();
           }
      }
  
