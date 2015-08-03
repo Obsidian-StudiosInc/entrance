@@ -18,8 +18,7 @@ static void
 _entrance_wait_action(int sig, siginfo_t * si __UNUSED__, void *data __UNUSED__)
 {
     kill_wait();
-    if (sig != SIGCHLD)
-      setenv("ENTRANCE_QUIT", "1", 1);
+    setenv("ENTRANCE_QUIT", "1", 1);
 }
 
 static void
@@ -48,7 +47,6 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
    action.sa_sigaction = _entrance_wait_action;
    action.sa_flags = SA_RESTART | SA_SIGINFO;
    sigemptyset(&action.sa_mask);
-   sigaction(SIGCHLD, &action, NULL);
    sigaction(SIGQUIT, &action, NULL);
    sigaction(SIGTERM, &action, NULL);
    sigaction(SIGKILL, &action, NULL);
