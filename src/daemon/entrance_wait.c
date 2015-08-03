@@ -33,11 +33,15 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
 {
    int status = 0;
    char *pid;
+   char *sid;
    struct sigaction action;
 
-   pid_t rpid;
+   pid_t rpid, spid;
    pid = getenv("ENTRANCE_XPID");
+   sid = getenv("ENTRANCE_SPID");
    if (!pid) return -1;
+   if (!sid) return -1;
+   spid = atoi(sid);
    _x_pid = atoi(pid);
    printf("waiting\n");
 
@@ -53,20 +57,23 @@ main (int argc __UNUSED__, char **argv __UNUSED__)
    sigaction(SIGPIPE, &action, NULL);
    sigaction(SIGALRM, &action, NULL);
 
-   while ((rpid = wait(&status)) != _x_pid)
+   while ((rpid = wait(&status)))
      {
         if (rpid == -1)
           {
              if ((errno == ECHILD) || (errno == EINVAL))
-               break;
+               return -1;
+          }
+        else if (rpid == _x_pid || rpid == spid)
+          {
+             break; 
           }
      }
-   if (_x_pid == rpid)
-     {
-        if (WIFEXITED(status) && WEXITSTATUS(status))
-          setenv("ENTRANCE_QUIT", "1", 1);
-        execlp(PACKAGE_SBIN_DIR"/entrance", PACKAGE_SBIN_DIR"/entrance", "--nodaemon", NULL);
-     }
+ 
+   if (WIFEXITED(status) && WEXITSTATUS(status))
+     setenv("ENTRANCE_QUIT", "1", 1);
+   execlp(PACKAGE_SBIN_DIR"/entrance", PACKAGE_SBIN_DIR"/entrance", "--nodaemon", NULL);
+   
    return -1;
 }
 
