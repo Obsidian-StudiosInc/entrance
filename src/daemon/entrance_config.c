@@ -170,6 +170,7 @@ entrance_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "elementary_profile", elm_profile, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "virtual_keyboard", vkbd_enabled, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "custom_conf", custom_conf, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "start_user", start_user, EET_T_STRING);
    _entrance_config_descriptor = edd;
 
    if (stat( "/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)

@@ -192,17 +192,30 @@ _entrance_main(const char *dname)
         if (!_entrance_client)
           {
              char buf[PATH_MAX];
+             const char *user = NULL;
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,
                                      _entrance_client_error, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
                                      (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
+             if (entrance_config->start_user && entrance_config->start_user[0])
+               {
+                  if (getpwnam(entrance_config->start_user))
+                    user = entrance_config->start_user;
+               }
+
+             if (!user)
+               {
+                 PT("The given user %s, is not not valid. Falling back to nobody user, possible that this wont work, set up a correct start_user in entrance.conf", entrance_config->start_user);
+                 user = "nobody";
+               }
+
              snprintf(buf, sizeof(buf),
-                      SUDO" -u nobody "
+                      SUDO" -u %s "
                       "LD_LIBRARY_PATH="PACKAGE_LIB_DIR" "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
-                      dname, entrance_config->theme);
+                      user, dname, entrance_config->theme);
              PT("Exec entrance_client: %s", buf);
 
              _entrance_client = ecore_exe_pipe_run(buf, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR, NULL);

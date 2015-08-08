@@ -37,6 +37,7 @@ struct _Entrance_Config
    Eina_Bool autologin;
    Eina_Bool custom_conf;
    Eina_Bool vkbd_enabled;
+   const char *start_user;
 };
 
 void entrance_config_init(void);
