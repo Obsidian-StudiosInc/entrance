@@ -335,11 +335,14 @@ static const Ecore_Getopt options =
    {
       ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
       ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
-      ECORE_GETOPT_STORE_TRUE('e', "fastexit", "Will change the way entrance \
-handles the exit of the created session. If set, entrance will exit if the session \
-quits. If not, entrance will restart if the session is quit because of an error, \
-or if the environment variable ENTRANCE_RESTART is set."),
-      ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
+      ECORE_GETOPT_STORE_TRUE('e', "fastexit", "Will change the way entrance"
+                              "handles the exit of the created session. If "
+                              "set, entrance will exit if the session quits. "
+                              "If not, entrance will restart if the session is "
+                              "quit because of an error, or if the environment "
+                              "variable ENTRANCE_RESTART is set."),
+      ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use "
+                              "Xephyr."),
       ECORE_GETOPT_HELP ('h', "help"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
@@ -376,7 +379,8 @@ main (int argc, char ** argv)
    eina_log_threads_enable();
    ecore_init();
    _entrance_log = eina_log_domain_register("entrance", EINA_COLOR_CYAN);
-   _entrance_client_log = eina_log_domain_register("entrance_client", EINA_COLOR_CYAN);
+   _entrance_client_log = eina_log_domain_register("entrance_client",
+                                                   EINA_COLOR_CYAN);
    eina_log_domain_level_set("entrance", 5);
    eina_log_domain_level_set("entrance_client", 5);
 
