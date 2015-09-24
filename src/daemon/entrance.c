@@ -149,7 +149,7 @@ _entrance_wait(void)
 }
 
 static Eina_Bool
-_entrance_client_error(void *data EINA_UNUSED, int type, void *event)
+_entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    char buf[4096];
    Ecore_Exe_Event_Data *ev;
