@@ -5,9 +5,11 @@
 #include <Eina.h>
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
+#include <assert.h>
 
 #define ENTRANCE_DISPLAY ":0.0"
 #define ENTRANCE_XEPHYR ":1.0"
+#define ENTRANCE_CONFIG_HOME_PATH "/var/cache/entrance/client"
 
 static Eina_Bool _open_log();
 static Eina_Bool _entrance_main(const char *dname);
@@ -186,39 +188,88 @@ _entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, void *event)
 static Eina_Bool
 _entrance_main(const char *dname)
 {
+   struct passwd *pwd = NULL;
+   const char *user;
+   char buf[PATH_MAX];
+   const char *home_path;
+   struct stat st;
+
    PT("starting...");
    if (!entrance_config->autologin)
      {
         if (!_entrance_client)
           {
-             char buf[PATH_MAX];
-             const char *user = NULL;
              ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                                      _entrance_client_del, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,
                                      _entrance_client_error, NULL);
              ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
-                                     (Ecore_Event_Handler_Cb)_entrance_client_data, NULL);
-             if (entrance_config->start_user && entrance_config->start_user[0])
+                                     _entrance_client_data, NULL);
+             if (entrance_config->start_user
+                 && entrance_config->start_user[0]) {
+                  pwd = getpwnam(entrance_config->start_user);
+             }
+             if (!pwd)
                {
-                  if (getpwnam(entrance_config->start_user))
-                    user = entrance_config->start_user;
+                 PT("The given user %s, is not valid."
+                    "Falling back to nobody", entrance_config->start_user);
+                  pwd = getpwnam("nobody");
+                  user = "nobody";
+                  assert(pwd);
                }
-
-             if (!user)
+             else
                {
-                 PT("The given user %s, is not not valid. Falling back to nobody user, possible that this wont work, set up a correct start_user in entrance.conf", entrance_config->start_user);
-                 user = "nobody";
+                  user = entrance_config->start_user;
+               }
+             if (!pwd->pw_dir || !strcmp(pwd->pw_dir, "/"))
+               {
+                  PT("No home directory for client");
+                  home_path = ENTRANCE_CONFIG_HOME_PATH;
+                  if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
+                    {
+                       PT("Creating new home directory for client");
+                       ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
+                       chown(ENTRANCE_CONFIG_HOME_PATH,
+                             pwd->pw_uid, pwd->pw_gid);
+                    }
+                  else
+                    {
+                       if (!ecore_file_is_dir(ENTRANCE_CONFIG_HOME_PATH))
+                         {
+                            PT("Hum a file already exists here "
+                               ENTRANCE_CONFIG_HOME_PATH" sorry but"
+                               "I remove it, I need it ^^");
+                            ecore_file_remove(ENTRANCE_CONFIG_HOME_PATH);
+                            ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
+                            chown(ENTRANCE_CONFIG_HOME_PATH,
+                                  pwd->pw_uid, pwd->pw_gid);
+                         }
+                    }
+               }
+             else
+               {
+                  home_path = pwd->pw_dir;
+               }
+             PT("Home directory %s", home_path);
+             stat(home_path, &st);
+             if ((st.st_uid != pwd->pw_uid)
+                 || (st.st_gid != pwd->pw_gid))
+               {
+                  PT("The permission about %s is wrong, I fix it", home_path);
+                  chown(home_path, pwd->pw_uid, pwd->pw_gid);
                }
 
              snprintf(buf, sizeof(buf),
-                      SUDO" -u %s "
+                      SUDO" --user %s HOME=%s "
                       "LD_LIBRARY_PATH="PACKAGE_LIB_DIR" "
                       PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
-                      user, dname, entrance_config->theme);
+                      user, home_path, dname, entrance_config->theme);
              PT("Exec entrance_client: %s", buf);
 
-             _entrance_client = ecore_exe_pipe_run(buf, ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR, NULL);
+             _entrance_client =
+                ecore_exe_pipe_run(buf,
+                                   ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
+                                   NULL);
           }
      }
    else

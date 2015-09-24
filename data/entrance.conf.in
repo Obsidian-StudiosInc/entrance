@@ -71,5 +71,5 @@ group "Entrance_Config" struct {
     value "virtual_keyboard" uchar: 0;
 
     /* the user to log in with */
-    value "start_user" string: "entrance";
+    value "start_user" string: "nobody";
 }
