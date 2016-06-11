@@ -52,6 +52,8 @@ main(int argc, char **argv)
         eina_shutdown();
         return EXIT_FAILURE;
      }
+   if (!theme)
+     theme = "default";
    ecore_init();
    ecore_x_init(display);
    elm_init(argc, argv);
