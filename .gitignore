@@ -46,3 +46,4 @@ stamp-h1
 .deps
 entrance-*.tar.gz
 entrance-*.tar.bz2
+test/
