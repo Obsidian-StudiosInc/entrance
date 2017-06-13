@@ -28,6 +28,7 @@ data/themes/old/Makefile.in
 depcomp
 install-sh
 missing
+nbproject/
 src/Makefile
 src/Makefile.in
 src/bin/Makefile
