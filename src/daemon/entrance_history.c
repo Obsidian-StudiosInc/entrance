@@ -242,9 +242,9 @@ _entrance_user_init(void)
              strtok(NULL, ":");
              token = strtok(NULL, ":");
              uid = atoi(token);
-             if (uid > 999 && uid < 3000)
-               lu = eina_list_append(lu, eina_stringshare_add(user));
-          }
+             if (uid > 999 && uid < 65534)
+                 lu = eina_list_append(lu, eina_stringshare_add(user));
+             }
         fclose(f);
      }
    EINA_LIST_FREE(lu, user)
