@@ -406,8 +406,19 @@ _entrance_conf_user_build_cb(Evas_Object *t, Entrance_Login *eu)
    elm_table_pack(t, o, 1, j, 1, 1);
    evas_object_show(o);
    ++j;
-   entrance_fill(o, _entrance_session_fill, entrance_gui_xsessions_get(), NULL, _entrance_conf_session_sel, NULL);
-   _entrance_conf_session_update(o);
+   
+   l = entrance_gui_xsessions_get();
+   if(l)
+     {
+       entrance_fill(o,
+                     _entrance_session_fill,
+                     l,
+                     NULL,
+                     _entrance_conf_session_sel,
+                     NULL);
+       _entrance_conf_session_update(o);
+     }
+   eina_list_free(l);
 
    /* Remember last session */
    o = elm_label_add(t);
