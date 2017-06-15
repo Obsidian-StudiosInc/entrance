@@ -518,6 +518,7 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 
    /* password */
    p = elm_entry_add(o);
+   elm_entry_password_set(p, EINA_TRUE);
    elm_entry_single_line_set(p, EINA_TRUE);
    elm_entry_scrollable_set(p, EINA_TRUE);
    elm_object_part_content_set(o, "entrance.password", p);
