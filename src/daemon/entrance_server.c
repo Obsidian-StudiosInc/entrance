@@ -153,6 +153,8 @@ entrance_server_init(void)
                                         "entrance", 42, NULL);
    if (!_entrance_server)
      PT("server init fail");
+   else
+     chown("/tmp/.ecore_service|entrance|42",65534,65534);
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
                                _entrance_server_add, NULL);
