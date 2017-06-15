@@ -110,7 +110,6 @@ collections {
       programs {
          program { name: "wallpaper_user";
             signal: "entrance,wallpaper,user";
-            source: "";
             action: STATE_SET "user" 0.0;
             transition: LINEAR 0.7;
             target: "cur";
@@ -118,7 +117,6 @@ collections {
          }
          program { name: "wallpaper_default";
             signal: "entrance,wallpaper,default";
-            source: "";
             action: STATE_SET "default" 0.0;
             transition: LINEAR 0.7;
             target: "cur";
@@ -136,15 +134,11 @@ collections {
       data.item: "item_style_users"  "default";
       data.item: "item_style_actions" "default";
 
-      images {
-      }
-
       parts {
          part { name: "clip";
             type: RECT;
             description { state: "default" 0.0;
                color: 255 255 255 255;
-               //color: 255 255 255 0;
             }
             description { state: "show" 0.0;
                color: 255 255 255 255;
@@ -156,23 +150,22 @@ collections {
             description { state: "default" 0.0;
                visible: 1;
                max: 0 0;
+               min: 360 240;
             }
          }
          part { name: "entrance.users";
             type: EXTERNAL;
-//            source: "elm/list";
-//            source: "elm/genlist";
             source: "elm/gengrid";
             description { state: "default" 0.0;
-               rel1.relative: 0.0 0.2;
-               rel2.relative: 0.0 0.8;
-               rel2.to_x: "entrance.login";
+               rel1.relative: 0.0 -0.75;
+               min: 76 100;
+               max: 1 100;
                visible: 1;
                params {
                   bool: "horizontal" 0;
                   double: "vertical page relative" 0.0;
-                  int: "horizontal item size" 96;
-                  int: "vertical item size" 120;
+                  int: "horizontal item size" 72;
+                  int: "vertical item size" 96;
                }
             }
          }
@@ -182,11 +175,14 @@ collections {
             source: "elm/hoversel";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 0;
+               visible: 1;
                max: 0 0;
+               min: 120 36;
                align: 1.0 1.0;
+               rel2.relative: 1 1;
+               rel2.offset: -12 -12;
                params {
-                  string: "label" "action";
+                  string: "label" "Actions";
                }
             }
             description { state: "enabled" 0.0;
@@ -201,9 +197,11 @@ collections {
                fixed: 1 1;
                visible: 1;
                max: 0 0;
+               min: 120 36;
                align: 1.0 1.0;
                rel2.to_x: "entrance.actions";
                rel2.relative: 0.0 1.0;
+               rel2.offset: 0 -12;
                params {
                   string: "label" "Settings";
                }
@@ -213,8 +211,7 @@ collections {
                visible: 1;
             }
          }
-/*
-*/
+
       }
       programs {
          program {
@@ -262,7 +259,6 @@ collections {
       }
    }
 
-
    group {
       name : "entrance/login";
       parts {
@@ -279,27 +275,58 @@ collections {
             }
          }
          part {
+            name: "entrance.login_label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            repeat_events: 0;
+            description { state: "default" 0.0;
+                color: 200 200 200 255;
+                rel2.to_y: "entrance.login";
+                rel2.relative: 0.2 0.0;
+                visible: 1;
+                text {
+                  text: "Login";
+                  size: 20;
+                }
+            }
+         }
+         part {
             name: "entrance.login";
             type: SWALLOW;
             repeat_events: 0;
             description {
                state: "default" 0.0;
-               min: 140 0;
+               min: 360 36;
                max: 0 0;
-               align: 0.5 1.0;
+               align: 0.5 0.5;
                rel2.to_y: "entrance.password";
                rel2.relative: 1.0 0.0;
                visible: 1;
             }
          }
-
+         part {
+            name: "entrance.password_label";
+            type: TEXT;
+            effect: SOFT_SHADOW;
+            repeat_events: 0;
+            description { state: "default" 0.0;
+               color: 200 200 200 255;
+               rel2.to_y: "entrance.password";
+               rel2.relative: 0.3 2.0;
+               visible: 1;
+                text {
+                  text: "Password";
+                  size: 20;
+                }
+            }
+         }
          part {
             name: "entrance.password";
             type: SWALLOW;
             repeat_events: 0;
             description {
                state: "default" 0.0;
-               min: 140 0;
+               min: 360 36;
                max: 0 0;
                align: 0.5 0.5;
                visible: 1;
@@ -312,11 +339,11 @@ collections {
             source: "elm/button";
             repeat_events: 0;
             description { state: "default" 0.0;
-               max: 9999 0;
+               max: 120 36;
                rel1.to: "entrance.password";
                rel1.relative: 0.5 1.0;
                rel2.to_x: "entrance.password";
-               align: 0.5 0.0;
+               align: 0.5 0.5;
                visible: 1;
                params {
                   string: "label" "Login";
@@ -332,11 +359,12 @@ collections {
             type: SWALLOW;
             description { state: "default" 0.0;
                fixed: 1 1;
+               max: 120 36;
                rel1.to: "entrance.password";
                rel1.relative: 0.0 1.0;
                rel2.to_x: "entrance.password";
                rel2.relative: 0.5 1.0;
-               align: 0.5 0.0;
+               align: 0.5 0.5;
                visible: 1;
             }
             description { state: "xsessions_disabled" 0.0;
