@@ -193,8 +193,11 @@ entrance_pam_authenticate(void)
       case PAM_AUTH_ERR:
          PT("PAM authenticate error !");
          return 1;
+      case PAM_PERM_DENIED:
+         PT("PAM permission denied !");
+         return 1;
       default:
-         PT("PAM auth warning unknow error");
+         PT("PAM auth warning unknown error");
          return 1;
       case PAM_SUCCESS:
          break;
