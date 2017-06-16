@@ -360,7 +360,8 @@ _login_xsession_update(Evas_Object *obj)
    if (!login->session) return;
    elm_object_text_set(o, login->session->name);
    icon = elm_object_part_content_get(o, "icon");
-   if (login->session->icon)
+   if (login->session->icon &&
+       strcmp(login->session->icon,""))
      {
        Eina_Stringshare *path;
        if (!icon)
