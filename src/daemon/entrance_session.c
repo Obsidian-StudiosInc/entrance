@@ -445,13 +445,7 @@ _entrance_session_desktops_init(void)
    char buf[PATH_MAX];
    Eina_List *dirs;
    const char *path;
-   Entrance_Xsession *xsession;
    Eina_List *l;
-
-   xsession = calloc(1, sizeof(Entrance_Xsession));
-   xsession->name = eina_stringshare_add("System");
-   xsession->icon = eina_stringshare_add("entrance/system");
-   _xsessions = eina_list_append(_xsessions, xsession);
 
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
    /* Maybee need to scan other directories ? */
