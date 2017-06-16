@@ -168,6 +168,10 @@ collections {
                   int: "vertical item size" 96;
                }
             }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.0;
+               visible: 1;
+            }
          }
 
          part { name: "entrance.actions";
