@@ -9,17 +9,12 @@ This is a fork and current development version Entrance, a EFL based
 display manager for Enlightenment and maybe Tizen. Or any device that 
 has EFL.
 
-## Known Issues
-
-IT DOES NOT WORK! Very broken!
-
-- Login is not functional
-- Sessions hoversel is empty
-- Actions/Systems hoversel is empty
-- Crashes on Settings
-- Theme is jacked
+It is ALIVE! IT WORKS! (for me ©)
 
 ## About
+Entrance is alive and working again for logging into X sessions! The 
+project has been resurrected from the dead to live on once again...
+
 Entrance is a long story. There was a project long ago that worked, and 
 went [MIA](http://xcomputerman.com/pages/entrance.html). Another came 
 along [Michael Bouchaud](https://github.com/eyoz)/@eyoz and renamed his 
@@ -40,11 +35,10 @@ make
 make install
 ```
 
-On some systems (not debian like), you need to overide the pam file. 
+On most systems you likely need the pam file. 
 ```
 cp data/entrance.other /etc/pam.d/entrance
 ```
-or copy one of gdm, lightdm, sddm, etc pam file to /etc/pam.d/entrance
 
 ## Configuration
 Most things can be configured in entrance.conf, /etc/entrance/entrance.conf
@@ -59,3 +53,7 @@ manager.
 
 To enable grub2 reboot feature use --enable-grub2 on configure. But you 
 need to add this line 'GRUB_DEFAULT=saved' to /etc/default/grub
+
+## Systemd
+Any support there will likley be dropped as well. Elogind/logind 
+function maybe retained.
