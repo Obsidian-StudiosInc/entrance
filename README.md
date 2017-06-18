@@ -14,6 +14,7 @@ It is ALIVE! IT WORKS! (for me ©)
 ## Known Issues
 - Odd login issue with multiple displays, login fails from one but works 
   from the other. [Issue #1](https://github.com/Obsidian-StudiosInc/entrance/issues/1)
+- Crash/Does not work on log out [Issue #2](https://github.com/Obsidian-StudiosInc/entrance/issues/2)
 
 ## About
 Entrance is alive and working again for logging into X sessions! The 
@@ -39,16 +40,26 @@ make
 make install
 ```
 
-On most systems you likely need the pam file. 
+On most systems you likely need a pam file. 
 ```
-cp data/entrance.other /etc/pam.d/entrance
+cp data/entrance /etc/pam.d/entrance
 ```
+
+There are some others, entrance.arch and entrance.other. May need other 
+variations for different operating systems/linux distributions.
 
 ## Configuration
 Most things can be configured in entrance.conf, /etc/entrance/entrance.conf
 
 You could put a customized icon for your user in
 /var/cache/entrance/users/(username).edj with groupname "entrance/user/icon"
+
+## Usage
+In order to start entrance you need a system init script or systemd (untested). 
+This may differ based on your operating system. entrance does not 
+provide an init script at this time, and likely will not run if started
+directly. Entrance should be invoked via init script or systemd service. 
+There is a provided systemd service file for entrance in the  
 
 ## GRUB2
 Support for GRUB2 will likely be dropped. Seems like a strange 
