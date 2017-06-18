@@ -260,10 +260,9 @@ _entrance_main(const char *dname)
                }
 
              snprintf(buf, sizeof(buf),
-                      SUDO" --user %s HOME=%s "
-                      "LD_LIBRARY_PATH="PACKAGE_LIB_DIR" "
-                      PACKAGE_BIN_DIR"/entrance_client -d %s -t %s",
-                      user, home_path, dname, entrance_config->theme);
+                      "/bin/su -c \"/bin/sh export HOME=%s; export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";"
+                      PACKAGE_BIN_DIR"/entrance_client -d %s -t %s\" -p %s",
+                      home_path, dname, entrance_config->theme, user);
              PT("Exec entrance_client: %s", buf);
 
              _entrance_client =
