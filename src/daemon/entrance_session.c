@@ -510,7 +510,8 @@ _entrance_session_desktops_scan_file(const char *path)
         xsession= calloc(1, sizeof(Entrance_Xsession));
         xsession->command = eina_stringshare_add(command);
         xsession->name = eina_stringshare_add(desktop->name);
-        if (desktop->icon) xsession->icon = eina_stringshare_add(desktop->icon);
+        if (desktop->icon && strcmp(desktop->icon,""))
+          xsession->icon = eina_stringshare_add(desktop->icon);
         _xsessions = eina_list_append(_xsessions, xsession);
      }
    EINA_LIST_FREE(commands, command)
