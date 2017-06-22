@@ -1,4 +1,5 @@
 #include "entrance_client.h"
+#include <Eina.h>
 
 #define ENTRANCE_PASSWD_LEN 256
 
@@ -367,7 +368,10 @@ _login_xsession_update(Evas_Object *obj)
        if (!icon)
           icon = elm_icon_add(o);
         path = entrance_gui_theme_path_get();
-        elm_image_file_set(icon, path, login->session->icon);
+        if(login->session->icon[0]!='/')
+          elm_icon_standard_set(icon, login->session->icon);
+        else
+          elm_image_file_set(icon, login->session->icon, path);
         eina_stringshare_del(path);
         elm_object_part_content_set(o, "icon", icon);
      }
