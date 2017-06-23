@@ -79,8 +79,8 @@ _entrance_conf_theme_update_preview(const char *name)
 static void
 _entrance_conf_theme_end(void)
 {
-   free(_entrance_int_conf_theme);
    evas_object_del(_entrance_int_conf_theme->preview);
+   free(_entrance_int_conf_theme);
 }
 
 static Eina_Bool
