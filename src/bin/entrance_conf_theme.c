@@ -399,6 +399,7 @@ static Evas_Object*
 _entrance_tp_add(Evas_Object *par, const char *name)
 {
    Evas_Object *o, *oo;
+   Eina_List *l = NULL;
    char buf[PATH_MAX];
    const char *style;
    Entrance_Fill *ef;
@@ -461,7 +462,10 @@ _entrance_tp_add(Evas_Object *par, const char *name)
                        _entrance_tp_user_state_get,
                        _entrance_tp_user_del);
    o = ENTRANCE_GUI_GET(pre->edj, "entrance.users");
-   entrance_fill(o, ef, entrance_gui_users_get(), NULL, NULL, NULL);
+   l = entrance_gui_users_get();
+   if(l)
+     entrance_fill(o, ef, l, NULL, NULL, NULL);
+   eina_list_free(l);
 
    _entrance_tp_animation_init(pre);
    evas_object_smart_data_set(pre->transition, pre);
