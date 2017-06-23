@@ -153,9 +153,14 @@ _entrance_fill_hoversell(Evas_Object *obj,
         Elm_Object_Item *it;
         str = ef->func.text_get(content, obj, NULL);
         ic = ef->func.text_get(content, obj, "icon");
-        it = elm_hoversel_item_add(obj, str, ic,
-                                   ELM_ICON_FILE,
-                                   _entrance_fill_hoversell_func_cb, NULL);
+        if(ic && ic[0]!='/')
+          it = elm_hoversel_item_add(obj, str, ic,
+                                     ELM_ICON_STANDARD,
+                                     _entrance_fill_hoversell_func_cb, NULL);
+        else
+          it = elm_hoversel_item_add(obj, str, ic,
+                                     ELM_ICON_FILE,
+                                     _entrance_fill_hoversell_func_cb, NULL);
         elm_object_item_data_set(it, content);
         evas_object_data_set(elm_object_item_widget_get(it), "fill_data", ef);
         if (fill_cb)
