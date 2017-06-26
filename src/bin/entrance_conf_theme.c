@@ -465,6 +465,7 @@ _entrance_tp_add(Evas_Object *par, const char *name)
    l = entrance_gui_users_get();
    if(l)
      entrance_fill(o, ef, l, NULL, NULL, NULL);
+   entrance_fill_del(ef);
    eina_list_free(l);
 
    _entrance_tp_animation_init(pre);
