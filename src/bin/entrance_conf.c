@@ -94,7 +94,8 @@ entrance_conf_background_title_gen(Entrance_Conf_Background *cbg)
      {
         group_suffix = strrchr(cbg->group, '/');
         //no "/" char
-        group_suffix ++;
+        if(group_suffix)
+          group_suffix ++;
      }
 
    if ((group_suffix) && (filename))
