@@ -41,7 +41,7 @@ _users_get(void)
 {
    Eet_File *ef;
    FILE *f;
-   int textlen;
+   unsigned int textlen;
    char *text;
 
    if (!ecore_file_is_dir("/var/cache/"PACKAGE))
