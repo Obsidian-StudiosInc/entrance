@@ -259,9 +259,12 @@ _entrance_user_init(void)
                }
           }
         eina_stringshare_del(user);
-        eu->icon_pool = entrance_image_user_icons(eu->login);
-        eu->background_pool = entrance_image_user_backgrounds(eu->login);
-        _lusers = eina_list_append(_lusers, eu);
+        if(eu)
+          {
+            eu->icon_pool = entrance_image_user_icons(eu->login);
+            eu->background_pool = entrance_image_user_backgrounds(eu->login);
+            _lusers = eina_list_append(_lusers, eu);
+          }
      }
 }
 
