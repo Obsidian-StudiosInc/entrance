@@ -257,26 +257,28 @@ _entrance_main(const char *dname)
                   home_path = pwd->pw_dir;
                }
              PT("Home directory %s", home_path);
-             stat(home_path, &st);
-             if ((st.st_uid != pwd->pw_uid)
-                 || (st.st_gid != pwd->pw_gid))
+             if(stat(home_path, &st))
                {
-                  PT("The permission about %s is wrong, I fix it", home_path);
-                  chown(home_path, pwd->pw_uid, pwd->pw_gid);
+                 if ((st.st_uid != pwd->pw_uid)
+                     || (st.st_gid != pwd->pw_gid))
+                   {
+                      PT("The permission about %s is wrong, I fix it", home_path);
+                      chown(home_path, pwd->pw_uid, pwd->pw_gid);
+                   }
+
+                 snprintf(buf, sizeof(buf),
+                          "export HOME=%s; export USER=%s;"
+                          "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR
+                          ";/bin/su -s /bin/sh -c \""
+                          PACKAGE_BIN_DIR"/entrance_client -d %s -t %s\" -p %s",
+                          home_path, user, dname, entrance_config->theme, user);
+                 PT("Exec entrance_client: %s", buf);
+
+                 _entrance_client =
+                    ecore_exe_pipe_run(buf,
+                                       ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
+                                       NULL);
                }
-
-             snprintf(buf, sizeof(buf),
-                      "export HOME=%s; export USER=%s;"
-                      "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR
-                      ";/bin/su -s /bin/sh -c \""
-                      PACKAGE_BIN_DIR"/entrance_client -d %s -t %s\" -p %s",
-                      home_path, user, dname, entrance_config->theme, user);
-             PT("Exec entrance_client: %s", buf);
-
-             _entrance_client =
-                ecore_exe_pipe_run(buf,
-                                   ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
-                                   NULL);
           }
      }
    else
