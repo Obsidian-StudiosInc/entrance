@@ -112,7 +112,8 @@ _update_lock()
 static void
 _remove_lock()
 {
-   remove(entrance_config->lockfile);
+   if(remove(entrance_config->lockfile)== -1)
+     PT("Could not remove lockfile");
 }
 
 static Eina_Bool
