@@ -455,10 +455,11 @@ main (int argc, char ** argv)
              quit_option = EINA_TRUE;
           }
         _update_lock();
-        unsigned int fd;
+        int fd;
         if ((fd = open("/dev/null", O_RDONLY)))
           {
-             dup2(fd, 0);
+             if(fd>0)
+               dup2(fd, 0);
              close(fd);
           }
      }
