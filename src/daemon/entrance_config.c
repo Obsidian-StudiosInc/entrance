@@ -174,15 +174,13 @@ entrance_config_init()
    _entrance_config_descriptor = edd;
 
    if (stat( "/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
-     {
-        _users_get();
-     }
+     _users_get();
    else
      {
-        stat(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", &conf);
-        if (cache.st_mtime < conf.st_mtime)
+        if(stat(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", &conf) > 0)
           {
-             _users_get();
+            if (cache.st_mtime < conf.st_mtime)
+               _users_get();
           }
      }
    entrance_config = _cache_get();
