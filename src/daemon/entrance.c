@@ -456,10 +456,9 @@ main (int argc, char ** argv)
           }
         _update_lock();
         int fd;
-        if ((fd = open("/dev/null", O_RDONLY)))
+        if ((fd = open("/dev/null", O_RDONLY))>0)
           {
-             if(fd>0)
-               dup2(fd, 0);
+             dup2(fd, 0);
              close(fd);
           }
      }
