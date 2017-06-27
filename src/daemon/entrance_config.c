@@ -41,8 +41,8 @@ _users_get(void)
 {
    Eet_File *ef;
    FILE *f;
-   unsigned int textlen;
-   char *text;
+   int textlen;
+   char *text = NULL;
 
    if (!ecore_file_is_dir("/var/cache/"PACKAGE))
      ecore_file_mkdir("/var/cache/"PACKAGE);
@@ -61,7 +61,8 @@ _users_get(void)
    fseek(f, 0, SEEK_END);
    textlen = ftell(f);
    rewind(f);
-   text = (char *)malloc(textlen);
+   if(textlen > 0)
+     text = (char *)malloc(textlen);
    if (!text)
      {
         fclose(f);
