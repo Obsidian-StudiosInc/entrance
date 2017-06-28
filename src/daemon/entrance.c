@@ -198,6 +198,7 @@ _entrance_main(const char *dname)
    const char *user;
    char buf[PATH_MAX];
    const char *home_path;
+   int home_dir;
    struct stat st;
 
    PT("starting...");
@@ -257,13 +258,27 @@ _entrance_main(const char *dname)
                   home_path = pwd->pw_dir;
                }
              PT("Home directory %s", home_path);
-             if(stat(home_path, &st))
+             home_dir = open(home_path, O_RDONLY);
+             if(!home_dir)
+               {
+                 PT("Failed to open home directory %s", home_path);
+                 ecore_main_loop_quit();
+                 return ECORE_CALLBACK_CANCEL;
+               }
+             if(flock(home_dir, LOCK_SH)==-1)
+               {
+                 PT("Failed to lock home directory %s", home_path);
+                 close(home_dir);
+                 ecore_main_loop_quit();
+                 return ECORE_CALLBACK_CANCEL;
+               }
+             if(fstat(home_dir, &st)!= -1)
                {
                  if ((st.st_uid != pwd->pw_uid)
                      || (st.st_gid != pwd->pw_gid))
                    {
-                      PT("The permission about %s is wrong, I fix it", home_path);
-                      chown(home_path, pwd->pw_uid, pwd->pw_gid);
+                      PT("chown home directory %s", home_path);
+                      fchown(home_dir, pwd->pw_uid, pwd->pw_gid);
                    }
 
                  snprintf(buf, sizeof(buf),
@@ -279,6 +294,8 @@ _entrance_main(const char *dname)
                                        ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
                                        NULL);
                }
+             flock(home_dir, LOCK_UN);
+             close(home_dir);
           }
      }
    else
