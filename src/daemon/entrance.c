@@ -259,7 +259,7 @@ _entrance_main(const char *dname)
                }
              PT("Home directory %s", home_path);
              home_dir = open(home_path, O_RDONLY);
-             if(!home_dir)
+             if(!home_dir || home_dir<0)
                {
                  PT("Failed to open home directory %s", home_path);
                  ecore_main_loop_quit();
