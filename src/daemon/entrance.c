@@ -10,6 +10,7 @@
 #define ENTRANCE_DISPLAY ":0.0"
 #define ENTRANCE_XEPHYR ":1.0"
 #define ENTRANCE_CONFIG_HOME_PATH "/var/cache/entrance/client"
+#define ENTRANCE_USER_MAX 33
 
 static Eina_Bool _open_log();
 static Eina_Bool _entrance_main(const char *dname);
@@ -492,26 +493,31 @@ main (int argc, char ** argv)
         exit(1);
      }
 
-
    entrance_user = getenv("ENTRANCE_USER");
    if (entrance_user)
      {
-        char *quit;
-        entrance_xserver_wait();
-        sleep(5);
-        entrance_session_init(dname);
-        entrance_session_end(entrance_user);
-        entrance_session_shutdown();
-        quit = getenv("ENTRANCE_QUIT");
-        if (quit)
+        char *quit = NULL;
+        char *user = NULL;
+        user = strndup(entrance_user,ENTRANCE_USER_MAX);
+        if(user)
           {
-             unsetenv("ENTRANCE_QUIT");
-             PT("Last DE Session quit with error!");
+            entrance_xserver_wait();
+            sleep(5);
+            entrance_session_init(dname);
+            entrance_session_end(user);
+            free(user);
+            entrance_session_shutdown();
+            quit = getenv("ENTRANCE_QUIT");
+            if (quit)
+              {
+                 unsetenv("ENTRANCE_QUIT");
+                 PT("Last DE Session quit with error!");
+              }
+            _remove_lock();
+            PT("Entrance will quit, bye bye :).");
+            entrance_close_log();
+            exit(1);
           }
-        _remove_lock();
-        PT("Entrance will quit, bye bye :).");
-        entrance_close_log();
-        exit(1);
      }
    PT("Welcome");
    ecore_init();
