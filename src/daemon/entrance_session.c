@@ -138,8 +138,14 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         env = (char **)malloc(10 * sizeof(char *));
         if(term)
           {
-             snprintf(buf, sizeof(buf), "TERM=%s", term);
-             env[n++]=strdup(buf);
+            char *t = NULL;
+            t = strdup(term);
+            if(t)
+              {
+                 snprintf(buf, sizeof(buf), "TERM=%s", t);
+                 env[n++]=strdup(buf);
+                 free(t);
+              }
           }
         snprintf(buf, sizeof(buf), "HOME=%s", pwd->pw_dir);
         env[n++]=strdup(buf);
