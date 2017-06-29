@@ -111,7 +111,7 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
    entrance_pam_env_set("LOGNAME", pwd->pw_name);
    entrance_pam_env_set("PATH", entrance_config->session_path);
    entrance_pam_env_set("DISPLAY", _dname);//":0.0");
-   entrance_pam_env_set("MAIL", "");
+   entrance_pam_env_set("MAIL=/var/mail/%s", pwd->pw_name);
    entrance_pam_env_set("XAUTHORITY", cookie);
    entrance_pam_env_set("XDG_SESSION_CLASS", "greeter");
 #endif
@@ -159,7 +159,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "DISPLAY=%s", _dname);//":0.0");
         env[n++]=strdup(buf);
-        snprintf(buf, sizeof(buf), "MAIL=");
+        snprintf(buf, sizeof(buf), "MAIL=/var/mail/%s", pwd->pw_name);
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "XAUTHORITY=%s", cookie);
         env[n++]=strdup(buf);
