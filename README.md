@@ -11,6 +11,8 @@ has EFL.
 
 It is ALIVE! IT WORKS! (for me ©)
 
+![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/28101992-424c8d22-669a-11e7-9242-064bb6e9145a.jpg)
+
 ## Known Issues
 - Odd login issue with multiple displays, login fails from one but works 
   from the other. [Issue #1](https://github.com/Obsidian-StudiosInc/entrance/issues/1)
