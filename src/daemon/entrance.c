@@ -506,17 +506,6 @@ main (int argc, char ** argv)
             entrance_session_init(dname);
             entrance_session_end(user);
             free(user);
-            entrance_session_shutdown();
-            quit = getenv("ENTRANCE_QUIT");
-            if (quit)
-              {
-                 unsetenv("ENTRANCE_QUIT");
-                 PT("Last DE Session quit with error!");
-              }
-            _remove_lock();
-            PT("Entrance will quit, bye bye :).");
-            entrance_close_log();
-            exit(1);
           }
      }
    PT("Welcome");
