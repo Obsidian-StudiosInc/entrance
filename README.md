@@ -62,14 +62,6 @@ provide an init script at this time, and likely will not run if started
 directly. Entrance should be invoked via init script or systemd service. 
 There is a provided systemd service file for entrance in the  
 
-## GRUB2
-Support for GRUB2 will likely be dropped. Seems like a strange 
-dependency and feature. Reboot should not require integration with boot 
-manager.
-
-To enable grub2 reboot feature use --enable-grub2 on configure. But you 
-need to add this line 'GRUB_DEFAULT=saved' to /etc/default/grub
-
 ## Systemd
 Any support there will likley be dropped as well. Elogind/logind 
 function maybe retained.
