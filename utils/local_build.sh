@@ -11,7 +11,6 @@ for d in ${DIRS[@]}; do
 done
 
 ./autogen.sh \
-	--disable-grub2 \
 	--prefix $(pwd) \
 	--libdir $(pwd)/test \
 	--datarootdir $(pwd)/test
