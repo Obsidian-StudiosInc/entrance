@@ -118,6 +118,12 @@ entrance_gui_init(const char *theme)
               return j;
            }
          elm_object_part_content_set(o, "entrance.screen", ol);
+
+         /* clock */
+         o = elm_clock_add(ol);
+         elm_clock_show_am_pm_set(o, EINA_TRUE);
+         elm_object_part_content_set(ol, "entrance.clock", o);
+
          o = entrance_login_add(ol, _entrance_gui_auth_cb, screen);
          entrance_login_open_session_set(o, EINA_TRUE);
          screen->login = o;
