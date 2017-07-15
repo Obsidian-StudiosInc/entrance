@@ -502,7 +502,6 @@ main (int argc, char ** argv)
         if(user)
           {
             entrance_xserver_wait();
-            sleep(5);
             entrance_session_init(dname);
             entrance_session_end(user);
             free(user);
