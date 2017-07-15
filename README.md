@@ -16,7 +16,6 @@ It is ALIVE! IT WORKS! (for me ©)
 ## Known Issues
 - Odd login issue with multiple displays, login fails from one but works 
   from the other. [Issue #1](https://github.com/Obsidian-StudiosInc/entrance/issues/1)
-- Crash/Does not work on log out [Issue #2](https://github.com/Obsidian-StudiosInc/entrance/issues/2)
 
 ## About
 Entrance is alive and working again for logging into X sessions! The 
