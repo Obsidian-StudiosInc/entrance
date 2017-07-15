@@ -144,6 +144,16 @@ collections {
                color: 255 255 255 255;
             }
          }
+         part { name: "entrance.clock";
+            type: SWALLOW;
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               align: 0 1;
+               max: 240 72;
+               min: 240 72;
+            }
+         }
          part { name: "entrance.login";
             clip_to: "clip";
             type: SWALLOW;
