@@ -89,10 +89,6 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_SED
 PKG_PROG_PKG_CONFIG
-AC_PATH_PROG([SUDO],[sudo],[no])
-if test "x$SUDO" = "x" ; then
-    AC_MSG_ERROR([Please install sudo before installing.])
-fi
 
 # Set edje_cc path
 AC_ARG_WITH([edje-cc],
