@@ -8,9 +8,6 @@ conf_DATA = data/entrance.conf
 internal_sysconfdir=$(sysconfdir)/entrance
 internal_sysconf_SCRIPTS = data/Xsession
 
-sudoersdir = $(sysconfdir)/sudoers.d
-sudoers_DATA = data/sudoers/entrance
-
 sed_process = @SED@ \
 -e 's,@VERSION\@,$(VERSION),g' \
 -e 's,@VMAJ\@,$(VMAJ),g' \
@@ -26,11 +23,6 @@ sed_process = @SED@ \
 pc_verbose = $(pc_verbose_@AM_V@)
 pc_verbose_ = $(pc_verbose_@AM_DEFAULT_V@)
 pc_verbose_0 = @echo "  SED     " $@;
-
-data/sudoers/entrance: $(top_srcdir)/data/sudoers/entrance.in Makefile
-	$(AM_V_at)$(RM) $@
-	$(AM_V_at)$(MKDIR_P) data/sudoers/
-	$(pc_verbose)$(sed_process)
 
 data/entrance.conf: $(top_srcdir)/data/entrance.conf.in Makefile
 	$(AM_V_at)$(RM) $@
@@ -49,8 +41,7 @@ endif
 
 ENTRANCE_CLEANFILES += \
 data/entrance.conf \
-data/entrance.service \
-data/sudoers/entrance
+data/entrance.service
 
 EXTRA_DIST += \
 data/entrance \
@@ -58,5 +49,4 @@ data/entrance.arch \
 data/entrance.conf.in \
 data/entrance.other \
 data/entrance.service.in \
-data/sudoers/entrance.in \
 data/Xsession
