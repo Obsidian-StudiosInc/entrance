@@ -1,5 +1,6 @@
 #include "entrance_client.h"
 #include "Ecore_X.h"
+#include "time.h"
 
 
 typedef struct Entrance_Gui_ Entrance_Gui;
@@ -110,32 +111,35 @@ entrance_gui_init(const char *theme)
          screen->transition = o;
          elm_object_signal_callback_add(o, "entrance,wallpaper,end", "",
                                         _entrance_gui_user_bg_cb, screen);
-         ol = entrance_gui_theme_get(_gui->win, "entrance");
-         screen->edj = ol;
-         if (!ol)
+         if(j<1)
            {
-              PT("Tut Tut Tut no theme for entrance");
-              return j;
+             ol = entrance_gui_theme_get(_gui->win, "entrance");
+             screen->edj = ol;
+             if (!ol)
+               {
+                  PT("Tut Tut Tut no theme for entrance");
+                  return j;
+               }
+             elm_object_part_content_set(o, "entrance.screen", ol);
+
+             /* clock */
+             o = elm_clock_add(ol);
+             elm_clock_show_am_pm_set(o, EINA_TRUE);
+             elm_object_part_content_set(ol, "entrance.clock", o);
+
+             o = entrance_login_add(ol, _entrance_gui_auth_cb, screen);
+             entrance_login_open_session_set(o, EINA_TRUE);
+             screen->login = o;
+             elm_object_part_content_set(ol, "entrance.login", o);
+             evas_object_smart_callback_add(
+                ENTRANCE_GUI_GET(ol, "entrance.conf"),
+                "clicked",
+                _entrance_gui_conf_clicked_cb,
+                screen->transition);
+             evas_object_show(screen->login);
+             evas_object_show(screen->edj);
            }
-         elm_object_part_content_set(o, "entrance.screen", ol);
-
-         /* clock */
-         o = elm_clock_add(ol);
-         elm_clock_show_am_pm_set(o, EINA_TRUE);
-         elm_object_part_content_set(ol, "entrance.clock", o);
-
-         o = entrance_login_add(ol, _entrance_gui_auth_cb, screen);
-         entrance_login_open_session_set(o, EINA_TRUE);
-         screen->login = o;
-         elm_object_part_content_set(ol, "entrance.login", o);
-         evas_object_smart_callback_add(
-            ENTRANCE_GUI_GET(ol, "entrance.conf"),
-            "clicked",
-            _entrance_gui_conf_clicked_cb,
-            screen->transition);
          evas_object_show(screen->transition);
-         evas_object_show(screen->edj);
-         evas_object_show(screen->login);
 
          _gui->screens = eina_list_append(_gui->screens, screen);
          ecore_x_xinerama_screen_geometry_get(j, &x, &y, &w, &h);
