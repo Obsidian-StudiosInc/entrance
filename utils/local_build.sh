@@ -1,19 +1,22 @@
 #!/bin/bash
 
-make clean
+[[ -f Makefile ]] && ./utils/clean.sh
 
 DIRS=(
 	test/entrance/themes
 )
 
 for d in ${DIRS[@]}; do
-	[[ ! -d ${d} ]] && mkdir -p ${d}
+	[[ ! -d "${d}" ]] && mkdir -p "${d}"
 done
 
+MY_PWD="$(pwd)"
+
 ./autogen.sh \
-	--prefix $(pwd) \
-	--libdir $(pwd)/test \
-	--datarootdir $(pwd)/test
+	--prefix "${MY_PWD}" \
+	--libdir "${MY_PWD}/test" \
+	--datarootdir "${MY_PWD}/test" \
+	--sysconfdir "${MY_PWD}/data"
 
 make
 
