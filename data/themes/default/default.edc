@@ -26,8 +26,8 @@ collections {
                }
             }
          }
-      }
-   }
+     }
+  }
 
    group {
       name: "entrance/background";
@@ -196,7 +196,8 @@ collections {
                rel2.relative: 1 1;
                rel2.offset: -12 -12;
                params {
-                  string: "label" "Actions";
+                  string: "label" "System";
+                  string: "icon" "system-log-out";
                }
             }
             description { state: "enabled" 0.0;
@@ -218,6 +219,7 @@ collections {
                rel2.offset: 0 -12;
                params {
                   string: "label" "Settings";
+                  string: "icon" "preferences-other";
                }
             }
             description { state: "enabled" 0.0;
@@ -361,6 +363,7 @@ collections {
                visible: 1;
                params {
                   string: "label" "Login";
+                  string: "icon" "start-here";
                }
             }
             description { state: "xsessions_disabled" 0.0;
