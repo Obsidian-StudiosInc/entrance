@@ -139,7 +139,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         if(term)
           {
             char *t = NULL;
-            t = strdup(term);
+            t = strndup(term,128);
             if(t)
               {
                  snprintf(buf, sizeof(buf), "TERM=%s", t);
