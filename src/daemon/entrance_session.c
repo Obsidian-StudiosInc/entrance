@@ -15,7 +15,6 @@ static const char *_dname = NULL;
 static char **env;
 static char *_login = NULL;
 static unsigned char _logged = 0;
-//static Eina_List *_user_list = NULL;
 static pid_t _session_pid;
 static Eina_List *_xsessions = NULL;
 static int _entrance_session_userid_set(struct passwd *pwd);
@@ -25,7 +24,6 @@ static void _entrance_session_run(struct passwd *pwd, const char *cmd, const cha
 static void _entrance_session_desktops_scan_file(const char *path);
 static void _entrance_session_desktops_scan(const char *dir);
 static void _entrance_session_desktops_init(void);
-//static void _entrance_session_desktops_shutdown(void);
 static const char *_entrance_session_find_command(const char *path, const char *session);
 static struct passwd *_entrance_session_session_open();
 
@@ -121,7 +119,6 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
 static void
 _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 {
-   //char **tmp;
    char buf[PATH_MAX];
    pid_t pid;
    pid = fork();
@@ -276,7 +273,6 @@ entrance_session_cookie(void)
         _mcookie[i+2] = dig[hi & 0x0f];
         _mcookie[i+3] = dig[hi >> 4];
      }
-//   remove(file);
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s",
             entrance_config->command.xauth_file);
    putenv(strdup(buf));
