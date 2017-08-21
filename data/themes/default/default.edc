@@ -12,29 +12,6 @@ externals {
 
 collections {
    group {
-      name: "entrance/background/default";
-      images {
-         image: "entrance_background.jpg" LOSSY 90;
-      }
-      parts {
-         part { name: "base";
-            type: IMAGE;
-            description { state: "default" 0.0;
-               image {
-                  normal: "entrance_background.jpg";
-                  scale_hint: STATIC;
-               }
-            }
-         }
-     }
-  }
-
-   group {
-      name: "entrance/background";
-      data.item: "items"  "default";
-   }
-
-   group {
       name: "entrance/wallpaper/default";
       parts {
          part { name: "base";
