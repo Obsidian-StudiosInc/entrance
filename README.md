@@ -14,8 +14,12 @@ It is ALIVE! IT WORKS! (for me ©)
 ![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/28101992-424c8d22-669a-11e7-9242-064bb6e9145a.jpg)
 
 ## Known Issues
-- Odd login issue with multiple displays, login fails from one but works 
-  from the other. [Issue #1](https://github.com/Obsidian-StudiosInc/entrance/issues/1)
+- Custom user set background is broken
+[Issue #4](https://github.com/Obsidian-StudiosInc/entrance/issues/4)
+- Problems stopping/restarting entrance after log in
+[Issue #5](https://github.com/Obsidian-StudiosInc/entrance/issues/5)
+- Settings UI is broken, hidden for now
+[Issue #6](https://github.com/Obsidian-StudiosInc/entrance/issues/5)
 
 ## About
 Entrance is alive and working again for logging into X sessions! The 
