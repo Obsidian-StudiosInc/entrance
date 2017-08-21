@@ -187,7 +187,7 @@ collections {
             source: "elm/button";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 1;
+               visible: 0;
                max: 0 0;
                min: 120 36;
                align: 1.0 1.0;
