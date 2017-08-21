@@ -6,6 +6,8 @@ DIRS=(
 	test/entrance/themes
 )
 
+[[ ! -L  test/elementary ]] && ln -s /usr/share/elementary test/elementary
+
 for d in ${DIRS[@]}; do
 	[[ ! -d "${d}" ]] && mkdir -p "${d}"
 done
@@ -16,11 +18,12 @@ MY_PWD="$(pwd)"
 	--prefix "${MY_PWD}" \
 	--libdir "${MY_PWD}/test" \
 	--datarootdir "${MY_PWD}/test" \
-	--sysconfdir "${MY_PWD}/data"
+	--sysconfdir "${MY_PWD}/test"
 
 make
 
-cp src/bin/entrance_client \
+cp data/entrance.conf \
+	src/bin/entrance_client \
 	src/daemon/entrance_ck_launch \
 	src/daemon/entrance_wait \
 	test/entrance
