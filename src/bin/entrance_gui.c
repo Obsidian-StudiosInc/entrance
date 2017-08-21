@@ -624,46 +624,17 @@ entrance_gui_vkbd_enabled_get(void)
 static Evas_Object *
 _entrance_gui_background_obj_get(Evas_Object *par, const char *path, const char *group)
 {
-   Evas_Object *bg = NULL;
-   if (group)
-     {
-        if (path)
-          {
-             bg = elm_layout_add(par);
-             if (!elm_layout_file_set(bg, path, group))
-               {
-                 evas_object_del(bg);
-                 return NULL;
-               }
-          }
-        else
-          {
-             bg = entrance_gui_theme_get(par,
-                                         "entrance/background/default");
-          }
-     }
-   else if (path)
-     {
-        if (eina_str_has_extension(path,".edj"))
-          {
-             bg = elm_layout_add(par);
-             if (!elm_layout_file_set(bg, path, "entrance/background/default"))
-               {
-                 evas_object_del(bg);
-                 return NULL;
-               }
-          }
-        else
-          {
-             bg = elm_bg_add(par);
-             if (!elm_bg_file_set(bg, path, NULL))
-               {
-                 evas_object_del(bg);
-                 return NULL;
-               }
-          }
-     }
-   return bg;
+/* FIXME: Fix path to elementary theme and restore ability to set background */
+  Evas_Object *bg = NULL;
+  bg = elm_layout_add(par);
+  if (!elm_layout_file_set(bg,
+                           PACKAGE_DATA_DIR"/../elementary/themes/default.edj",
+                           "e/desktop/background"))
+    {
+      evas_object_del(bg);
+      return NULL;
+    }
+  return bg;
 }
 
 void
