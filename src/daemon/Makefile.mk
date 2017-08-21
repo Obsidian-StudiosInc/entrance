@@ -38,7 +38,6 @@ src_daemon_entrance_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 -DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
--DSUDO=\"@SUDO@\" \
 @ENTRANCE_CFLAGS@
 
 src_daemon_entrance_LDADD = @ENTRANCE_LIBS@ -lrt
@@ -63,7 +62,6 @@ src_daemon_entrance_wait_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 -DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
--DSUDO=\"@SUDO@\" \
 @ENTRANCE_CFLAGS@
 
 # entrance_ck_launch
@@ -81,7 +79,6 @@ src_daemon_entrance_ck_launch_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_BIN_DIR=\"$(libdir)/$(PACKAGE)\" \
 -DPACKAGE_SBIN_DIR=\"$(sbindir)/\" \
--DSUDO=\"@SUDO@\" \
 @ENTRANCE_CK_CFLAGS@
 
 src_daemon_entrance_ck_launch_LDADD = @ENTRANCE_CK_LIBS@
