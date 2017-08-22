@@ -47,3 +47,4 @@ stamp-h1
 entrance-*.tar.gz
 entrance-*.tar.bz2
 test/
+/build/
