@@ -6,6 +6,11 @@
  * Licence CC-By-Sa
  */
 
+#define BUTTON_ICON_SIZE 36 36
+#define BUTTON_SIZE 120 36
+#define ENTRY_SIZE 360 36
+#define OFFSET 10
+
 externals {
     external: "elm";
 }
@@ -126,7 +131,9 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                visible: 1;
-               align: 0 1;
+               align: 1 0;
+               rel2.relative: 1 0;
+               rel2.offset: -OFFSET 0;
                max: 240 72;
                min: 240 72;
             }
@@ -168,12 +175,12 @@ collections {
                fixed: 1 1;
                visible: 1;
                max: 0 0;
-               min: 120 36;
-               align: 1.0 1.0;
-               rel2.relative: 1 1;
-               rel2.offset: -12 -12;
+               min: BUTTON_ICON_SIZE;
+               align: 0 1;
+               rel1.offset: OFFSET 0;
+               rel2.relative: 0 1;
+               rel2.offset: 0 -OFFSET;
                params {
-                  string: "label" "System";
                   string: "icon" "system-log-out";
                }
             }
@@ -187,15 +194,14 @@ collections {
             source: "elm/button";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 0;
+               visible: 1;
                max: 0 0;
-               min: 120 36;
-               align: 1.0 1.0;
-               rel2.to_x: "entrance.actions";
-               rel2.relative: 0.0 1.0;
-               rel2.offset: 0 -12;
+               min: BUTTON_ICON_SIZE;
+               align: 1 1;
+               rel2.relative: 1 1;
+               rel2.offset: -OFFSET -OFFSET;
                params {
-                  string: "label" "Settings";
+                  bool: "disabled" 1;
                   string: "icon" "preferences-other";
                }
             }
@@ -289,7 +295,7 @@ collections {
             repeat_events: 0;
             description {
                state: "default" 0.0;
-               min: 360 36;
+               min: ENTRY_SIZE;
                max: 0 0;
                align: 0.5 0.5;
                rel2.to_y: "entrance.password";
@@ -319,7 +325,7 @@ collections {
             repeat_events: 0;
             description {
                state: "default" 0.0;
-               min: 360 36;
+               min: ENTRY_SIZE;
                max: 0 0;
                align: 0.5 0.5;
                visible: 1;
@@ -332,7 +338,7 @@ collections {
             source: "elm/button";
             repeat_events: 0;
             description { state: "default" 0.0;
-               max: 120 36;
+               max: BUTTON_SIZE;
                rel1.to: "entrance.password";
                rel1.relative: 0.5 1.0;
                rel2.to_x: "entrance.password";
@@ -353,7 +359,7 @@ collections {
             type: SWALLOW;
             description { state: "default" 0.0;
                fixed: 1 1;
-               max: 120 36;
+               max: BUTTON_SIZE;
                rel1.to: "entrance.password";
                rel1.relative: 0.0 1.0;
                rel2.to_x: "entrance.password";
