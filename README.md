@@ -11,7 +11,7 @@ has EFL.
 
 It is ALIVE! IT WORKS! (for me ©)
 
-![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/29542875-ee3271ee-86aa-11e7-9a0f-706d3df09bf1.jpg)
+![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/29548111-4d3460fa-86cc-11e7-8e19-3b7456be3190.jpg)
 
 ## Known Issues
 - Custom user set background is broken
