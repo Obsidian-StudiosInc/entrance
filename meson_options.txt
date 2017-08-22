@@ -1,0 +1,19 @@
+option('consolekit',
+       type       : 'boolean',
+       value      : true,
+       description: 'Enable support for consolekit')
+option('edje-cc',
+       type       : 'string',
+       description: 'A path to a edje_cc. Defaults to system edje_cc')
+option('ekbd',
+       type       : 'boolean',
+       value      : false,
+       description: 'Enable support for virtual keyboard')
+option('logind',
+       type       : 'boolean',
+       value      : false,
+       description: 'Enable support for systemd logind or elogind')
+option('pam',
+       type       : 'boolean',
+       value      : true,
+       description: 'Enable support for pam')
