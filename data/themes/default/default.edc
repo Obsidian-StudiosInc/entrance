@@ -126,6 +126,19 @@ collections {
                color: 255 255 255 255;
             }
          }
+         part { name: "entrance.date";
+            type: EXTERNAL;
+            source: "elm/label";
+            description { state: "default" 0.0;
+               fixed: 1 1;
+               visible: 1;
+               align: 0 0;
+               rel1.relative: 0 0;
+               rel1.offset: OFFSET 0;
+               max: 240 72;
+               min: 240 72;
+            }
+         }
          part { name: "entrance.clock";
             type: SWALLOW;
             description { state: "default" 0.0;
