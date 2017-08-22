@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
+#include <Eina.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -15,7 +16,9 @@ static void kill_wait();
 static pid_t _x_pid = 0;
 
 static void
-_entrance_wait_action(int sig __UNUSED__, siginfo_t * si __UNUSED__, void *data __UNUSED__)
+_entrance_wait_action(int sig EINA_UNUSED,
+                      siginfo_t * si EINA_UNUSED,
+                      void *data EINA_UNUSED)
 {
     kill_wait();
     setenv("ENTRANCE_QUIT", "1", 1);
@@ -28,7 +31,7 @@ kill_wait(void)
 }
 
 int
-main (int argc __UNUSED__, char **argv __UNUSED__)
+main (int argc EINA_UNUSED, char **argv EINA_UNUSED)
 {
    int status = 0;
    char *pid;
