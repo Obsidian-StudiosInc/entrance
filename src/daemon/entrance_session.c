@@ -112,6 +112,8 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
    entrance_pam_env_set("MAIL=/var/mail/%s", pwd->pw_name);
    entrance_pam_env_set("XAUTHORITY", cookie);
    entrance_pam_env_set("XDG_SESSION_CLASS", "greeter");
+   entrance_pam_env_set("XDG_SEAT", "seat0");
+   entrance_pam_env_set("XDG_VTNR", "vt7");
 #endif
    return EINA_TRUE;
 }
