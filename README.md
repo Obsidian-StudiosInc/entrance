@@ -5,10 +5,7 @@
 [![Code Quality](https://img.shields.io/coverity/scan/12936.svg?colorA=9977bb&style=plastic)](https://scan.coverity.com/projects/obsidian-studiosinc-entrance)
 
 
-This is a fork and current development version Entrance, a EFL based 
-display manager for Enlightenment and maybe Tizen. Or any device that 
-has EFL.
-
+This is a fork and current development version.
 It is ALIVE! IT WORKS! (for me ©)
 
 ![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/29548111-4d3460fa-86cc-11e7-8e19-3b7456be3190.jpg)
@@ -19,28 +16,49 @@ It is ALIVE! IT WORKS! (for me ©)
 - Problems stopping/restarting entrance after log in
 [Issue #5](https://github.com/Obsidian-StudiosInc/entrance/issues/5)
 - Settings UI is broken, hidden for now
-[Issue #6](https://github.com/Obsidian-StudiosInc/entrance/issues/5)
+[Issue #6](https://github.com/Obsidian-StudiosInc/entrance/issues/6)
 
 ## About
-Entrance is alive and working again for logging into X sessions! The 
-project has been resurrected from the dead to live on once again...
+Entrance is EFL Unix Display Manager. Entrance allows a user to choose a 
+X WM/Desktop session to launch. Entrance is alive and working again for 
+logging into X sessions! The project has been resurrected from the dead 
+to live on once again...
 
 Entrance is a long story. There was a project long ago that worked, and 
 went [MIA](http://xcomputerman.com/pages/entrance.html). Another came 
 along [Michael Bouchaud](https://github.com/eyoz)/@eyoz and renamed his 
 project elsa to Entrance. Which is where the current code base came 
 from. It is not known if this ever was completed or worked, but 
-presently does not function correctly if it is usable to log in at all. 
-
-entrance should allow a user to choose a WM/Desktop session to launch.
-That is the eventual goal, and long term to support Wayland in 
-addition to X.
+did not function correctly if it is usable to log in at all. Thus the 
+existence of this fork of that code base.
 
 ## Build
-To build and install run the following
+There are presently two build systems, autotools (legacy) and meson 
+(experimental). Autotools may be dropped eventually. Either can be used.
+
+### Build using meson
+```
+prefix=/usr/share
+meson \
+	--prefix "${preffix}" \
+	--bindir "${preffix}/bin" \
+	--sbindir "${preffix}/sbin" \
+	--datadir "${preffix}/share" \
+	--sysconfdir "/etc" \
+	. build
+ninja -C build
 
 ```
-./autogen.sh --sysconfdir=/etc --prefix=/usr
+
+### Build using autotools
+```
+prefix=/usr/share
+./autogen.sh \
+	--prefix "${preffix}" \
+	--bindir "${preffix}/bin" \
+	--sbindir "${preffix}/sbin" \
+	--datadir "${preffix}/share" \
+	--sysconfdir "/etc" \
 make
 make install
 ```
@@ -66,6 +84,7 @@ provide an init script at this time, and likely will not run if started
 directly. Entrance should be invoked via init script or systemd service. 
 There is a provided systemd service file for entrance in the  
 
-## Systemd
-Any support there will likley be dropped as well. Elogind/logind 
-function maybe retained.
+## logind/elogind aka systemd
+Presently not supported beyond build systems, no code written, just a 
+service file. There are plans to support logind/elogind for Wayland and 
+X. There is no ETA at this time.
