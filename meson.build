@@ -48,6 +48,7 @@ dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 
 ##### config.h
 cfg = configuration_data()
+cfg.set('HAVE_CONFIG_H', true)
 if has_ck
 	cfg.set('HAVE_CONSOLEKIT', true)
 endif
