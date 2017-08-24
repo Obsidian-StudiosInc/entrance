@@ -11,7 +11,7 @@ executable('entrance_client', [
 		'entrance_login.h',	'entrance_login.c',
 		'entrance_gui.h',	'entrance_gui.c'
 	],
-	include_directories	: inc,
+	include_directories	: [inc, top_inc],
 	dependencies		: [deps, ecore_x],
 	gui_app			: true,
 	install			: true
