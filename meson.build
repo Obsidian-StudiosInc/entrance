@@ -48,7 +48,6 @@ dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 
 ##### config.h
 cfg = configuration_data()
-cfg.set('HAVE_CONFIG_H', true)
 if has_ck
 	cfg.set('HAVE_CONSOLEKIT', true)
 endif
@@ -75,7 +74,8 @@ configure_file(input  : 'data/entrance.service.in',
                configuration : cfg
 )
 configure_file(output: 'config.h', configuration: cfg)
-add_project_arguments('-include', 'config.h', language : 'c')
+top_inc  = include_directories('.')
+add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
 
 ##### subdirs
 subdir('src/bin')
