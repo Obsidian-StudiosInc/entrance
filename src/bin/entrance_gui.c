@@ -17,7 +17,6 @@ static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *ev
 static void _entrance_gui_update(void);
 static void _entrance_gui_auth_cb(void *data, const char *user, Eina_Bool granted);
 static Eina_List* _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename);
-static Eina_List* _entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename);
 static void _entrance_gui_users_populate(void);
 
 static Entrance_Gui *_gui;
@@ -302,26 +301,6 @@ _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename)
    icons = entrance_gui_stringlist_get(edje_object_data_get(o, "items"));
    evas_object_del(edje);
    return _entrance_gui_string_to_entrance_image(icons, buf, "entrance/user/%s");
-}
-
-static Eina_List*
-_entrance_gui_theme_background_cache_fill(Evas_Object *obj, const char *themename)
-{
-   Evas_Object *edje, *o;
-   char buf[PATH_MAX];
-   Eina_List *icons = NULL;
-
-   edje = elm_layout_add(obj);
-   snprintf(buf, sizeof(buf),
-            PACKAGE_DATA_DIR"/themes/%s.edj", themename);
-   if (!elm_layout_file_set(edje, buf, "entrance/background"))
-     return NULL;
-   o = elm_layout_edje_get(edje);
-   if (!o) return NULL;
-   icons = entrance_gui_stringlist_get(edje_object_data_get(o, "items"));
-   if (!icons) return NULL;
-   evas_object_del(edje);
-   return _entrance_gui_string_to_entrance_image(icons, buf, "entrance/background/%s");
 }
 
 Evas_Object *
