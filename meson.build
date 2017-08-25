@@ -46,7 +46,8 @@ dir_data   = join_paths(dir_prefix, get_option('datadir'))
 dir_sbin   = join_paths(dir_prefix, get_option('sbindir'))
 dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 
-##### config.h
+# config.h
+add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
 cfg = configuration_data()
 if has_ck
 	cfg.set('HAVE_CONSOLEKIT', true)
@@ -64,18 +65,22 @@ cfg.set_quoted('PACKAGE_LIB_DIR'	, dir_lib)
 cfg.set_quoted('PACKAGE_SBIN_DIR'	, dir_sbin)
 cfg.set_quoted('SYSTEM_CONFIG_DIR'	, dir_syscfg)
 cfg.set_quoted('VERSION'		, ver)
+configure_file(output: 'config.h', configuration: cfg)
 
 configure_file(input  : 'data/entrance.conf.in',
                output : 'entrance.conf',
+               install_dir : join_paths(dir_syscfg, 'pam.d'),
                configuration : cfg
 )
 configure_file(input  : 'data/entrance.service.in',
                output : 'entrance.service',
                configuration : cfg
 )
-configure_file(output: 'config.h', configuration: cfg)
 top_inc  = include_directories('.')
-add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
+
+# install
+install_data('data/entrance',
+             install_dir : join_paths(dir_syscfg, 'pam.d'))
 
 ##### subdirs
 subdir('src/bin')
