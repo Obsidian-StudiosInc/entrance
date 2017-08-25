@@ -661,16 +661,15 @@ _entrance_gui_update(void)
         if (_gui->changed & ENTRANCE_CONF_WALLPAPER)
           {
              PT("Set background %s - %s", _gui->bg.path, _gui->bg.group);
+/* FIXME: Restore ability to set a background via some means
              bg = _entrance_gui_background_obj_get(screen->transition, _gui->bg.path, _gui->bg.group);
+*/
              if (!bg)
                {
-                  const char *path;
-                  const char *group;
-                  if ((_gui->bg.group) || (_gui->bg.path))
-                    PT("Failed to load new background, fallback on the theme default! ");
-                  bg = entrance_gui_theme_get(screen->transition,
-                                              "entrance/background/default");
-                  edje_object_file_get(elm_layout_edje_get(bg), &path, &group);
+                  const char *path = PACKAGE_DATA_DIR"/../elementary/themes/default.edj";
+                  const char *group = "e/desktop/background";
+                  bg = elm_layout_add(screen->transition);
+                  elm_layout_file_set(bg,path,group);
                   eina_stringshare_replace(&_gui->bg.path, path);
                   eina_stringshare_replace(&_gui->bg.group, group);
                }
