@@ -578,12 +578,6 @@ entrance_gui_theme_name_get(void)
 }
 
 Eina_List*
-entrance_gui_background_pool_get(void)
-{
-  return _gui->background_pool;
-}
-
-Eina_List*
 entrance_gui_icon_pool_get(void)
 {
   return _gui->icon_pool;
