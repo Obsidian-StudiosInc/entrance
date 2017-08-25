@@ -61,15 +61,11 @@ main(int argc, char **argv)
    entrance_login_init();
    PT("gui init");
    if (!entrance_gui_init(theme)) return EXIT_FAILURE;
-   PT("conf init");
-   entrance_conf_init();
    PT("connect init");
    entrance_connect_init();
    elm_run();
    PT("connect shutdown");
    entrance_connect_shutdown();
-   PT("conf shutdown");
-   entrance_conf_init();
    PT("gui shutdown");
    entrance_gui_shutdown();
    PT("login shutdown");

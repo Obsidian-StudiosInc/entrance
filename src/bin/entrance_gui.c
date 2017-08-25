@@ -691,9 +691,11 @@ _entrance_gui_update(void)
 }
 
 static void
-_entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
+_entrance_gui_conf_clicked_cb(void *data EINA_UNUSED,
+                              Evas_Object *obj EINA_UNUSED,
+                              void *event EINA_UNUSED)
 {
-   entrance_conf_begin(data, _gui->win);
+   // FIXME: Do new conf UI
 }
 ///////////////////////////////////////////////////
 ///////////////// USER ////////////////////////////
