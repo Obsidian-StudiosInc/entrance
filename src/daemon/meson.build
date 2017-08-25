@@ -21,7 +21,8 @@ if has_pam
 		include_directories	: [inc, pinc, top_inc],
 		dependencies		: [deps, ecore_x, pdeps, xcb],
 		gui_app			: true,
-		install			: true
+		install			: true,
+		install_dir             : dir_sbin
 	)
 else
 	executable('entrance', 
@@ -29,7 +30,8 @@ else
 		include_directories	: [inc, pinc, top_inc],
 		dependencies		: [deps, ecore_x, pdeps, xcb],
 		gui_app			: true,
-		install			: true
+		install			: true,
+		install_dir             : dir_sbin
 	)
 endif
 
@@ -38,7 +40,8 @@ executable('entrance_wait', 'entrance_wait.c',
 	include_directories	: [inc, top_inc],
 	dependencies		: [deps, ecore_x],
 	gui_app			: true,
-	install			: true
+	install			: true,
+	install_dir             : dir_sbin
 )
 
 # entrance_ck_launch
@@ -48,6 +51,7 @@ if has_ck
 		include_directories	: inc,
 		dependencies		: [deps, ck],
 		gui_app			: true,
-		install			: true
+		install			: true,
+		install_dir             : dir_sbin
 	)
 endif
