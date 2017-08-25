@@ -497,7 +497,6 @@ main (int argc, char ** argv)
    entrance_user = getenv("ENTRANCE_USER");
    if (entrance_user)
      {
-        char *quit = NULL;
         char *user = NULL;
         user = strndup(entrance_user,ENTRANCE_USER_MAX);
         if(user)
