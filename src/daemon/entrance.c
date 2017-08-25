@@ -1,4 +1,5 @@
 #include "entrance.h"
+#include <sys/file.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
