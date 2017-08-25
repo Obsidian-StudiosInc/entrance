@@ -14,5 +14,6 @@ executable('entrance_client', [
 	include_directories	: [inc, top_inc],
 	dependencies		: [deps, ecore_x],
 	gui_app			: true,
-	install			: true
+	install			: true,
+	install_dir             : dir_sbin
 )
