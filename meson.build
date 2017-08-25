@@ -6,6 +6,9 @@ project('entrance', 'c',
         meson_version  : '>= 0.40.0')
 base_url = 'https://github.com/Obsidian-StudiosInc/'
 
+# global arguments
+add_global_arguments('-W', language : 'c')
+
 # global variables
 cc       = meson.get_compiler('c')
 proj     = meson.project_name()
