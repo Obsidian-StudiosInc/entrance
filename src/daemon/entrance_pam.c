@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "entrance.h"
+#include "entrance_pam.h"
 
  /*
   *   ...
