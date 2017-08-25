@@ -40,7 +40,6 @@ struct Entrance_Gui_
    Eina_List *background_pool;
    Eina_List *icon_pool;
    Eina_List *user_pools;
-   Eina_List *theme_background_pool;
    Eina_List *theme_icon_pool;
    Eina_List *themes;
    Entrance_Xsession *selected_session;
@@ -159,8 +158,6 @@ entrance_gui_init(const char *theme)
      }
    _gui->theme_icon_pool =
       _entrance_gui_theme_icons_cache_fill(_gui->win, _gui->theme);
-   _gui->theme_background_pool =
-      _entrance_gui_theme_background_cache_fill(_gui->win, _gui->theme);
    _entrance_gui_update();
    xw = elm_win_xwindow_get(_gui->win);
    ecore_x_window_move(xw, 0, 0);
@@ -207,8 +204,6 @@ _entrance_gui_theme_update(void)
      }
    _gui->theme_icon_pool =
           _entrance_gui_theme_icons_cache_fill(_gui->win, _gui->theme);
-   _gui->theme_background_pool =
-           _entrance_gui_theme_background_cache_fill(_gui->win, _gui->theme);
    _entrance_gui_actions_populate();
    _entrance_gui_users_populate();
 
@@ -247,12 +242,6 @@ entrance_gui_shutdown(void)
        free(img);
      }
    EINA_LIST_FREE(_gui->theme_icon_pool, img)
-     {
-       eina_stringshare_del(img->path);
-       eina_stringshare_del(img->group);
-       free(img);
-     }
-   EINA_LIST_FREE(_gui->theme_background_pool, img)
      {
        eina_stringshare_del(img->path);
        eina_stringshare_del(img->group);
@@ -297,11 +286,6 @@ entrance_gui_theme_icons(void)
   return _gui->theme_icon_pool;
 }
 
-Eina_List*
-entrance_gui_theme_backgrounds(void)
-{
-  return _gui->theme_background_pool;
-}
 static Eina_List*
 _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename)
 {
