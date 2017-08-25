@@ -69,7 +69,7 @@ configure_file(output: 'config.h', configuration: cfg)
 
 configure_file(input  : 'data/entrance.conf.in',
                output : 'entrance.conf',
-               install_dir : join_paths(dir_syscfg, 'pam.d'),
+               install_dir : join_paths(dir_syscfg, proj),
                configuration : cfg
 )
 configure_file(input  : 'data/entrance.service.in',
