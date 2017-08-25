@@ -7,12 +7,15 @@ project('entrance', 'c',
 base_url = 'https://github.com/Obsidian-StudiosInc/'
 
 # global variables
+cc       = meson.get_compiler('c')
 proj     = meson.project_name()
 ver      = meson.project_version()
 chmod    = join_paths(meson.source_root(), 'meson-chmod.sh')
+top_inc  = include_directories('.')
 
 # dependencies
 efl_version = '>= 1.19.0'
+crypt   = cc.find_library('crypt')
 deps	= dependency('elementary', version: efl_version)
 ecore_x	= dependency('ecore-x',	   version: efl_version)
 edje	= dependency('edje',       version: efl_version)
@@ -20,15 +23,10 @@ xcb	= dependency('xcb')
 
 has_pam = get_option('pam')
 has_ck  = get_option('consolekit')
-cc = meson.get_compiler('c')
 
 if has_pam
-        pdeps = cc.find_library('pam')
-        pinc  = include_directories('/usr/include/security')
-else
-        pdeps = cc.find_library('crypt')
-	#FIXME
-        pinc  = include_directories('/usr/include')
+        pam_dep = cc.find_library('pam')
+        pam_inc  = include_directories('/usr/include/security')
 endif
 
 ##### edje_cc binary compiler tool
@@ -46,15 +44,23 @@ dir_data   = join_paths(dir_prefix, get_option('datadir'))
 dir_sbin   = join_paths(dir_prefix, get_option('sbindir'))
 dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 
-# config.h
+# project args
 add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
-cfg = configuration_data()
+if cc.has_header('alloca.h')
+	add_project_arguments('-DHAVE_ALLOCA_H=1', language : 'c')
+endif
 if has_ck
-	cfg.set('HAVE_CONSOLEKIT', true)
+	add_project_arguments('-DHAVE_CONSOLEKIT=1', language : 'c')
 endif
 if has_pam
-	cfg.set('HAVE_PAM', true)
+	add_project_arguments('-DPAM=1', language : 'c')
 endif
+if cc.has_header('stdlib.h')
+	add_project_arguments('-DHAVE_STDLIB_H=1', language : 'c')
+endif
+
+# config.h
+cfg = configuration_data()
 cfg.set_quoted('PACKAGE'		, proj)
 cfg.set_quoted('PACKAGE_NAME'		, proj)
 cfg.set_quoted('PACKAGE_STRING'		, proj + ' ' + ver)
@@ -76,7 +82,6 @@ configure_file(input  : 'data/entrance.service.in',
                output : 'entrance.service',
                configuration : cfg
 )
-top_inc  = include_directories('.')
 
 # install
 install_data('data/entrance',
