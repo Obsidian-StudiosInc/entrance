@@ -633,8 +633,11 @@ entrance_gui_vkbd_enabled_get(void)
    return _gui->vkbd_enabled;
 }
 
+/* FIXME: Use or drop path/group variables restore ability to set background? */
 static Evas_Object *
-_entrance_gui_background_obj_get(Evas_Object *par, const char *path, const char *group)
+_entrance_gui_background_obj_get(Evas_Object *par,
+                                 const char *path EINA_UNUSED,
+                                 const char *group EINA_UNUSED)
 {
 /* FIXME: Fix path to elementary theme and restore ability to set background */
   Evas_Object *bg = NULL;
