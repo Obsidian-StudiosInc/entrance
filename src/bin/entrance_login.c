@@ -395,7 +395,6 @@ _login_xsession_guess(void *data, const char *user)
         if (!strcmp(eu->login, user))
           {
              _entrance_login_session_set(data, eu->lsess);
-             entrance_gui_user_bg_set(eu->bg.path, eu->bg.group);
              break;
           }
      }
@@ -403,7 +402,6 @@ _login_xsession_guess(void *data, const char *user)
    if (!l)
      {
         _entrance_login_session_set(data, NULL);
-        entrance_gui_user_bg_set(NULL, NULL);
      }
 }
 
