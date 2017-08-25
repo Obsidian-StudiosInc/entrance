@@ -16,10 +16,10 @@ entrance_srcs = [
 entrance_pam_srcs = ['entrance_pam.h', 'entrance_pam.c']
 
 if has_pam
-	executable('entrance', 
+	executable('entrance',
 		sources			: [entrance_srcs, entrance_pam_srcs],
-		include_directories	: [inc, pinc, top_inc],
-		dependencies		: [deps, ecore_x, pdeps, xcb],
+		include_directories	: [inc, pam_inc, top_inc],
+		dependencies		: [crypt, deps, ecore_x, pam_dep, xcb],
 		gui_app			: true,
 		install			: true,
 		install_dir             : dir_sbin
@@ -27,8 +27,8 @@ if has_pam
 else
 	executable('entrance', 
 		sources			: [entrance_srcs],
-		include_directories	: [inc, pinc, top_inc],
-		dependencies		: [deps, ecore_x, pdeps, xcb],
+		include_directories	: [inc, top_inc],
+		dependencies		: [crypt, deps, ecore_x, xcb],
 		gui_app			: true,
 		install			: true,
 		install_dir             : dir_sbin
