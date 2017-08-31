@@ -86,8 +86,10 @@ configure_file(input  : 'data/entrance.service.in',
 )
 
 # install
-install_data('data/entrance',
-             install_dir : join_paths(dir_syscfg, 'pam.d'))
+if has_pam
+	install_data('data/entrance',
+                     install_dir : join_paths(dir_syscfg, 'pam.d'))
+endif
 
 ##### subdirs
 subdir('src/bin')
