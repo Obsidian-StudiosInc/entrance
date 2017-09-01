@@ -17,8 +17,8 @@ else
 	MY_PWD+="/build"
 	meson \
 		--prefix "${MY_PWD}" \
-		--bindir "${MY_PWD}/test/entrance" \
-		--sbindir "${MY_PWD}/test/entrance" \
+		--libdir "${MY_PWD}/test" \
+		--sbindir "${MY_PWD}/test" \
 		--datadir "${MY_PWD}/test" \
 		--sysconfdir "${MY_PWD}/test" \
 		. build
