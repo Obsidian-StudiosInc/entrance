@@ -282,13 +282,12 @@ _entrance_main(const char *dname)
                       PT("chown home directory %s", home_path);
                       fchown(home_dir, pwd->pw_uid, pwd->pw_gid);
                    }
-
                  snprintf(buf, sizeof(buf),
                           "export HOME=%s; export USER=%s;"
-                          "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR
-                          ";/bin/su -s /bin/sh -c \""
-                          PACKAGE_BIN_DIR"/entrance_client -d %s -t %s\" -p %s",
-                          home_path, user, dname, entrance_config->theme, user);
+                          "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";"
+                          PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
+                          home_path, user, dname, entrance_config->theme,
+                          st.st_gid,st.st_uid);
                  PT("Exec entrance_client: %s", buf);
 
                  _entrance_client =
