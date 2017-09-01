@@ -41,7 +41,7 @@ executable('entrance_wait', 'entrance_wait.c',
 	dependencies		: [deps, ecore_x],
 	gui_app			: true,
 	install			: true,
-	install_dir             : dir_sbin
+	install_dir             : dir_lib
 )
 
 # entrance_ck_launch
@@ -52,6 +52,6 @@ if has_ck
 		dependencies		: [deps, ck],
 		gui_app			: true,
 		install			: true,
-		install_dir             : dir_sbin
+		install_dir             : dir_lib
 	)
 endif
