@@ -108,12 +108,13 @@ entrance_gui_init(const char *theme)
          if(j<1)
            {
              ol = entrance_gui_theme_get(_gui->win, "entrance");
-             screen->edj = ol;
              if (!ol)
                {
                   PT("Tut Tut Tut no theme for entrance");
+                  free(screen);
                   return j;
                }
+             screen->edj = ol;
              elm_object_part_content_set(o, "entrance.screen", ol);
 
              /* date */
