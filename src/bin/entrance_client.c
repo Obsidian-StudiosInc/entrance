@@ -3,18 +3,22 @@
 #include <Ecore_X.h>
 #include <Ecore_Getopt.h>
 
+#define NOBODY 65534
+
 static const Ecore_Getopt options =
 {
    "entrance_client",
    "%prog [options]",
    VERSION,
-   "(C) 2011 Enlightenment, see AUTHORS.",
+   "(C) 2017 Obsidian-Studios, Inc. see AUTHORS.",
    "GPL, see COPYING",
    "Launch gui client.",
    EINA_TRUE,
    {
       ECORE_GETOPT_STORE_STR('d', "display", "specify the display to use"),
+      ECORE_GETOPT_STORE_INT('g', "gid", "specify the group to run under"),
       ECORE_GETOPT_STORE_STR('t', "theme", "specify the theme to use"),
+      ECORE_GETOPT_STORE_INT('u', "uid", "specify the user to run under"),
       ECORE_GETOPT_HELP ('h', "help"),
       ECORE_GETOPT_VERSION('V', "version"),
       ECORE_GETOPT_COPYRIGHT('R', "copyright"),
@@ -30,11 +34,15 @@ main(int argc, char **argv)
    unsigned char quit_option = 0;
    char *display = NULL;
    char *theme = NULL;
+   int gid = 0;
+   int uid = 0;
 
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_STR(display),
+        ECORE_GETOPT_VALUE_INT(gid),
         ECORE_GETOPT_VALUE_STR(theme),
+        ECORE_GETOPT_VALUE_INT(uid),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -45,6 +53,14 @@ main(int argc, char **argv)
      return EXIT_FAILURE;
    if (quit_option)
      return EXIT_SUCCESS;
+   if(gid>0)
+     setgid(gid);
+   else
+     setgid(NOBODY);
+   if(uid>0)
+     setuid(uid);
+   else
+     setuid(NOBODY);
    eina_init();
    if (!display)
      {
