@@ -58,6 +58,7 @@ _entrance_pam_conv(int num_msg, const struct pam_message **msg,
               _passwd = NULL;
               break;
            case PAM_ERROR_MSG:
+              break;
               PT("error msg");
            case PAM_TEXT_INFO:
               PT("info %s", msg[i]->msg);
