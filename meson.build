@@ -41,7 +41,7 @@ endif
 
 ##### dir locations
 dir_prefix = get_option('prefix')
-dir_lib    = join_paths(dir_prefix, get_option('libdir'))
+dir_lib    = join_paths(dir_prefix, get_option('libdir'), proj)
 dir_data   = join_paths(dir_prefix, get_option('datadir'))
 dir_sbin   = join_paths(dir_prefix, get_option('sbindir'))
 dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
