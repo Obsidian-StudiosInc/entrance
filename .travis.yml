@@ -21,10 +21,8 @@ install:
   - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .bin/ninja-linux.zip
   - unzip .bin/ninja-linux.zip -d .bin
 
-before_script:
-  - export PATH=$PATH:$PWD/.bin
-
 script:
+  - export PATH=$PATH:$PWD/.bin
   - meson --prefix /usr . build
   - .bin/ninja -C build
 
