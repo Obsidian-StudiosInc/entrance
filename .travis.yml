@@ -27,7 +27,7 @@ before_script:
 script:
   - find /lib* /usr/lib* -name 'libpam*' -o -name 'lib*ck*connector*.so'
   - meson --prefix /usr . build
-  - ninja -C build
+  - .bin/ninja -C build
 
 notifications:
   email: false
@@ -39,5 +39,5 @@ addons:
       description: Build submitted via Travis CI
     notification_email: wlt@o-sinc.com
     build_command_prepend: meson --prefix /usr . build
-    build_command: ninja -C build
+    build_command: .bin/ninja -C build
     branch_pattern: master
