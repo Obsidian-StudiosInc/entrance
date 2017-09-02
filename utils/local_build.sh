@@ -2,34 +2,22 @@
 
 MY_PWD="$(pwd)"
 
-[[ -f Makefile ]] && ./utils/clean.sh
 [[ -d build ]] && rm -r build
 
-if [[ -n ${1} ]]; then
-	./autogen.sh \
-		--prefix "${MY_PWD}" \
-		--libdir "${MY_PWD}/test" \
-		--datarootdir "${MY_PWD}/test" \
-		--sysconfdir "${MY_PWD}/test"
-	make
-else
-	CFLAGS=-g
-	MY_PWD+="/build"
-	meson \
-		--prefix "${MY_PWD}" \
-		--libdir "${MY_PWD}/test" \
-		--sbindir "${MY_PWD}/test" \
-		--datadir "${MY_PWD}/test" \
-		--sysconfdir "${MY_PWD}/test" \
-		. build
-	ninja -C build
-	mv -v build/entrance.conf build/data
-	cd build
-fi
+CFLAGS=-g
+MY_PWD+="/build"
+meson \
+	--prefix "${MY_PWD}" \
+	--libdir "${MY_PWD}/test" \
+	--sbindir "${MY_PWD}/test" \
+	--datadir "${MY_PWD}/test" \
+	--sysconfdir "${MY_PWD}/test" \
+	. build
+ninja -C build
+mv -v build/entrance.conf build/data
+cd build
 
-DIRS=(
-	test/entrance/themes
-)
+DIRS=( test/entrance/themes )
 
 for d in ${DIRS[@]}; do
 	[[ ! -d "${d}" ]] && mkdir -p "${d}"
