@@ -5,9 +5,9 @@ After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service
 
 [Service]
 
-Environment="LD_LIBRARY_PATH=@libdir@"
+Environment="LD_LIBRARY_PATH=@PACKAGE_LIB_DIR@"
 IgnoreSIGPIPE=no
-ExecStart=@SBINDIR@/entrance --nodaemon
+ExecStart=@PACKAGE_SBIN_DIR@/entrance --nodaemon
 Restart= always
 StandardOutput=syslog
 StandardError=inherit
