@@ -35,6 +35,6 @@ addons:
       name: Obsidian-StudiosInc/entrance
       description: Build submitted via Travis CI
     notification_email: wlt@o-sinc.com
-    build_command_prepend: meson --prefix /usr . build
-    build_command: .bin/ninja -C build
+    build_command_prepend: rm -r build
+    build_command: meson --prefix /usr . build; .bin/ninja -C build
     branch_pattern: master
