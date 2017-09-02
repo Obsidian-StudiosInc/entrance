@@ -19,6 +19,7 @@ install:
   - sudo pip3 install meson
 
 script:
+  - find /lib* /usr/lib* -name 'libpam*' -o -name 'lib*ck*connector*.so'
   - meson --prefix /usr --libdir lib --sbindir sbin --datadir usr/share --sysconfdir etc . build
   - ninja -C build
 
