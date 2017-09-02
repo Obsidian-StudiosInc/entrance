@@ -14,13 +14,18 @@ before_install:
 install:
   - sudo add-apt-repository -y ppa:niko2040/e19
   - sudo apt-get -qq update
-  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev ninja-build python3-pip
+  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip
   - sudo pip3 install --upgrade pip
   - sudo pip3 install meson
+  - mkdir .bin
+  - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .bin/ninja-linux.zip
+  - unzip .bin/ninja-linux.zip -d .bin
+
+before_script:
+  - export PATH=$PATH:$PWD/.bin
 
 script:
   - find /lib* /usr/lib* -name 'libpam*' -o -name 'lib*ck*connector*.so'
-  - export LD_LIBRARY_PATH=
   - meson --prefix /usr . build
   - ninja -C build
 
