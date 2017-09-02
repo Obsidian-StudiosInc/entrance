@@ -33,8 +33,7 @@ did not function correctly if it is usable to log in at all. Thus the
 existence of this fork of that code base.
 
 ## Build
-There are presently two build systems, autotools (legacy) and meson 
-(experimental). Autotools may be dropped eventually. Either can be used.
+Entrance presently uses meson build system, autotools has been dropped. 
 
 ### Build using meson
 ```
@@ -47,25 +46,11 @@ meson \
 	--sysconfdir "/etc" \
 	. build
 ninja -C build
-
-```
-
-### Build using autotools
-```
-prefix=/usr/share
-./autogen.sh \
-	--prefix "${preffix}" \
-	--bindir "${preffix}/bin" \
-	--sbindir "${preffix}/sbin" \
-	--datadir "${preffix}/share" \
-	--sysconfdir "/etc" \
-make
-make install
 ```
 
 On most systems you likely need a pam file. 
 ```
-cp data/entrance /etc/pam.d/entrance
+cp data/entrance.pam.d /etc/pam.d/entrance
 ```
 
 There are some others, entrance.arch and entrance.other. May need other 
