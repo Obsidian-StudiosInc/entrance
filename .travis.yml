@@ -25,7 +25,6 @@ before_script:
   - export PATH=$PATH:$PWD/.bin
 
 script:
-  - find /lib* /usr/lib* -name 'libpam*' -o -name 'lib*ck*connector*.so'
   - meson --prefix /usr . build
   - .bin/ninja -C build
 
