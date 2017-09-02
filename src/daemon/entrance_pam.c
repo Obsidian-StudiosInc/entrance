@@ -44,7 +44,8 @@ _entrance_pam_conv(int num_msg, const struct pam_message **msg,
      {
         resp[i]->resp=0;
         resp[i]->resp_retcode=0;
-        switch(msg[i]->msg_style)
+        result = msg[i]->msg_style;
+        switch(result)
           {
            case PAM_PROMPT_ECHO_ON:
               // We assume PAM is asking for the username
