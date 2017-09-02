@@ -1,11 +1,12 @@
 language: c
 compiler: gcc
 sudo: required
+dist: trusty
 env:
   global:
     - secure: APFXgkKcg8AJur2MTDfF5WwRX/7Yyop2IrMv+jIh5NIEI0exLOJvZiGoZ7zQd+DN+eX/u7oA5RobX/ETfOaVLdLs2U3SRCmmNO2nNr3qoIuMyTBrozbaphl8eYPqZB6JxusqR4swyycBaTGzDXUCTqA5HGjpmoDloO5s2URLS3F+1gO372wFaxgdH6YktYMErgnzpkA3MmO04nF0EDlHQmoxpQQNswQs46IWe96yuyCeoJBcgEtNpsFwIzeTRvT+nDluaxZ+dU47TlZmHIL17YIxNl+ZGwvB9frWTt8Pj4KhOx6+MMnNVF4KWzMtM4Bo0tvREXyWagknnAcmk6g6Mh7BoMIyovlVIZ7yqLkhbOdKgfziNEudvbT/Bta0NAY7VRXpZ8791y+eBviyu28IbObT1e8Elxr1ZRsaBEZOzuG2bryrMy4SI0yxGSqWZjskqRQ1ZlYUcLujGtfqGaKy+K1d+TB74nGPTrPzPSgVdUDYHM4SUPpDgxR7RQSe08k0/DNKoWijjt6H5JptgnQpQvn4/2a/p2XatWqommuKmsA+1hJgmOb8BnClNAK5i8BrzcQURrY/X3QuYMMHCjkjYt0jVnSPgLEwI2tfyK4y76igfpJc8uQ4kYWhFNFZj0uDWn+T15am3toCqUPTpDk3WYKP+DiqEEL5ghhrhO/tT90=
   matrix:
-    - MY_PV=0.0.5
+    - MY_PV=0.1.0_alpha1
 
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
@@ -13,12 +14,13 @@ before_install:
 install:
   - sudo add-apt-repository -y ppa:niko2040/e19
   - sudo apt-get -qq update
-  - sudo apt-get install -y gettext libc6-dbg libefl libefl-dbg libefl-dev
+  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libefl libefl-dbg libefl-dev ninja-build python3 python3-pip python-dev
+  - sudo pip3 install --upgrade pip
+  - sudo pip3 install meson
 
 script:
-  - ./autogen.sh --disable-grub2 --prefix /usr
-  - make
-  - sudo make install
+  - meson --prefix /usr --libdir lib --sbindir sbin --datadir usr/share --sysconfdir etc . build
+  - ninja -C build
 
 notifications:
   email: false
@@ -29,6 +31,6 @@ addons:
       name: Obsidian-StudiosInc/entrance
       description: Build submitted via Travis CI
     notification_email: wlt@o-sinc.com
-    build_command_prepend: ./autogen.sh --disable-grub2 --prefix /usr ; make clean
-    build_command: make -j 4
+    build_command_prepend: meson --prefix /usr --libdir lib --sbindir sbin --datadir usr/share --sysconfdir etc . build
+    build_command: ninja -C build
     branch_pattern: master
