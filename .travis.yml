@@ -21,8 +21,10 @@ install:
   - curl -L https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-linux.zip -o .bin/ninja-linux.zip
   - unzip .bin/ninja-linux.zip -d .bin
 
-script:
+before_script:
   - export PATH=$PATH:$PWD/.bin
+
+script:
   - meson --prefix /usr . build
   - .bin/ninja -C build
 
@@ -35,6 +37,5 @@ addons:
       name: Obsidian-StudiosInc/entrance
       description: Build submitted via Travis CI
     notification_email: wlt@o-sinc.com
-    build_command_prepend: rm -r build
-    build_command: meson --prefix /usr . build; .bin/ninja -C build
+    build_command: .bin/ninja -C build
     branch_pattern: master
