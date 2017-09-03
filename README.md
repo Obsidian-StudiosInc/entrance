@@ -24,13 +24,39 @@ X WM/Desktop session to launch. Entrance is alive and working again for
 logging into X sessions! The project has been resurrected from the dead 
 to live on once again...
 
-Entrance is a long story. There was a project long ago that worked, and 
-went [MIA](http://xcomputerman.com/pages/entrance.html). Another came 
-along [Michael Bouchaud](https://github.com/eyoz)/@eyoz and renamed his 
+## History
+Entrance is a long story. There has been 2 different code bases and 
+projects both using the name entrance.
+
+### 1st Generation
+There was a project long ago that worked, and went 
+[MIA](http://xcomputerman.com/pages/entrance.html). Copies of the 
+sources for some releases. Ideally would great to get a copy of the old 
+entrance repo to add to this one for historical purposes. If you have a 
+copy of the old Entrance repository, please open an issue and provide 
+a link. That would be much appreciated!
+
+### 2nd Generation 
+Sometime later another came along,
+[Michael Bouchaud](https://github.com/eyoz)/@eyoz who renamed his 
 project elsa to Entrance. Which is where the current code base came 
 from. It is not known if this ever was completed or worked, but 
-did not function correctly if it is usable to log in at all. Thus the 
-existence of this fork of that code base.
+does not function correctly. If it is usable to log in at all.
+
+The broken, incomplete, unmaintained 2nd Genration Entrance 
+resides in Enlightenment's
+[entrance git 
+repository](https://git.enlightenment.org/misc/entrance.git/).
+
+### 3rd Generation
+This project is the 3rd generation, fork of the 2nd Generation code 
+base. With a lot of fixes, and initial removal of incomplete and/or 
+broken code. Rather than fix as is, looking to replace functionality 
+with new code and different ways of accomplishing similar functionality.
+
+This generation is currently in development, and should be usable. 
+Please open issues for any problems encountered. Which should be 
+expected given the state of the project.
 
 ## Build
 Entrance presently uses meson build system, autotools has been dropped. 
@@ -48,19 +74,20 @@ meson \
 ninja -C build
 ```
 
-On most systems you likely need a pam file. 
+On most systems you likely need a pam file. Meson will install this file.
 ```
 cp data/entrance.pam.d /etc/pam.d/entrance
 ```
 
-There are some others, entrance.arch and entrance.other. May need other 
-variations for different operating systems/linux distributions.
+The systemd service file is presently not installed. It may or may not 
+be usable and/or correct. Please see the section on logind/elogind for 
+further information.
 
 ## Configuration
 Most things can be configured in entrance.conf, /etc/entrance/entrance.conf
-
-You could put a customized icon for your user in
-/var/cache/entrance/users/(username).edj with groupname "entrance/user/icon"
+Various aspects do no work. Please file issues for anything that is not 
+configurable or does not work. It is known that things like background 
+do not work.
 
 ## Usage
 In order to start entrance you need a system init script or systemd (untested). 
