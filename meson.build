@@ -1,4 +1,5 @@
 # project
+# REMOVE ME: temp line for version commit 0.1.0_alpha1 remove for alpha2
 project('entrance', 'c',
         version        : '0.1.0_alpha1',
         license        : 'GPL-3.0',
