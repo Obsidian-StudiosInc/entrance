@@ -42,8 +42,11 @@ main (int argc, char **argv)
        char exe[1024];
        int len;
        len = strlen(argv[1]);
-       snprintf(exe,len,"%s",argv[1]);
-       execvp(exe, argv + 1);
+       if(len < 1024)
+         {
+            snprintf(exe,len,"%s",argv[1]);
+            execvp(exe, argv + 1);
+         }
      }
    _exit (1);
 }
