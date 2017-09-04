@@ -37,10 +37,12 @@ main (int argc, char **argv)
    else
      fprintf(stderr, "entrance_ck: can't set up connection to ConsoleKit");
 
-   if (argc > 1)
+   if (argc > 1 && argv[1])
      {
        char exe[1024];
-       strncpy(exe,argv[1],1024);
+       int len;
+       len = strlen(argv[1]);
+       snprintf(exe,len,"%s",argv[1]);
        execvp(exe, argv + 1);
      }
    _exit (1);
