@@ -37,5 +37,6 @@ addons:
       name: Obsidian-StudiosInc/entrance
       description: Build submitted via Travis CI
     notification_email: wlt@o-sinc.com
-    build_command: .bin/ninja -C build
+    build_command_prepend: meson --prefix /usr . coverity-build
+    build_command: .bin/ninja -C coverity-build
     branch_pattern: master
