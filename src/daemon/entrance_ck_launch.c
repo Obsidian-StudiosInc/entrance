@@ -45,7 +45,22 @@ main (int argc, char **argv)
        if(len < 1024)
          {
             snprintf(exe,len,"%s",argv[1]);
-            execvp(exe, argv + 1);
+            char **args = (char **)malloc((argc-1) * sizeof(char *));
+            if(args)
+              {
+                int c;
+                for(c=1;c<argc;c++)
+                  {
+                    len = strlen(argv[c]+1);
+                    args[c-1] = (char *)malloc(len+1);
+                    if(args[c-1])
+                      snprintf(args[c-1],len,"%s",argv[c]);
+                  }
+                  execvp(exe, args);
+                  for(c=0;c<argc-1;c++)
+                      free(args[c]);
+                  free(args);
+              }
          }
      }
    _exit (1);
