@@ -41,8 +41,8 @@ main (int argc, char **argv)
      {
        char exe[1024];
        int len;
-       len = strlen(argv[1]);
-       if(len > 0 && len < 1023)
+       len = strlen(argv[1])+1;
+       if(len > 0 && len < 1024)
          {
             snprintf(exe,len,"%s",argv[1]);
             char **args = (char **)malloc((argc-1) * sizeof(char *));
