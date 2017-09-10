@@ -39,12 +39,10 @@ main (int argc, char **argv)
 
    if (argc > 1 && argv[1])
      {
-       char exe[1024];
        int len;
        len = strlen(argv[1])+1;
-       if(len > 0 && len < 1024)
+       if(len > 1)
          {
-            snprintf(exe,len,"%s",argv[1]);
             char **args = (char **)malloc((argc-1) * sizeof(char *));
             if(args)
               {
@@ -56,7 +54,7 @@ main (int argc, char **argv)
                     if(args[c-1])
                       snprintf(args[c-1],len,"%s",argv[c]);
                   }
-                  execvp(exe, args);
+                  execvp(args[0], args);
                   for(c=0;c<argc-1;c++)
                       free(args[c]);
                   free(args);
