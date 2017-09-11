@@ -156,8 +156,6 @@ collections {
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
-               max: 0 0;
-               min: 360 240;
             }
          }
          part { name: "entrance.users";
@@ -279,6 +277,8 @@ collections {
             type: RECT;
             description { state: "default" 0.0;
                color: 255 0 0 96;
+               max: 0 0;
+               min: 360 240;
                visible: 0;
             }
             description { state: "visible" 0.0;
@@ -291,15 +291,22 @@ collections {
             type: TEXT;
             effect: SOFT_SHADOW;
             repeat_events: 0;
-            description { state: "default" 0.0;
+            description {
+                state: "default" 0.0;
+                align: 1 0.5;
                 color: 200 200 200 255;
-                rel2.to_y: "entrance.login";
-                rel2.relative: 0.2 0.0;
-                visible: 1;
+                max: 0 0;
+                min: ENTRY_SIZE;
+                rel2.offset: -300 -OFFSET*8;
                 text {
                   text: "Login";
                   size: 20;
                 }
+            }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 0.5 0.5;
             }
          }
          part {
@@ -308,12 +315,14 @@ collections {
             repeat_events: 0;
             description {
                state: "default" 0.0;
+               align: 0 0.5;
                min: ENTRY_SIZE;
                max: 0 0;
+            }
+            description {
+               state: "default" 0.5;
+               inherit: "default" 0.0;
                align: 0.5 0.5;
-               rel2.to_y: "entrance.password";
-               rel2.relative: 1.0 0.0;
-               visible: 1;
             }
          }
          part {
@@ -321,15 +330,22 @@ collections {
             type: TEXT;
             effect: SOFT_SHADOW;
             repeat_events: 0;
-            description { state: "default" 0.0;
-               color: 200 200 200 255;
-               rel2.to_y: "entrance.password";
-               rel2.relative: 0.3 2.0;
-               visible: 1;
+            description {
+                state: "default" 0.0;
+                align: 1 0.5;
+                color: 200 200 200 255;
+                max: 0 0;
+                min: ENTRY_SIZE;
+                rel1.offset: -260 OFFSET*8;
                 text {
                   text: "Password";
                   size: 20;
                 }
+            }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 0.5 0.5;
             }
          }
          part {
@@ -337,11 +353,16 @@ collections {
             type: SWALLOW;
             repeat_events: 0;
             description {
-               state: "default" 0.0;
-               min: ENTRY_SIZE;
-               max: 0 0;
-               align: 0.5 0.5;
-               visible: 1;
+                state: "default" 0.0;
+                align: 0 0.5;
+                min: ENTRY_SIZE;
+                max: 0 0;
+                rel1.offset: 0 OFFSET*16;
+            }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 0.5 0.5;
             }
          }
 
@@ -357,14 +378,16 @@ collections {
                rel2.to_x: "entrance.password";
                align: 0.5 0.5;
                visible: 1;
-               params {
-                  string: "label" "Login";
-                  string: "icon" "start-here";
-               }
+                params {
+                    string: "label" "Login";
+                    string: "icon" "start-here";
+                }
             }
             description { state: "xsessions_disabled" 0.0;
-               inherit: "default" 0.0;
-               rel1.relative: 0.0 1.0;
+                inherit: "default" 0.0;
+                params {
+                    bool: "disabled" 1;
+                }
             }
          }
 
@@ -377,12 +400,16 @@ collections {
                rel1.relative: 0.0 1.0;
                rel2.to_x: "entrance.password";
                rel2.relative: 0.5 1.0;
-               align: 0.5 0.5;
+               align: 0.5 1;
                visible: 1;
             }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 0.5 0.5;
+            }
             description { state: "xsessions_disabled" 0.0;
-               inherit: "default" 0.0;
-               visible: 0;
+                inherit: "default" 0.5;
             }
          }
          part { name: "entrance.error";
@@ -421,6 +448,17 @@ collections {
        *
        */
       programs {
+         program {
+            name: "animation,state1";
+            source: "";
+            signal: "load";
+            action: STATE_SET "default" 0.5;
+            target: "entrance.login";
+            target: "entrance.login_label";
+            target: "entrance.password";
+            target: "entrance.password_label";
+            transition: LINEAR 0.5;
+         }
          program {
             name: "xsession_enabled";
             signal: "entrance,xsession,enabled";
