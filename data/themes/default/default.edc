@@ -383,12 +383,17 @@ collections {
             description { state: "default" 0.0;
                max: BUTTON_SIZE;
                rel1.offset: 180 OFFSET*26;
-               align: 0.5 0.5;
+               align: 0.5 1;
                visible: 1;
                 params {
                     string: "label" "Login";
                     string: "icon" "start-here";
                 }
+            }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 0.5 0.5;
             }
             description { state: "xsessions_disabled" 0.0;
                 inherit: "default" 0.0;
@@ -462,6 +467,7 @@ collections {
             target: "entrance.password";
             target: "entrance.password_label";
             target: "entrance.xsessions";
+            target: "login_button";
             transition: LINEAR 0.5;
          }
          program {
