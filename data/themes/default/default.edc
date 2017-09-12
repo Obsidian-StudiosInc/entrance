@@ -187,16 +187,24 @@ collections {
                visible: 1;
                max: 0 0;
                min: BUTTON_ICON_SIZE;
-               align: 0 1;
+               align: 0 0;
                rel1.offset: OFFSET 0;
-               rel2.relative: 0 1;
+               rel2.relative: 0 0;
                rel2.offset: 0 -OFFSET;
                params {
                   string: "icon" "system-log-out";
                }
             }
-            description { state: "enabled" 0.0;
+            description {
+                state: "default" 0.5;
                 inherit: "default" 0.0;
+                align: 0 1;
+                rel1.offset: OFFSET 0;
+                rel2.relative: 0 1;
+                rel2.offset: 0 -OFFSET;
+            }
+            description { state: "enabled" 0.0;
+               inherit: "default" 0.5;
                visible: 1;
             }
          }
@@ -235,22 +243,9 @@ collections {
             source: "";
             signal: "load";
             action: STATE_SET "default" 0.5;
+            target: "entrance.actions";
             target: "entrance.conf";
             transition: LINEAR 0.5;
-         }
-         program {
-            name: "action_enabled";
-            signal: "entrance,action,enabled";
-            source: "";
-            action: STATE_SET "enabled" 0.0;
-            target: "entrance.actions";
-         }
-         program {
-            name: "action_disabled";
-            signal: "entrance,action,disabled";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "entrance.actions";
          }
          program {
             name: "user_enabled";
