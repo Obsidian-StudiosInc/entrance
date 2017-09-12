@@ -94,7 +94,8 @@ In order to start entrance you need a system init script or systemd (untested).
 This may differ based on your operating system. entrance does not 
 provide an init script at this time, and likely will not run if started
 directly. Entrance should be invoked via init script or systemd service. 
-There is a provided systemd service file for entrance in the  
+There is a provided systemd service file for entrance. It is not know if 
+this works or not.
 
 ## logind/elogind aka systemd
 Presently not supported beyond build systems, no code written, just a 
