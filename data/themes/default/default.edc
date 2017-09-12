@@ -196,7 +196,7 @@ collections {
                }
             }
             description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
+                inherit: "default" 0.0;
                visible: 1;
             }
          }
@@ -205,25 +205,39 @@ collections {
             source: "elm/button";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 1;
                max: 0 0;
                min: BUTTON_ICON_SIZE;
-               align: 1 1;
-               rel2.relative: 1 1;
+               align: 1 0;
+               rel2.relative: 1 0;
                rel2.offset: -OFFSET -OFFSET;
                params {
                   bool: "disabled" 1;
                   string: "icon" "preferences-other";
                }
             }
+            description {
+                state: "default" 0.5;
+                inherit: "default" 0.0;
+                align: 1 1;
+                rel2.relative: 1 1;
+                rel2.offset: -OFFSET -OFFSET;
+            }
             description { state: "enabled" 0.0;
-               inherit: "default" 0.0;
+               inherit: "default" 0.5;
                visible: 1;
             }
          }
 
       }
       programs {
+         program {
+            name: "animation,state1";
+            source: "";
+            signal: "load";
+            action: STATE_SET "default" 0.5;
+            target: "entrance.conf";
+            transition: LINEAR 0.5;
+         }
          program {
             name: "action_enabled";
             signal: "entrance,action,enabled";
