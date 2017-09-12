@@ -404,7 +404,7 @@ collections {
                fixed: 1 1;
                max: BUTTON_SIZE;
                rel1.offset: -180 OFFSET*26;
-               align: 0.5 0.5;
+               align: 0.5 1;
                visible: 1;
             }
             description {
@@ -461,23 +461,8 @@ collections {
             target: "entrance.login_label";
             target: "entrance.password";
             target: "entrance.password_label";
+            target: "entrance.xsessions";
             transition: LINEAR 0.5;
-         }
-         program {
-            name: "xsession_enabled";
-            signal: "entrance,xsession,enabled";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            target: "entrance.xsessions";
-            target: "login_button";
-         }
-         program {
-            name: "xsession_disabled";
-            signal: "entrance,xsession,disabled";
-            source: "";
-            action: STATE_SET "xsessions_disabled" 0.0;
-            target: "entrance.xsessions";
-            target: "login_button";
          }
          program {
             name: "login_error";
