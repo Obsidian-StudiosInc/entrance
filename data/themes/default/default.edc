@@ -373,9 +373,7 @@ collections {
             repeat_events: 0;
             description { state: "default" 0.0;
                max: BUTTON_SIZE;
-               rel1.to: "entrance.password";
-               rel1.relative: 0.5 1.0;
-               rel2.to_x: "entrance.password";
+               rel1.offset: 180 OFFSET*26;
                align: 0.5 0.5;
                visible: 1;
                 params {
@@ -396,11 +394,8 @@ collections {
             description { state: "default" 0.0;
                fixed: 1 1;
                max: BUTTON_SIZE;
-               rel1.to: "entrance.password";
-               rel1.relative: 0.0 1.0;
-               rel2.to_x: "entrance.password";
-               rel2.relative: 0.5 1.0;
-               align: 0.5 1;
+               rel1.offset: -180 OFFSET*26;
+               align: 0.5 0.5;
                visible: 1;
             }
             description {
