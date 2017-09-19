@@ -65,10 +65,10 @@ Entrance presently uses meson build system, autotools has been dropped.
 ```
 prefix=/usr/share
 meson \
-	--prefix "${preffix}" \
-	--bindir "${preffix}/bin" \
-	--sbindir "${preffix}/sbin" \
-	--datadir "${preffix}/share" \
+	--prefix "${prefix}" \
+	--bindir "${prefix}/bin" \
+	--sbindir "${prefix}/sbin" \
+	--datadir "${prefix}/share" \
 	--sysconfdir "/etc" \
 	. build
 ninja -C build
