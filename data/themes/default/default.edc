@@ -308,7 +308,6 @@ collections {
                 min: ENTRY_SIZE;
                 rel2.offset: -300 -OFFSET*8;
                 text {
-                  text: "Login";
                   size: 20;
                 }
             }
@@ -347,7 +346,6 @@ collections {
                 min: ENTRY_SIZE;
                 rel1.offset: -260 OFFSET*8;
                 text {
-                  text: "Password";
                   size: 20;
                 }
             }
