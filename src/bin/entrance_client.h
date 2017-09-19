@@ -5,6 +5,13 @@
 #include <config.h>
 #endif
 
+#ifdef ENABLE_NLS
+# include <libintl.h>
+# define _(x) gettext(x)
+#else
+# define _(x) (x)
+#endif
+
 #include <stdio.h>
 
 #include <Elementary.h>
