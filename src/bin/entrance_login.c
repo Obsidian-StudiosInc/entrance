@@ -500,7 +500,7 @@ entrance_login_shutdown(void)
 Evas_Object *
 entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 {
-   Evas_Object *o, *h, *p;
+   Evas_Object *h, *l, *o, *p, *t;
    Entrance_Gui_Login *login;
 
    /* layout */
@@ -511,24 +511,24 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    evas_object_data_set(o, "entrance", login);
 
    /* login label */
-   h = elm_label_add(o);
-   elm_object_text_set (obj, _("Login"));
-   elm_object_part_content_set(o, "entrance.login_label", h);
-   evas_object_show(h);
+   t = elm_label_add(o);
+   elm_object_text_set (t, _("Login"));
+   elm_object_part_content_set(o, "entrance.login_label", t);
+   evas_object_show(t);
 
    /* login */
-   h = elm_entry_add(o);
-   elm_entry_single_line_set(h, EINA_TRUE);
-   elm_entry_scrollable_set(h, EINA_TRUE);
-   elm_object_part_content_set(o, "entrance.login", h);
-   elm_object_focus_set(h, EINA_TRUE);
-   evas_object_show(h);
+   l = elm_entry_add(o);
+   elm_entry_single_line_set(l, EINA_TRUE);
+   elm_entry_scrollable_set(l, EINA_TRUE);
+   elm_object_part_content_set(o, "entrance.login", l);
+   elm_object_focus_set(l, EINA_TRUE);
+   evas_object_show(l);
 
    /* password label */
-   h = elm_label_add(o);
-   elm_object_text_set (obj, _("Password"));
-   elm_object_part_content_set(o, "entrance.password_label", h);
-   evas_object_show(h);
+   t = elm_label_add(o);
+   elm_object_text_set (t, _("Password"));
+   elm_object_part_content_set(o, "entrance.password_label", t);
+   evas_object_show(t);
 
    /* password */
    p = elm_entry_add(o);
@@ -540,11 +540,11 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
 
    /* callbacks */
    elm_object_event_callback_add(o, _login_input_event_cb, o);
-   evas_object_smart_callback_add(h, "activated",
+   evas_object_smart_callback_add(l, "activated",
                                   _login_login_activated_cb, p);
-   evas_object_smart_callback_add(h, "unfocused",
+   evas_object_smart_callback_add(l, "unfocused",
                                   _login_login_unfocused_cb, o);
-   evas_object_smart_callback_add(h, "changed,user",
+   evas_object_smart_callback_add(l, "changed,user",
                                   _login_login_changed_cb, o);
    evas_object_smart_callback_add(p, "focused",
                                   _login_password_focused_cb, o);
