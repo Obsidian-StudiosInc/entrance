@@ -297,7 +297,7 @@ collections {
          }
          part {
             name: "entrance.login_label";
-            type: TEXT;
+            type: SWALLOW;
             effect: SOFT_SHADOW;
             repeat_events: 0;
             description {
@@ -306,11 +306,7 @@ collections {
                 color: 200 200 200 255;
                 max: 0 0;
                 min: ENTRY_SIZE;
-                rel2.offset: -300 -OFFSET*8;
-                text {
-                  text: "Login";
-                  size: 20;
-                }
+                rel2.offset: -320 -OFFSET*8;
             }
             description {
                 state: "default" 0.5;
@@ -336,7 +332,7 @@ collections {
          }
          part {
             name: "entrance.password_label";
-            type: TEXT;
+            type: SWALLOW;
             effect: SOFT_SHADOW;
             repeat_events: 0;
             description {
@@ -345,11 +341,7 @@ collections {
                 color: 200 200 200 255;
                 max: 0 0;
                 min: ENTRY_SIZE;
-                rel1.offset: -260 OFFSET*8;
-                text {
-                  text: "Password";
-                  size: 20;
-                }
+                rel1.offset: -300 OFFSET*8;
             }
             description {
                 state: "default" 0.5;
