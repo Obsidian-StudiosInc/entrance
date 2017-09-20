@@ -15,7 +15,6 @@ main (int argc, char **argv)
    pid_t        pid;
    int          status;
 
-   fprintf(stdout, "\n\n\n\n\n\n-------------------------------------------------\n\n\n\n\n\n");
    ck = ck_connector_new();
    if (ck != NULL)
      {
@@ -44,20 +43,20 @@ main (int argc, char **argv)
        len = strlen(argv[1])+1;
        if(len > 1)
          {
-            char **args = (char **)malloc((argc) * sizeof(char *));
+            char **args = (char **)malloc((argc+1) * sizeof(char *));
             if(args)
               {
                 int c;
-                for(c=0;c<argc-1;c++)
+                for(c=0;c<argc;c++)
                   {
                     len = strlen(argv[c])+1;
                     args[c] = (char *)malloc(len);
                     if(args[c])
-                      snprintf(args[c],len,"%s",argv[c+1]);
+                      snprintf(args[c],len,"%s",argv[c]);
                   }
                 args[c] = NULL;
-                execvp(args[0], args+1);
-                for(c=0;c<argc-1;c++)
+                execvp(args[1], args+1);
+                for(c=0;c<argc;c++)
                   free(args[c]);
                 free(args);
               }
