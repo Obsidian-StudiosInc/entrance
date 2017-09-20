@@ -27,6 +27,7 @@ xcb	= dependency('xcb')
 
 has_pam = get_option('pam')
 has_ck  = get_option('consolekit')
+has_nls = get_option('nls')
 
 if has_pam
         pam_dep = cc.find_library('pam')
@@ -54,6 +55,9 @@ if cc.has_header('alloca.h')
 endif
 if has_ck
 	add_project_arguments('-DHAVE_CONSOLEKIT=1', language : 'c')
+endif
+if has_nls
+	add_project_arguments('-DENABLE_NLS=1', language : 'c')
 endif
 if has_pam
 	add_project_arguments('-DPAM=1', language : 'c')
@@ -99,4 +103,6 @@ endif
 subdir('src/bin')
 subdir('src/daemon')
 subdir('data/themes/default')
-subdir('po')
+if has_nls
+  subdir('po')
+endif
