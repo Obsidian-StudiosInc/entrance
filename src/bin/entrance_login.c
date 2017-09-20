@@ -511,7 +511,7 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    evas_object_data_set(o, "entrance", login);
 
    /* login label */
-   h = elm_entry_add(o);
+   h = elm_label_add(o);
    elm_object_text_set (obj, _("Login"));
    elm_object_part_content_set(o, "entrance.login_label", h);
    evas_object_show(h);
@@ -525,7 +525,7 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    evas_object_show(h);
 
    /* password label */
-   h = elm_entry_add(o);
+   h = elm_label_add(o);
    elm_object_text_set (obj, _("Password"));
    elm_object_part_content_set(o, "entrance.password_label", h);
    evas_object_show(h);
