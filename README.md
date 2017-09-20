@@ -97,6 +97,26 @@ directly. Entrance should be invoked via init script or systemd service.
 There is a provided systemd service file for entrance. It is not know if 
 this works or not.
 
+### Entrance User
+entrance presently starts as root and then setuid entrance_client under 
+the user nobody. This was done via sudo and then su for a bit before 
+switch to setuid. Inherited design from the 2nd generation.
+
+It may be changed such that entrance runs under its own user, and does 
+not setuid or run under root. This will require creation of a user 
+account and adding permissions for the user for video, etc. It may be 
+possible to accomplish this now, starting entrance under a user say 
+"entrance". Also updating the not known to work entrance.conf 
+start_user option;
+```
+value "start_user" string: "nobody";
+```
+
+You will likely also need to create a directory for entrance, and ensure 
+proper permissions. Since not running under root, entrance will not be 
+able to correct this, and does have code for such. Expect to see some 
+errors in log file otherwise. Along with non-functional entrance.
+
 ## logind/elogind aka systemd
 Presently not supported beyond build systems, no code written, just a 
 service file. There are plans to support logind/elogind for Wayland and 
