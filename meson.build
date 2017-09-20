@@ -99,3 +99,4 @@ endif
 subdir('src/bin')
 subdir('src/daemon')
 subdir('data/themes/default')
+subdir('po')
