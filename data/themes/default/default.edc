@@ -19,12 +19,6 @@ collections {
    group {
       name: "entrance/wallpaper/default";
       parts {
-         part { name: "base";
-            type: RECT;
-            description { state: "default" 0.0;
-               color: 255 255 255 0;
-            }
-         }
          part { name: "clip1";
             type: RECT;
             description { state: "default" 0.0;
@@ -36,18 +30,6 @@ collections {
                }
             }
          }
-         part { name: "clip2";
-            type: RECT;
-            description { state: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
-               rel2 {
-                  to: "cur";
-                  relative: 0.0 1.0;
-                  offset: 0 -1;
-               }
-            }
-         }
          part { name: "cur";
             type: RECT;
             description { state: "default" 0.0;
@@ -56,27 +38,9 @@ collections {
                visible: 0;
                align: 0.0 0.5;
             }
-            description { state: "user" 0.0;
-               inherit: "default" 0.0;
-               align: 1.0 0.5;
-            }
          }
          part { name: "entrance.wallpaper.default";
             clip_to: "clip1";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "entrance.wallpaper.user";
-            clip_to: "clip2";
-            type: SWALLOW;
-            description { state: "default" 0.0;
-               visible: 1;
-            }
-         }
-         part { name: "entrance.wallpaper.user.start";
-            clip_to: "clip2";
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
@@ -90,13 +54,6 @@ collections {
          }
       }
       programs {
-         program { name: "wallpaper_user";
-            signal: "entrance,wallpaper,user";
-            action: STATE_SET "user" 0.0;
-            transition: LINEAR 0.7;
-            target: "cur";
-            after: "wallpaper_transition_end";
-         }
          program { name: "wallpaper_default";
             signal: "entrance,wallpaper,default";
             action: STATE_SET "default" 0.0;
