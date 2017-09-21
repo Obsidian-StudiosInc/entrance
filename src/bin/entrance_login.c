@@ -426,12 +426,14 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
         login->auth = NULL;
         if (!granted)
           {
-             elm_object_signal_emit(data,
-                                    "entrance,auth,error", "");
-             elm_object_signal_emit(
+            elm_object_text_set(
+                elm_object_part_content_get(data, "entrance.label"),
+                _("Login failed"));
+            elm_object_signal_emit(data, "entrance,auth,error", "");
+            elm_object_signal_emit(
                 elm_object_part_content_get(data, "entrance.login"),
                 "entrance,auth,error", "login");
-             elm_object_signal_emit(
+            elm_object_signal_emit(
                 elm_object_part_content_get(data, "entrance.password"),
                 "entrance,auth,error", "password");
           }
@@ -509,6 +511,11 @@ entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
    login->func.data = data;
    o = entrance_gui_theme_get(obj, "entrance/login");
    evas_object_data_set(o, "entrance", login);
+
+   /* label */
+   t = elm_label_add(o);
+   elm_object_part_content_set(o, "entrance.label", t);
+   evas_object_show(t);
 
    /* login label */
    t = elm_label_add(o);
