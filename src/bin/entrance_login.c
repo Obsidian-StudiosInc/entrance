@@ -177,9 +177,6 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
 
 
    elm_object_signal_emit(data, "entrance,auth,changed", "");
-   elm_object_signal_emit(
-      elm_object_part_content_get(data, "entrance.password"),
-      "entrance,auth,changed", "");
 
    if (!strcmp(ev->key, "KP_Enter"))
      {
