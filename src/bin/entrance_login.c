@@ -143,14 +143,7 @@ _login_check_auth(Evas_Object *widget)
 
    _login_reset(widget);
 
-   elm_object_signal_emit(widget,
-                          "entrance,auth,checking", "");
-   elm_object_signal_emit(
-      elm_object_part_content_get(widget, "entrance.login"),
-      "entrance,auth,checking", "login");
-   elm_object_signal_emit(
-      elm_object_part_content_get(widget, "entrance.password"),
-      "entrance,auth,checking", "password");
+   elm_object_signal_emit(widget, "entrance,auth,checking", "");
 }
 
 static void
