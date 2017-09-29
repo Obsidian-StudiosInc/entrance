@@ -6,7 +6,6 @@
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
 static void _login_backspace(Evas_Object *widget);
-static void _login_delete(Evas_Object *widget);
 static void _login_select(Evas_Object *widget);
 static void _login_check_auth(Evas_Object *widget);
 static void _login_xsession_update(Evas_Object *obj);
@@ -62,12 +61,6 @@ _login_backspace(Evas_Object *widget)
              login->passwd[pos] = '\0';
           }
      }
-}
-
-static void
-_login_delete(Evas_Object *widget)
-{
-   _login_backspace(widget);
 }
 
 static void
