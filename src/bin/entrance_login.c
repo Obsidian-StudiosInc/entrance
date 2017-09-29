@@ -214,16 +214,7 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
             elm_object_signal_emit(data, "entrance,auth,error", "");
           }
         else
-          {
-             elm_object_signal_emit(data,
-                                    "entrance,auth,valid", "");
-             elm_object_signal_emit(
-                elm_object_part_content_get(data, "entrance.login"),
-                "entrance,auth,valid", "login");
-             elm_object_signal_emit(
-                elm_object_part_content_get(data, "entrance.password"),
-                "entrance,auth,valid", "password");
-          }
+          elm_object_signal_emit(data, "entrance,auth,valid", "");
      }
 }
 
