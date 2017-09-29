@@ -5,7 +5,6 @@
 
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
-static void _login_reset(Evas_Object *widget);
 static void _login_backspace(Evas_Object *widget);
 static void _login_delete(Evas_Object *widget);
 static void _login_select(Evas_Object *widget);
@@ -47,13 +46,6 @@ struct Entrance_Gui_Login_
    Entrance_Gui_Login *login; \
    login = evas_object_data_get(widget, "entrance"); \
    if (!login) return
-
-static void
-_login_reset(Evas_Object *widget)
-{
-   LOGIN_GET(widget);
-   memset(login->passwd, 0, sizeof(char) * ENTRANCE_PASSWD_LEN);
-}
 
 static void
 _login_backspace(Evas_Object *widget)
@@ -118,8 +110,6 @@ _login_check_auth(Evas_Object *widget)
                                 login->open_session);
    else
      entrance_connect_auth_send(host, passwd, NULL, login->open_session);
-
-   _login_reset(widget);
 
    elm_object_signal_emit(widget, "entrance,auth,checking", "");
 }
