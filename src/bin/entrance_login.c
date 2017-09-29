@@ -45,16 +45,6 @@ struct Entrance_Gui_Login_
    if (!login) return
 
 static void
-_login_unselect(Evas_Object *widget)
-{
-   Evas_Object *o;
-   LOGIN_GET(widget);
-   o = elm_object_part_content_get(widget, "entrance.password");
-   elm_entry_select_none(o);
-   login->selected = EINA_FALSE;
-}
-
-static void
 _login_check_auth(Evas_Object *widget)
 {
    Evas_Object *o;
