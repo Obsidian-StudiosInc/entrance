@@ -9,9 +9,7 @@ static void _login_reset(Evas_Object *widget);
 static void _login_backspace(Evas_Object *widget);
 static void _login_delete(Evas_Object *widget);
 static void _login_select(Evas_Object *widget);
-static void _login_update(Evas_Object *widget);
 static void _login_check_auth(Evas_Object *widget);
-static void _login_password_catch(Evas_Object *widget, Eina_Bool catch);
 static Eina_Bool _login_key_down_cb(void *data, int type, void *event);
 static void _login_xsession_update(Evas_Object *obj);
 static void _login_xsession_guess(void *data, const char *user);
@@ -56,7 +54,6 @@ _login_reset(Evas_Object *widget)
 {
    LOGIN_GET(widget);
    memset(login->passwd, 0, sizeof(char) * ENTRANCE_PASSWD_LEN);
-   _login_update(widget);
 }
 
 static void
@@ -72,7 +69,6 @@ _login_backspace(Evas_Object *widget)
         if ((pos < len) && (pos >= 0))
           {
              login->passwd[pos] = '\0';
-             _login_update(widget);
           }
      }
 }
@@ -104,28 +100,10 @@ _login_unselect(Evas_Object *widget)
 }
 
 static void
-_login_update(Evas_Object *widget)
-{
-   Evas_Object *o;
-   char str[ENTRANCE_PASSWD_LEN];
-   int len;
-   LOGIN_GET(widget);
-
-   len = eina_unicode_utf8_get_len(login->passwd);
-
-   memset(str, '*', sizeof(char) * len);
-   str[len] = '\0';
-
-   o = elm_object_part_content_get(widget, "entrance.password");
-   elm_object_text_set(o, str);
-   elm_entry_cursor_end_set(o);
-}
-
-static void
 _login_check_auth(Evas_Object *widget)
 {
    Evas_Object *o;
-   const char *host;
+   const char *host, *passwd;
    LOGIN_GET(widget);
 
    o = elm_object_part_content_get(widget, "entrance.login");
@@ -133,39 +111,18 @@ _login_check_auth(Evas_Object *widget)
    login->wait = EINA_TRUE;
    if (!login->auth)
      login->auth = entrance_connect_auth_cb_add(_login_auth_cb, widget);
+   o = elm_object_part_content_get(widget, "entrance.password");
+   passwd = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if (login->session)
-     entrance_connect_auth_send(host, login->passwd,
+     entrance_connect_auth_send(host, passwd,
                                 login->session->name,
                                 login->open_session);
    else
-     entrance_connect_auth_send(host, login->passwd,
-                                NULL, login->open_session);
+     entrance_connect_auth_send(host, passwd, NULL, login->open_session);
 
    _login_reset(widget);
 
    elm_object_signal_emit(widget, "entrance,auth,checking", "");
-}
-
-static void
-_login_password_catch(Evas_Object *widget, Eina_Bool catch)
-{
-   LOGIN_GET(widget);
-   if (login->catch != catch)
-     {
-        if (catch)
-          {
-             PT("catch password");
-             login->handler = ecore_event_handler_add(
-                ECORE_EVENT_KEY_DOWN, _login_key_down_cb, widget);
-          }
-        else
-          {
-             PT("uncatch password");
-             ecore_event_handler_del(login->handler);
-             login->handler = NULL;
-          }
-     }
-   login->catch = catch;
 }
 
 static Eina_Bool
@@ -242,7 +199,6 @@ _login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
                  (ENTRANCE_PASSWD_LEN - strlen(ev->compose)))
                {
                   strcat(login->passwd, ev->compose);
-                  _login_update(data);
                }
           }
      }
@@ -275,18 +231,6 @@ _login_login_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event 
    hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
 
    _login_xsession_guess(data, hostname);
-}
-
-static void
-_login_password_focused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
-{
-   _login_password_catch(data, EINA_TRUE);
-}
-
-static void
-_login_password_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
-{
-   _login_password_catch(data, EINA_FALSE);
 }
 
 static Eina_Bool
@@ -481,7 +425,6 @@ void
 entrance_login_shutdown(void)
 {
    // TODO callback_del on widget
-   //_login_password_catch(NULL, EINA_FALSE);
    //free(_login);
    entrance_fill_del(_login_fill);
 }
@@ -539,10 +482,6 @@ entrance_login_add(Evas_Object *obj, void *data)
                                   _login_login_unfocused_cb, o);
    evas_object_smart_callback_add(l, "changed,user",
                                   _login_login_changed_cb, o);
-   evas_object_smart_callback_add(p, "focused",
-                                  _login_password_focused_cb, o);
-   evas_object_smart_callback_add(p, "unfocused",
-                                  _login_password_unfocused_cb, o);
    elm_object_signal_callback_add(o, "entrance,auth,check", "",
                                   _entrance_login_auth_check_cb, o);
    h = elm_hoversel_add(o);
