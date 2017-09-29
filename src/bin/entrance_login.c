@@ -482,6 +482,8 @@ entrance_login_add(Evas_Object *obj, void *data)
                                   _login_login_unfocused_cb, o);
    evas_object_smart_callback_add(l, "changed,user",
                                   _login_login_changed_cb, o);
+   evas_object_smart_callback_add(p, "activated",
+                                  _entrance_login_auth_check_cb, o);
    elm_object_signal_callback_add(o, "entrance,auth,check", "",
                                   _entrance_login_auth_check_cb, o);
    h = elm_hoversel_add(o);
