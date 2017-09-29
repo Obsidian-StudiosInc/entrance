@@ -9,7 +9,6 @@ static void _login_check_auth(Evas_Object *widget);
 static void _login_xsession_update(Evas_Object *obj);
 static void _login_xsession_guess(void *data, const char *user);
 static void _login_xsession_clicked_cb(void *data, Evas_Object *obj, void *event_info);
-static Eina_Bool _login_input_event_cb(void *data EINA_UNUSED, Evas_Object *obj, Evas_Object *src, Evas_Callback_Type type, void *event_info);
 static void _login_login_unfocused_cb(void *data, Evas_Object *obj, void *event);
 static void _login_login_activated_cb(void *data, Evas_Object *obj, void *event);
 static char *_login_xsession_text_get(void *data, Evas_Object *obj, const char *part);
@@ -63,15 +62,6 @@ _login_check_auth(Evas_Object *widget)
      entrance_connect_auth_send(host, passwd, NULL, login->open_session);
 
    elm_object_signal_emit(widget, "entrance,auth,checking", "");
-}
-
-static Eina_Bool
-_login_input_event_cb(void *data, Evas_Object *obj EINA_UNUSED, Evas_Object *src EINA_UNUSED, Evas_Callback_Type type, void *event_info EINA_UNUSED)
-{
-   LOGIN_GET(data) EINA_FALSE;
-   return (login->catch
-           && ((type == EVAS_CALLBACK_KEY_UP)
-               || (type == EVAS_CALLBACK_KEY_DOWN)));
 }
 
 static void
@@ -343,7 +333,6 @@ entrance_login_add(Evas_Object *obj, void *data)
    evas_object_show(p);
 
    /* callbacks */
-   elm_object_event_callback_add(o, _login_input_event_cb, o);
    evas_object_smart_callback_add(l, "activated", _login_login_activated_cb, p);
    evas_object_smart_callback_add(l, "unfocused", _login_login_unfocused_cb, o);
    evas_object_smart_callback_add(l, "changed,user", _login_login_changed_cb, o);
