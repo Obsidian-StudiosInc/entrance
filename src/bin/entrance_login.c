@@ -5,7 +5,6 @@
 
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
-static void _login_backspace(Evas_Object *widget);
 static void _login_select(Evas_Object *widget);
 static void _login_check_auth(Evas_Object *widget);
 static void _login_xsession_update(Evas_Object *obj);
@@ -45,23 +44,6 @@ struct Entrance_Gui_Login_
    Entrance_Gui_Login *login; \
    login = evas_object_data_get(widget, "entrance"); \
    if (!login) return
-
-static void
-_login_backspace(Evas_Object *widget)
-{
-   int len, val, pos;
-
-   LOGIN_GET(widget);
-   len = strlen(login->passwd);
-   if (len > 0)
-     {
-        pos = evas_string_char_prev_get(login->passwd, len, &val);
-        if ((pos < len) && (pos >= 0))
-          {
-             login->passwd[pos] = '\0';
-          }
-     }
-}
 
 static void
 _login_select(Evas_Object *widget)
