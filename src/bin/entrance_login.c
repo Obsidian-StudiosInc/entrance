@@ -212,12 +212,6 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
                 elm_object_part_content_get(data, "entrance.label"),
                 _("Login failed"));
             elm_object_signal_emit(data, "entrance,auth,error", "");
-            elm_object_signal_emit(
-                elm_object_part_content_get(data, "entrance.login"),
-                "entrance,auth,error", "login");
-            elm_object_signal_emit(
-                elm_object_part_content_get(data, "entrance.password"),
-                "entrance,auth,error", "password");
           }
         else
           {
