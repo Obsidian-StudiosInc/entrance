@@ -10,7 +10,6 @@ static void _login_backspace(Evas_Object *widget);
 static void _login_delete(Evas_Object *widget);
 static void _login_select(Evas_Object *widget);
 static void _login_check_auth(Evas_Object *widget);
-static Eina_Bool _login_key_down_cb(void *data, int type, void *event);
 static void _login_xsession_update(Evas_Object *obj);
 static void _login_xsession_guess(void *data, const char *user);
 static void _login_xsession_clicked_cb(void *data, Evas_Object *obj, void *event_info);
@@ -123,86 +122,6 @@ _login_check_auth(Evas_Object *widget)
    _login_reset(widget);
 
    elm_object_signal_emit(widget, "entrance,auth,checking", "");
-}
-
-static Eina_Bool
-_login_key_down_cb(void *data, int type EINA_UNUSED, void *event)
-{
-   Ecore_Event_Key *ev;
-   LOGIN_GET(data) ECORE_CALLBACK_PASS_ON;
-   ev = event;
-
-
-   elm_object_signal_emit(data, "entrance,auth,changed", "");
-
-   if (!strcmp(ev->key, "KP_Enter"))
-     {
-        _login_check_auth(data);
-     }
-   else if (!strcmp(ev->key, "Return"))
-     {
-        _login_check_auth(data);
-     }
-   else if (!strcmp(ev->key, "BackSpace"))
-     {
-        if (login->selected)
-          {
-             _login_reset(data);
-             _login_unselect(data);
-          }
-        else
-          _login_backspace(data);
-     }
-   else if (!strcmp(ev->key, "Delete"))
-     {
-        if (login->selected)
-          {
-             _login_reset(data);
-          }
-        else
-          _login_delete(data);
-     }
-   else if ((!strcmp(ev->key, "Tab"))
-            || (!strcmp(ev->key, "ISO_Left_Tab")))
-     {
-        if (ev->modifiers & ECORE_EVENT_MODIFIER_SHIFT)
-          {
-             PT("focus previous");
-             elm_object_focus_next(data, ELM_FOCUS_PREVIOUS);
-          }
-        else
-          {
-             PT("focus next");
-             elm_object_focus_next(data, ELM_FOCUS_NEXT);
-          }
-     }
-   else if ((!strcmp(ev->key, "u"))
-            && (ev->modifiers & ECORE_EVENT_MODIFIER_CTRL))
-     {
-        _login_reset(data);
-     }
-   else if ((!strcmp(ev->key, "a"))
-            && (ev->modifiers & ECORE_EVENT_MODIFIER_CTRL))
-     {
-        _login_select(data);
-     }
-   else
-     {
-        if (ev->compose)
-          {
-             if (login->selected)
-               {
-                  _login_reset(data);
-                  _login_unselect(data);
-               }
-             if (strlen(login->passwd) <
-                 (ENTRANCE_PASSWD_LEN - strlen(ev->compose)))
-               {
-                  strcat(login->passwd, ev->compose);
-               }
-          }
-     }
-   return ECORE_CALLBACK_PASS_ON;
 }
 
 static Eina_Bool
