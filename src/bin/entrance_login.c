@@ -23,7 +23,6 @@ struct Entrance_Gui_Login_
 {
    Ecore_Timer *write_timer;
    Ecore_Event_Handler *handler;
-   char passwd[ENTRANCE_PASSWD_LEN];
    Entrance_Xsession *session;
    struct
      {
