@@ -5,7 +5,6 @@
 
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
-static void _login_select(Evas_Object *widget);
 static void _login_check_auth(Evas_Object *widget);
 static void _login_xsession_update(Evas_Object *obj);
 static void _login_xsession_guess(void *data, const char *user);
@@ -44,16 +43,6 @@ struct Entrance_Gui_Login_
    Entrance_Gui_Login *login; \
    login = evas_object_data_get(widget, "entrance"); \
    if (!login) return
-
-static void
-_login_select(Evas_Object *widget)
-{
-   LOGIN_GET(widget);
-   Evas_Object *o;
-   o = elm_object_part_content_get(widget, "entrance.password");
-   elm_entry_select_all(o);
-   login->selected = EINA_TRUE;
-}
 
 static void
 _login_unselect(Evas_Object *widget)
