@@ -474,8 +474,7 @@ _entrance_login_auth_check_cb(void *data, Evas_Object *obj EINA_UNUSED, const ch
 void
 entrance_login_init(void)
 {
-   _login_fill = entrance_fill_new(NULL, _login_xsession_text_get,
-                                   NULL, NULL, NULL);
+   _login_fill = entrance_fill_new(NULL, _login_xsession_text_get, NULL, NULL);
 }
 
 void

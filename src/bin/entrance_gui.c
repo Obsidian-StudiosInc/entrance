@@ -11,7 +11,6 @@ static void _entrance_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_
 static char *_entrance_gui_user_text_get(void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_entrance_gui_user_content_get(void *data, Evas_Object *obj, const char *part);
 static Eina_Bool _entrance_gui_user_state_get(void *data, Evas_Object *obj, const char *part);
-static void _entrance_gui_user_del(void *data, Evas_Object *obj);
 static void _entrance_gui_actions_populate();
 static void _entrance_gui_conf_clicked_cb(void *data, Evas_Object *obj, void *event_info);
 static void _entrance_gui_update(void);
@@ -410,8 +409,7 @@ _entrance_gui_users_populate(void)
    ef = entrance_fill_new(style,
                           _entrance_gui_user_text_get,
                           _entrance_gui_user_content_get,
-                          _entrance_gui_user_state_get,
-                          _entrance_gui_user_del);
+                          _entrance_gui_user_state_get);
 
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
@@ -765,11 +763,6 @@ _entrance_gui_user_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSE
    return EINA_FALSE;
 }
 
-static void
-_entrance_gui_user_del(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED)
-{
-}
-
 ///////////////////////////////////////////////////
 ///////////////// ACTION //////////////////////////
 ///////////////////////////////////////////////////
@@ -810,8 +803,7 @@ _entrance_gui_actions_populate()
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
         Entrance_Fill *ef;
-        ef = entrance_fill_new(style, _entrance_gui_action_text_get,
-                               NULL, NULL, NULL);
+        ef = entrance_fill_new(style, _entrance_gui_action_text_get, NULL, NULL);
         o = ENTRANCE_GUI_GET(screen->edj, "entrance.actions");
         entrance_fill(o, ef, _gui->actions, NULL,
                       _entrance_gui_action_clicked_cb, screen);

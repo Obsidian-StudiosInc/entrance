@@ -8,7 +8,6 @@ struct Entrance_Fill_
         Entrance_Fill_Text_Get_Func text_get;
         Entrance_Fill_Content_Get_Func content_get;
         Entrance_Fill_State_Get_Func state_get;
-        Entrance_Fill_Del_Func del;
         Evas_Smart_Cb sel;
         void *data;
      } func;
@@ -66,7 +65,6 @@ _entrance_fill_genlist(Evas_Object *obj,
    glc->func.text_get = ef->func.text_get;
    glc->func.content_get = ef->func.content_get;
    glc->func.state_get = ef->func.state_get;
-   glc->func.del = ef->func.del;
 
 
    EINA_LIST_FOREACH(contents, l, content)
@@ -105,7 +103,6 @@ _entrance_fill_gengrid(Evas_Object *obj,
    ggc->func.text_get = ef->func.text_get;
    ggc->func.content_get = ef->func.content_get;
    ggc->func.state_get = ef->func.state_get;
-   ggc->func.del = ef->func.del;
 
    EINA_LIST_FOREACH(contents, l, content)
      {
@@ -183,8 +180,7 @@ Entrance_Fill *
 entrance_fill_new(const char *item_style,
                   Entrance_Fill_Text_Get_Func text_get,
                   Entrance_Fill_Content_Get_Func content_get,
-                  Entrance_Fill_State_Get_Func state_get,
-                  Entrance_Fill_Del_Func del_func)
+                  Entrance_Fill_State_Get_Func state_get)
 {
    Entrance_Fill *ef;
    ef = calloc(1, sizeof(Entrance_Fill));
@@ -192,7 +188,6 @@ entrance_fill_new(const char *item_style,
    ef->func.text_get = text_get;
    ef->func.content_get = content_get;
    ef->func.state_get = state_get;
-   ef->func.del = del_func;
    return ef;
 }
 
