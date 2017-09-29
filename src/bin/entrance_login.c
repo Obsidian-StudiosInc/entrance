@@ -409,8 +409,6 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
    LOGIN_GET(data);
    if (login->wait)
      {
-        if (login->func.login)
-          login->func.login(login->func.data, user, granted);
         login->wait = EINA_FALSE;
         entrance_connect_auth_cb_del(login->auth);
         login->auth = NULL;
@@ -490,14 +488,13 @@ entrance_login_shutdown(void)
 }
 
 Evas_Object *
-entrance_login_add(Evas_Object *obj, Entrance_Login_Cb login_cb, void *data)
+entrance_login_add(Evas_Object *obj, void *data)
 {
    Evas_Object *h, *l, *o, *p, *t;
    Entrance_Gui_Login *login;
 
    /* layout */
    login = calloc(1, sizeof(Entrance_Gui_Login));
-   login->func.login = login_cb;
    login->func.data = data;
    o = entrance_gui_theme_get(obj, "entrance/login");
    evas_object_data_set(o, "entrance", login);
