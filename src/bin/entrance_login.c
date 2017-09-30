@@ -1,8 +1,6 @@
 #include "entrance_client.h"
 #include <Eina.h>
 
-#define ENTRANCE_PASSWD_LEN 256
-
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
 
 static void _login_check_auth(Evas_Object *widget);
