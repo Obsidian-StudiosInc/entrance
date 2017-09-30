@@ -1,4 +1,3 @@
-- match default e theme as default entrance theme
 - elogind integration
 - virtual keyboard support
 - wayland support, client for DM and session
