@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: entrance\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-20 20:39-0400\n"
+"POT-Creation-Date: 2017-09-30 14:41-0400\n"
 "PO-Revision-Date: 2017-09-19 21:00-0400\n"
 "Last-Translator: William L. Thomson Jr. <wlt@o-sinc.com>\n"
 "Language-Team: William L. Thomson Jr. <wlt@o-sinc.com>\n"
@@ -17,14 +17,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/entrance_login.c:431
+#: src/bin/entrance_login.c:52
+msgid "Please enter your user name"
+msgstr ""
+
+#: src/bin/entrance_login.c:59
+msgid "Please enter your password"
+msgstr ""
+
+#: src/bin/entrance_login.c:223
 msgid "Login failed"
 msgstr "Error de Inicio de Sesión"
 
-#: src/bin/entrance_login.c:522
+#: src/bin/entrance_login.c:300
 msgid "Login"
 msgstr "Iniciar Sesión"
 
-#: src/bin/entrance_login.c:536
+#: src/bin/entrance_login.c:314
 msgid "Password"
 msgstr "Contraseña"
