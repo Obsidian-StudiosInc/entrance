@@ -131,11 +131,11 @@ _login_login_timer_cb(void *data)
 }
 
 static void
-_login_login_activated_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
+_login_login_activated_cb(void *data,
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event EINA_UNUSED)
 {
    elm_object_focus_set(data, EINA_TRUE);
-   edje_object_signal_emit(data,
-                           "entrance,auth,enable", "");
 }
 
 static void
@@ -378,8 +378,6 @@ entrance_login_login_set(Evas_Object *widget, const char *user)
    Evas_Object *o;
    o = elm_object_part_content_get(widget, "entrance.login");
    elm_object_text_set(o, user);
-   elm_object_signal_emit(widget,
-                           "entrance,auth,enable", "");
    o = elm_object_part_content_get(widget, "entrance.password");
    elm_object_focus_set(o, EINA_TRUE);
 
