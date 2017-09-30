@@ -12,6 +12,7 @@ meson \
 	--sbindir "${MY_PWD}/test" \
 	--datadir "${MY_PWD}/test" \
 	--sysconfdir "${MY_PWD}/test" \
+	-Ddebug=true \
 	$@ . build
 ninja -C build
 mv -v build/entrance.conf build/data
