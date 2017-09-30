@@ -50,6 +50,7 @@
 
 #define ENTRANCE_EDJE_SIGNAL_AUTH_CHANGED       "entrance,auth,changed"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_CHECK         "entrance,auth,check"
+#define ENTRANCE_EDJE_SIGNAL_AUTH_CHECKING      "entrance,auth,checking"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_ERROR         "entrance,auth,error"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_VALID         "entrance,auth,valid"
 #define ENTRANCE_EDJE_SIGNAL_CONF_ENABLED       "entrance,conf,enabled"
