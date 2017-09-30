@@ -394,17 +394,7 @@ entrance_login_open_session_set(Evas_Object *widget, Eina_Bool open_session)
    open_session = !!open_session;
    login->open_session = open_session;
    o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_XSESSIONS);
-   if (login->open_session)
-     {
-        elm_object_signal_emit(widget,
-                               "entrance,xsession,enabled", "");
-        evas_object_show(o);
-     }
-   else
-     {
-        elm_object_signal_emit(widget,
-                               "entrance,xsession,disabled", "");
-        evas_object_hide(o);
-     }
+   if (!login->open_session)
+     elm_object_disabled_set(o, EINA_TRUE);
 }
 
