@@ -116,7 +116,7 @@ collections {
             type: EXTERNAL;
             source: "elm/gengrid";
             description { state: "default" 0.0;
-               rel1.relative: 0.0 -0.75;
+               rel1.relative: 0 -0.5;
                min: 76 100;
                max: 1 100;
                visible: 1;
