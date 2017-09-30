@@ -1,4 +1,5 @@
 #include "entrance_client.h"
+#include "entrance_edje.h"
 #include <Eina.h>
 
 typedef struct Entrance_Gui_Login_ Entrance_Gui_Login;
@@ -34,13 +35,14 @@ struct Entrance_Gui_Login_
 };
 
 #define ALERT_ERROR(widget,text,login) \
-  elm_object_text_set(elm_object_part_content_get(widget, "entrance.label"), text); \
-  elm_object_signal_emit(widget, "entrance,auth,error", ""); \
+  elm_object_text_set( \
+    elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_LABEL), text); \
+  elm_object_signal_emit(widget, ENTRANCE_EDJE_SIGNAL_AUTH_ERROR, ""); \
   login->error = EINA_TRUE;
 
 #define LOGIN_GET(widget) \
    Entrance_Gui_Login *login; \
-   login = evas_object_data_get(widget, "entrance"); \
+   login = evas_object_data_get(widget, ENTRANCE_EDJE_GROUP_ENTRANCE); \
    if (!login) return
 
 static void
@@ -50,14 +52,14 @@ _login_check_auth(Evas_Object *widget)
    const char *host, *passwd;
    LOGIN_GET(widget);
 
-   o = elm_object_part_content_get(widget, "entrance.login");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_LOGIN);
    host = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if(!host || strlen(host)<1)
      {
        ALERT_ERROR(widget, _("Please enter your user name"), login);
        return;
      }
-   o = elm_object_part_content_get(widget, "entrance.password");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_PASSWORD);
    passwd = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if(!passwd || strlen(passwd)<1)
      {
@@ -74,7 +76,7 @@ _login_check_auth(Evas_Object *widget)
    else
      entrance_connect_auth_send(host, passwd, NULL, login->open_session);
 
-   elm_object_signal_emit(widget, "entrance,auth,checking", "");
+   elm_object_signal_emit(widget, ENTRANCE_EDJE_SIGNAL_AUTH_CHECKING, "");
 }
 /**
  * Login entry changed callback to clear alert/error labels, etc.
@@ -87,7 +89,7 @@ _login_entry_changed_cb(void *data,
   LOGIN_GET(data);
   if(login->error) 
     {
-      elm_object_signal_emit(data, "entrance,auth,changed", "");
+      elm_object_signal_emit(data, ENTRANCE_EDJE_SIGNAL_AUTH_CHANGED, "");
       login->error = EINA_FALSE;
     }
 }
@@ -105,7 +107,7 @@ _login_login_unfocused_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event 
         login->write_timer = NULL;
      }
 
-   o = elm_object_part_content_get(data, "entrance.login");
+   o = elm_object_part_content_get(data, ENTRANCE_EDJE_PART_LOGIN);
    hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
 
    _login_xsession_guess(data, hostname);
@@ -118,10 +120,10 @@ _login_login_timer_cb(void *data)
    const char *hostname;
    Entrance_Gui_Login *login;
 
-   login = evas_object_data_get(data, "entrance");
+   login = evas_object_data_get(data, ENTRANCE_EDJE_GROUP_ENTRANCE);
    if (!login) return ECORE_CALLBACK_CANCEL;
 
-   o = elm_object_part_content_get(data, "entrance.login");
+   o = elm_object_part_content_get(data, ENTRANCE_EDJE_PART_LOGIN);
 
    hostname = elm_entry_markup_to_utf8(elm_object_text_get(o));
    _login_xsession_guess(data, hostname);
@@ -169,7 +171,7 @@ _login_xsession_update(Evas_Object *obj)
 {
    Evas_Object *o, *icon;
    LOGIN_GET(obj);
-   o = elm_object_part_content_get(obj, "entrance.xsessions");
+   o = elm_object_part_content_get(obj, ENTRANCE_EDJE_PART_XSESSIONS);
    if (!login->session) return;
    elm_object_text_set(o, login->session->name);
    icon = elm_object_part_content_get(o, "icon");
@@ -239,7 +241,7 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
             ALERT_ERROR(data, _("Login failed"), login);
           }
         else
-          elm_object_signal_emit(data, "entrance,auth,valid", "");
+          elm_object_signal_emit(data, ENTRANCE_EDJE_SIGNAL_AUTH_VALID, "");
      }
 }
 
@@ -306,32 +308,32 @@ entrance_login_add(Evas_Object *obj, void *data)
    /* layout */
    login = calloc(1, sizeof(Entrance_Gui_Login));
    login->func.data = data;
-   o = entrance_gui_theme_get(obj, "entrance/login");
+   o = entrance_gui_theme_get(obj, ENTRANCE_EDJE_GROUP_LOGIN);
    evas_object_data_set(o, "entrance", login);
 
    /* label */
    t = elm_label_add(o);
-   elm_object_part_content_set(o, "entrance.label", t);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_LABEL, t);
    evas_object_show(t);
 
    /* login label */
    t = elm_label_add(o);
    elm_object_text_set (t, _("Login"));
-   elm_object_part_content_set(o, "entrance.login_label", t);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_LOGIN_LABEL, t);
    evas_object_show(t);
 
    /* login */
    l = elm_entry_add(o);
    elm_entry_single_line_set(l, EINA_TRUE);
    elm_entry_scrollable_set(l, EINA_TRUE);
-   elm_object_part_content_set(o, "entrance.login", l);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_LOGIN, l);
    elm_object_focus_set(l, EINA_TRUE);
    evas_object_show(l);
 
    /* password label */
    t = elm_label_add(o);
    elm_object_text_set (t, _("Password"));
-   elm_object_part_content_set(o, "entrance.password_label", t);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_PASSWORD_LABEL, t);
    evas_object_show(t);
 
    /* password */
@@ -339,7 +341,7 @@ entrance_login_add(Evas_Object *obj, void *data)
    elm_entry_password_set(p, EINA_TRUE);
    elm_entry_single_line_set(p, EINA_TRUE);
    elm_entry_scrollable_set(p, EINA_TRUE);
-   elm_object_part_content_set(o, "entrance.password", p);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_PASSWORD, p);
    evas_object_show(p);
 
    /* callbacks */
@@ -348,12 +350,12 @@ entrance_login_add(Evas_Object *obj, void *data)
    evas_object_smart_callback_add(l, "changed,user", _login_login_changed_cb, o);
    evas_object_smart_callback_add(p, "activated", _login_auth_check_cb, o);
    evas_object_smart_callback_add(p, "changed,user", _login_entry_changed_cb, o);
-   elm_object_signal_callback_add(o, "entrance,auth,check", "",
+   elm_object_signal_callback_add(o, ENTRANCE_EDJE_SIGNAL_AUTH_CHECK, "",
                                   _entrance_login_auth_check_cb, o);
    h = elm_hoversel_add(o);
    elm_hoversel_hover_parent_set(h, obj);
    evas_object_data_set(o, "entrance", login);
-   elm_object_part_content_set(o, "entrance.xsessions", h);
+   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_XSESSIONS, h);
    _login_xsession_update(o);
    return o;
 }
@@ -365,7 +367,7 @@ entrance_login_xsessions_populate(Evas_Object *widget, Eina_List *xsessions)
    Evas_Object *o;
    LOGIN_GET(widget);
 
-   o = elm_object_part_content_get(widget, "entrance.xsessions");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_XSESSIONS);
    entrance_fill(o, _login_fill, xsessions, NULL,
                  _login_xsession_clicked_cb, widget);
    login->session = eina_list_data_get(xsessions);
@@ -376,9 +378,9 @@ void
 entrance_login_login_set(Evas_Object *widget, const char *user)
 {
    Evas_Object *o;
-   o = elm_object_part_content_get(widget, "entrance.login");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_LOGIN);
    elm_object_text_set(o, user);
-   o = elm_object_part_content_get(widget, "entrance.password");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_PASSWORD);
    elm_object_focus_set(o, EINA_TRUE);
 
   _login_xsession_guess(widget, user);
@@ -391,7 +393,7 @@ entrance_login_open_session_set(Evas_Object *widget, Eina_Bool open_session)
    LOGIN_GET(widget);
    open_session = !!open_session;
    login->open_session = open_session;
-   o = elm_object_part_content_get(widget, "entrance.xsessions");
+   o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_XSESSIONS);
    if (login->open_session)
      {
         elm_object_signal_emit(widget,
