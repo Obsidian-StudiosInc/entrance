@@ -31,13 +31,14 @@ struct Entrance_Gui_Login_
    void *auth;
    Eina_Bool open_session : 1;
    Eina_Bool selected : 1;
-   Eina_Bool catch : 1;
+   Eina_Bool error : 1;
    Eina_Bool wait : 1;
 };
 
-#define ALERT_ERROR(widget,text) \
+#define ALERT_ERROR(widget,text,login) \
   elm_object_text_set(elm_object_part_content_get(widget, "entrance.label"), text); \
-  elm_object_signal_emit(widget, "entrance,auth,error", "");
+  elm_object_signal_emit(widget, "entrance,auth,error", ""); \
+  login->error = EINA_TRUE;
 
 #define LOGIN_GET(widget) \
    Entrance_Gui_Login *login; \
@@ -55,14 +56,14 @@ _login_check_auth(Evas_Object *widget)
    host = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if(!host || strlen(host)<1)
      {
-       ALERT_ERROR(widget, _("Please enter your user name"));
+       ALERT_ERROR(widget, _("Please enter your user name"), login);
        return;
      }
    o = elm_object_part_content_get(widget, "entrance.password");
    passwd = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if(!passwd || strlen(passwd)<1)
      {
-       ALERT_ERROR(widget, _("Please enter your password"));
+       ALERT_ERROR(widget, _("Please enter your password"), login);
        return;
      }
    login->wait = EINA_TRUE;
@@ -76,6 +77,21 @@ _login_check_auth(Evas_Object *widget)
      entrance_connect_auth_send(host, passwd, NULL, login->open_session);
 
    elm_object_signal_emit(widget, "entrance,auth,checking", "");
+}
+/**
+ * Login entry changed callback to clear alert/error labels, etc.
+ */
+static void
+_login_entry_changed_cb(void *data,
+                       Evas_Object *obj EINA_UNUSED,
+                       void *event EINA_UNUSED)
+{  
+  LOGIN_GET(data);
+  if(login->error) 
+    {
+      elm_object_signal_emit(data, "entrance,auth,changed", "");
+      login->error = EINA_FALSE;
+    }
 }
 
 static void
@@ -128,7 +144,7 @@ static void
 _login_login_changed_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event EINA_UNUSED)
 {
    LOGIN_GET(data);
-
+   _login_entry_changed_cb(data, NULL, NULL);
    if (login->write_timer)
      ecore_timer_del(login->write_timer);
    login->write_timer = ecore_timer_add(0.5, _login_login_timer_cb, data);
@@ -222,7 +238,7 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
         login->auth = NULL;
         if (!granted)
           {
-            ALERT_ERROR(data, _("Login failed"));
+            ALERT_ERROR(data, _("Login failed"), login);
           }
         else
           elm_object_signal_emit(data, "entrance,auth,valid", "");
@@ -333,6 +349,7 @@ entrance_login_add(Evas_Object *obj, void *data)
    evas_object_smart_callback_add(l, "unfocused", _login_login_unfocused_cb, o);
    evas_object_smart_callback_add(l, "changed,user", _login_login_changed_cb, o);
    evas_object_smart_callback_add(p, "activated", _login_auth_check_cb, o);
+   evas_object_smart_callback_add(p, "changed,user", _login_entry_changed_cb, o);
    elm_object_signal_callback_add(o, "entrance,auth,check", "",
                                   _entrance_login_auth_check_cb, o);
    h = elm_hoversel_add(o);
