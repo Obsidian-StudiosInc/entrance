@@ -429,47 +429,6 @@ collections {
             action: SIGNAL_EMIT ENTRANCE_EDJE_SIGNAL_AUTH_CHECK "";
          }
       }
-/*
-
-         program {
-            name: "auth_enable";
-            signal: "entrance.auth.enable";
-            source: "";
-            action: STATE_SET "auth" 0.0;
-            transition: ACCELERATE 0.8;
-            target: "entrance.users";
-            target: "entrance.password";
-            target: "entrance.xsessions";
-         }
-
-         program {
-            name: "auth_disable";
-            signal: "entrance.auth.disable";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            transition: LINEAR 0.5;
-            target: "entrance.users";
-            target: "entrance.password";
-            target: "entrance.xsessions";
-         }
-         program {
-            name: "login";
-            signal: "entrance,auth,valid";
-            source: "";
-            action: STATE_SET "default" 0.0;
-            transition: LINEAR 0.7;
-            target: "clip";
-         }
- * If you want check auth, emit this signal "entrance.auth.request" ""
- * Here is an example
-         program {
-            name: "login_valid";
-            signal: "mouse,down,*";
-            source: "valid";
-            action: SIGNAL_EMIT "entrance.auth.request" "";
-         }
-
-*/
       }
    }
 
