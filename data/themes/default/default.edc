@@ -6,6 +6,8 @@
  * Licence CC-By-Sa
  */
 
+#include "../../../src/bin/entrance_edje.h"
+
 #define BUTTON_ICON_SIZE 36 36
 #define BUTTON_SIZE 120 36
 #define ENTRY_SIZE 360 36
@@ -17,7 +19,7 @@ externals {
 
 collections {
    group {
-      name: "entrance/wallpaper/default";
+      name: ENTRANCE_EDJE_GROUP_WALLPAPER;
       parts {
          part { name: "clip1";
             type: RECT;
@@ -39,14 +41,14 @@ collections {
                align: 0.0 0.5;
             }
          }
-         part { name: "entrance.wallpaper.default";
+         part { name: ENTRANCE_EDJE_PART_WALLPAPER;
             clip_to: "clip1";
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
             }
          }
-         part { name: "entrance.screen";
+         part { name: ENTRANCE_EDJE_PART_SCREEN;
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
@@ -55,7 +57,7 @@ collections {
       }
       programs {
          program { name: "wallpaper_default";
-            signal: "entrance,wallpaper,default";
+            signal: ENTRANCE_EDJE_SIGNAL_WALLPAPER_DEFAULT;
             action: STATE_SET "default" 0.0;
             target: "cur";
          }
@@ -63,7 +65,7 @@ collections {
    }
 
    group {
-      name : "entrance";
+      name : ENTRANCE_EDJE_GROUP_ENTRANCE;
 
       data.item: "item_style_users"  "default";
       data.item: "item_style_actions" "default";
@@ -78,7 +80,7 @@ collections {
                color: 255 255 255 255;
             }
          }
-         part { name: "entrance.date";
+         part { name: ENTRANCE_EDJE_PART_DATE;
             type: EXTERNAL;
             source: "elm/label";
             description { state: "default" 0.0;
@@ -91,7 +93,7 @@ collections {
                min: 240 72;
             }
          }
-         part { name: "entrance.clock";
+         part { name: ENTRANCE_EDJE_PART_CLOCK;
             type: SWALLOW;
             description { state: "default" 0.0;
                fixed: 1 1;
@@ -103,14 +105,14 @@ collections {
                min: 240 72;
             }
          }
-         part { name: "entrance.login";
+         part { name: ENTRANCE_EDJE_PART_LOGIN;
             clip_to: "clip";
             type: SWALLOW;
             description { state: "default" 0.0;
                visible: 1;
             }
          }
-         part { name: "entrance.users";
+         part { name: ENTRANCE_EDJE_PART_USERS;
             type: EXTERNAL;
             source: "elm/gengrid";
             description { state: "default" 0.0;
@@ -131,7 +133,7 @@ collections {
             }
          }
 
-         part { name: "entrance.actions";
+         part { name: ENTRANCE_EDJE_PART_ACTIONS;
             type: EXTERNAL;
             source: "elm/hoversel";
             description { state: "default" 0.0;
@@ -160,7 +162,7 @@ collections {
                visible: 1;
             }
          }
-         part { name: "entrance.conf";
+         part { name: ENTRANCE_EDJE_PART_CONF;
             type: EXTERNAL;
             source: "elm/button";
             description { state: "default" 0.0;
@@ -195,43 +197,43 @@ collections {
             source: "";
             signal: "load";
             action: STATE_SET "default" 0.5;
-            target: "entrance.actions";
-            target: "entrance.conf";
+            target: ENTRANCE_EDJE_PART_ACTIONS;
+            target: ENTRANCE_EDJE_PART_CONF;
             transition: LINEAR 0.5;
          }
          program {
             name: "user_enabled";
-            signal: "entrance,users,enabled";
+            signal: ENTRANCE_EDJE_SIGNAL_USERS_ENABLED;
             source: "";
             action: STATE_SET "enabled" 0.0;
-            target: "entrance.users";
+            target: ENTRANCE_EDJE_PART_USERS;
          }
          program {
             name: "user_disabled";
-            signal: "entrance,users,disabled";
+            signal: ENTRANCE_EDJE_SIGNAL_USERS_DISABLED;
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "entrance.users";
+            target: ENTRANCE_EDJE_PART_USERS;
          }
          program {
             name: "conf_enabled";
-            signal: "entrance,custom_conf,enabled";
+            signal: ENTRANCE_EDJE_SIGNAL_USERS_DISABLED;
             source: "";
             action: STATE_SET "enabled" 0.0;
-            target: "entrance.conf";
+            target: ENTRANCE_EDJE_PART_CONF;
          }
          program {
             name: "conf_disabled";
-            signal: "entrance,custom_conf,disabled";
+            signal: ENTRANCE_EDJE_SIGNAL_CONF_DISABLED;
             source: "";
             action: STATE_SET "default" 0.0;
-            target: "entrance.conf";
+            target: ENTRANCE_EDJE_PART_CONF;
          }
       }
    }
 
    group {
-      name : "entrance/login";
+      name : ENTRANCE_EDJE_GROUP_LOGIN;
       parts {
          part {
             name: "error";
@@ -248,7 +250,7 @@ collections {
             }
          }
          part {
-            name: "entrance.label";
+            name: ENTRANCE_EDJE_PART_LABEL;
             type: SWALLOW;
             effect: SOFT_SHADOW;
             repeat_events: 0;
@@ -267,7 +269,7 @@ collections {
             }
          }
          part {
-            name: "entrance.login_label";
+            name: ENTRANCE_EDJE_PART_LOGIN_LABEL;
             type: SWALLOW;
             effect: SOFT_SHADOW;
             repeat_events: 0;
@@ -286,7 +288,7 @@ collections {
             }
          }
          part {
-            name: "entrance.login";
+            name: ENTRANCE_EDJE_PART_LOGIN;
             type: SWALLOW;
             repeat_events: 0;
             description {
@@ -302,7 +304,7 @@ collections {
             }
          }
          part {
-            name: "entrance.password_label";
+            name: ENTRANCE_EDJE_PART_PASSWORD_LABEL;
             type: SWALLOW;
             effect: SOFT_SHADOW;
             repeat_events: 0;
@@ -321,7 +323,7 @@ collections {
             }
          }
          part {
-            name: "entrance.password";
+            name: ENTRANCE_EDJE_PART_PASSWORD;
             type: SWALLOW;
             repeat_events: 0;
             description {
@@ -339,7 +341,7 @@ collections {
          }
 
          part {
-            name: "login_button";
+            name: login_button;
             type: EXTERNAL;
             source: "elm/button";
             repeat_events: 0;
@@ -366,7 +368,7 @@ collections {
             }
          }
 
-         part { name: "entrance.xsessions";
+         part { name: ENTRANCE_EDJE_PART_XSESSIONS;
             type: SWALLOW;
             description { state: "default" 0.0;
                fixed: 1 1;
@@ -396,35 +398,35 @@ collections {
             source: "";
             signal: "load";
             action: STATE_SET "default" 0.5;
-            target: "entrance.login";
-            target: "entrance.login_label";
-            target: "entrance.password";
-            target: "entrance.password_label";
-            target: "entrance.xsessions";
+            target: ENTRANCE_EDJE_PART_LOGIN;
+            target: ENTRANCE_EDJE_PART_LOGIN_LABEL;
+            target: ENTRANCE_EDJE_PART_PASSWORD;
+            target: ENTRANCE_EDJE_PART_PASSWORD_LABEL;
+            target: ENTRANCE_EDJE_PART_XSESSIONS;
             target: "login_button";
             transition: LINEAR 0.5;
          }
          program {
             name: "login_error";
-            signal: "entrance,auth,error";
+            signal: ENTRANCE_EDJE_SIGNAL_AUTH_ERROR;
             source: "";
             action: STATE_SET "visible" 0.0;
             target: "error";
-            target: "entrance.label";
+            target: ENTRANCE_EDJE_PART_LABEL;
          }
          program {
             name: "login_change";
-            signal: "entrance,auth,changed";
+            signal: ENTRANCE_EDJE_SIGNAL_AUTH_CHANGED;
             source: "";
             action: STATE_SET "default" 0.0;
             target: "error";
-            target: "entrance.label";
+            target: ENTRANCE_EDJE_PART_LABEL;
          }
          program {
             name: "check_auth";
             signal: "clicked";
             source: "login_button";
-            action: SIGNAL_EMIT "entrance,auth,check" "";
+            action: SIGNAL_EMIT ENTRANCE_EDJE_SIGNAL_AUTH_CHECK "";
          }
       }
 /*
