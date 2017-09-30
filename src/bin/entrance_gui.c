@@ -1,4 +1,5 @@
 #include "entrance_client.h"
+#include "entrance_edje.h"
 #include "Ecore_X.h"
 #include "time.h"
 
@@ -101,11 +102,11 @@ entrance_gui_init(const char *theme)
         if (!screen) return 1;
 
         /* layout */
-         o = entrance_gui_theme_get(_gui->win, "entrance/wallpaper/default");
+         o = entrance_gui_theme_get(_gui->win, ENTRANCE_EDJE_GROUP_WALLPAPER);
          screen->transition = o;
          if(j<1)
            {
-             ol = entrance_gui_theme_get(_gui->win, "entrance");
+             ol = entrance_gui_theme_get(_gui->win, ENTRANCE_EDJE_GROUP_ENTRANCE);
              if (!ol)
                {
                   PT("Tut Tut Tut no theme for entrance");
@@ -113,11 +114,11 @@ entrance_gui_init(const char *theme)
                   return j;
                }
              screen->edj = ol;
-             elm_object_part_content_set(o, "entrance.screen", ol);
+             elm_object_part_content_set(o, ENTRANCE_EDJE_PART_SCREEN, ol);
 
              /* date */
              /* FIXME: EDJE should be handling color and size */
-             o = elm_object_part_content_get(ol, "entrance.date");
+             o = elm_object_part_content_get(ol, ENTRANCE_EDJE_PART_DATE);
              evas_object_color_set(o, 51, 153, 255, 255);
              time_t t = time(0);
              struct tm tm = *localtime(&t);
@@ -130,14 +131,14 @@ entrance_gui_init(const char *theme)
              /* clock */
              o = elm_clock_add(ol);
              elm_clock_show_am_pm_set(o, EINA_TRUE);
-             elm_object_part_content_set(ol, "entrance.clock", o);
+             elm_object_part_content_set(ol, ENTRANCE_EDJE_PART_CLOCK, o);
 
              o = entrance_login_add(ol, screen);
              entrance_login_open_session_set(o, EINA_TRUE);
              screen->login = o;
-             elm_object_part_content_set(ol, "entrance.login", o);
+             elm_object_part_content_set(ol, ENTRANCE_EDJE_PART_LOGIN, o);
              evas_object_smart_callback_add(
-                ENTRANCE_GUI_GET(ol, "entrance.conf"),
+                ENTRANCE_GUI_GET(ol, ENTRANCE_EDJE_PART_CONF),
                 "clicked",
                 _entrance_gui_conf_clicked_cb,
                 screen->transition);
@@ -190,11 +191,11 @@ _entrance_gui_theme_update(void)
             PACKAGE_DATA_DIR"/themes/%s.edj", _gui->theme);
    EINA_LIST_FOREACH(_gui->screens, node, screen)
      {
-        elm_layout_file_set(screen->transition, buf, "entrance/wallpaper/default");
-        elm_layout_file_set(screen->edj, buf, "entrance");
-        elm_layout_file_set(screen->login, buf, "entrance/login");
+        elm_layout_file_set(screen->transition, buf, ENTRANCE_EDJE_GROUP_WALLPAPER);
+        elm_layout_file_set(screen->edj, buf, ENTRANCE_EDJE_GROUP_ENTRANCE);
+        elm_layout_file_set(screen->login, buf, ENTRANCE_EDJE_GROUP_LOGIN);
         evas_object_smart_callback_add(
-                ENTRANCE_GUI_GET(screen->edj, "entrance.conf"),
+                ENTRANCE_GUI_GET(screen->edj, ENTRANCE_EDJE_PART_CONF),
                 "clicked",
                 _entrance_gui_conf_clicked_cb,
                 screen->transition);
@@ -293,7 +294,7 @@ _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename)
    edje = elm_layout_add(obj);
    snprintf(buf, sizeof(buf),
             PACKAGE_DATA_DIR"/themes/%s.edj", themename);
-   if (!elm_layout_file_set(edje, buf, "entrance/user"))
+   if (!elm_layout_file_set(edje, buf, ENTRANCE_EDJE_GROUP_USER))
      return NULL; //Can we get to this point ??
    o = elm_layout_edje_get(edje);
    if (!o) return NULL;
@@ -413,12 +414,12 @@ _entrance_gui_users_populate(void)
 
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
-        ol = ENTRANCE_GUI_GET(screen->edj, "entrance.users");
+        ol = ENTRANCE_GUI_GET(screen->edj, ENTRANCE_EDJE_PART_USERS);
         if (!ol) continue;
         entrance_fill(ol, ef, _gui->users, NULL,
                       _entrance_gui_user_sel_cb, screen->login);
         elm_object_signal_emit(screen->edj,
-                                "entrance,users,enabled", "");
+                               ENTRANCE_EDJE_SIGNAL_USERS_ENABLED, "");
      }
    entrance_fill_del(ef);
 }
@@ -628,18 +629,16 @@ _entrance_gui_update(void)
                   eina_stringshare_replace(&_gui->bg.group, group);
                }
              elm_object_part_content_set(screen->transition,
-                                         "entrance.wallpaper.default", bg);
+                                         ENTRANCE_EDJE_PART_WALLPAPER, bg);
              evas_object_del(screen->background);
              screen->background = bg;
           }
         if (_gui->conf_enabled)
-          {
-             elm_object_signal_emit(screen->edj,
-                                    "entrance,custom_config.enabled", "");
-          }
+          elm_object_signal_emit(screen->edj,
+                                 ENTRANCE_EDJE_SIGNAL_CONFIG_ENABLED, "");
         else
           elm_object_signal_emit(screen->edj,
-                                 "entrance,custom_config.disabled", "");
+                                 ENTRANCE_EDJE_SIGNAL_CONFIG_DISABLED, "");
      }
    _gui->changed = 0;
 }
@@ -730,7 +729,7 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const c
    eu = data;
    if (eu && !strcmp(part, "elm.swallow.icon"))
      {
-        ic = entrance_gui_theme_get(obj, "entrance/user");
+        ic = entrance_gui_theme_get(obj, ENTRANCE_EDJE_GROUP_USER);
         if ((!eu->image.path) && (!eu->image.group))
           {
              o = _entrance_gui_user_icon_random_get(obj, eu->login);
@@ -804,11 +803,11 @@ _entrance_gui_actions_populate()
      {
         Entrance_Fill *ef;
         ef = entrance_fill_new(style, _entrance_gui_action_text_get, NULL, NULL);
-        o = ENTRANCE_GUI_GET(screen->edj, "entrance.actions");
+        o = ENTRANCE_GUI_GET(screen->edj, ENTRANCE_EDJE_PART_ACTIONS);
         entrance_fill(o, ef, _gui->actions, NULL,
                       _entrance_gui_action_clicked_cb, screen);
         edje_object_signal_emit(elm_layout_edje_get(screen->edj),
-                                "entrance,action,enabled", "");
+                                ENTRANCE_EDJE_SIGNAL_ACTION_ENABLED, "");
      }
 }
 
@@ -826,4 +825,3 @@ _entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, v
 
    return ECORE_CALLBACK_DONE;
 }
-
