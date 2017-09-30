@@ -35,6 +35,10 @@ struct Entrance_Gui_Login_
    Eina_Bool wait : 1;
 };
 
+#define ALERT_ERROR(widget,text) \
+  elm_object_text_set(elm_object_part_content_get(widget, "entrance.label"), text); \
+  elm_object_signal_emit(widget, "entrance,auth,error", "");
+
 #define LOGIN_GET(widget) \
    Entrance_Gui_Login *login; \
    login = evas_object_data_get(widget, "entrance"); \
@@ -49,11 +53,21 @@ _login_check_auth(Evas_Object *widget)
 
    o = elm_object_part_content_get(widget, "entrance.login");
    host = elm_entry_markup_to_utf8(elm_object_text_get(o));
+   if(!host || strlen(host)<1)
+     {
+       ALERT_ERROR(widget, _("Please enter your user name"));
+       return;
+     }
+   o = elm_object_part_content_get(widget, "entrance.password");
+   passwd = elm_entry_markup_to_utf8(elm_object_text_get(o));
+   if(!passwd || strlen(passwd)<1)
+     {
+       ALERT_ERROR(widget, _("Please enter your password"));
+       return;
+     }
    login->wait = EINA_TRUE;
    if (!login->auth)
      login->auth = entrance_connect_auth_cb_add(_login_auth_cb, widget);
-   o = elm_object_part_content_get(widget, "entrance.password");
-   passwd = elm_entry_markup_to_utf8(elm_object_text_get(o));
    if (login->session)
      entrance_connect_auth_send(host, passwd,
                                 login->session->name,
@@ -208,10 +222,7 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
         login->auth = NULL;
         if (!granted)
           {
-            elm_object_text_set(
-                elm_object_part_content_get(data, "entrance.label"),
-                _("Login failed"));
-            elm_object_signal_emit(data, "entrance,auth,error", "");
+            ALERT_ERROR(data, _("Login failed"));
           }
         else
           elm_object_signal_emit(data, "entrance,auth,valid", "");
