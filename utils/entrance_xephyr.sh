@@ -24,6 +24,7 @@ do
 			;;
 		-g | --gdb)
 			GDB=1
+			shift
 			;;
 		-s | --screen)
 			SCREEN="${1}"
@@ -31,6 +32,7 @@ do
 			;;
 		-v | --valgrind)
 			VALGRIND=1
+			shift
 			;;
 		*)
 			break
