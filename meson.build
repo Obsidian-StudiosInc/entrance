@@ -50,6 +50,9 @@ dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 
 # project args
 add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
+if get_option('debug')
+	add_project_arguments('-g', language : 'c')
+endif
 if cc.has_header('alloca.h')
 	add_project_arguments('-DHAVE_ALLOCA_H=1', language : 'c')
 endif
