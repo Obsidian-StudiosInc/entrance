@@ -48,6 +48,7 @@
 #define ENTRANCE_EDJE_PART_WALLPAPER            "entrance.wallpaper.default"
 #define ENTRANCE_EDJE_PART_XSESSIONS            "entrance.xsessions"
 
+#define ENTRANCE_EDJE_SIGNAL_ACTION_ENABLED     "entrance,action,enabled"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_CHANGED       "entrance,auth,changed"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_CHECK         "entrance,auth,check"
 #define ENTRANCE_EDJE_SIGNAL_AUTH_CHECKING      "entrance,auth,checking"
