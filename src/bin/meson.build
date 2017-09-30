@@ -5,7 +5,8 @@ executable('entrance_client', [
 		'entrance_connect.h',	'entrance_connect.c',
 		'entrance_fill.h',	'entrance_fill.c',
 		'entrance_login.h',	'entrance_login.c',
-		'entrance_gui.h',	'entrance_gui.c'
+		'entrance_gui.h',	'entrance_gui.c',
+		'entrance_edje.h'
 	],
 	include_directories	: [inc, top_inc],
 	dependencies		: [deps, ecore_x],
