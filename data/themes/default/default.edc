@@ -57,12 +57,7 @@ collections {
          program { name: "wallpaper_default";
             signal: "entrance,wallpaper,default";
             action: STATE_SET "default" 0.0;
-            transition: LINEAR 0.7;
             target: "cur";
-            after: "wallpaper_transition_end";
-         }
-         program { name: "wallpaper_transition_end";
-            action: SIGNAL_EMIT "entrance,wallpaper,end" "";
          }
       }
    }
