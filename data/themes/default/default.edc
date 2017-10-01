@@ -63,9 +63,6 @@ collections {
    group {
       name : ENTRANCE_EDJE_GROUP_ENTRANCE;
 
-      data.item: "item_style_users"  "default";
-      data.item: "item_style_actions" "default";
-
       parts {
          rect { name: "clip";
             description { state: "default" 0.0;
