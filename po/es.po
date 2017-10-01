@@ -19,11 +19,11 @@ msgstr ""
 
 #: src/bin/entrance_login.c:52
 msgid "Please enter your user name"
-msgstr ""
+msgstr "Por favor, ingrese su nombre de usuario"
 
 #: src/bin/entrance_login.c:59
 msgid "Please enter your password"
-msgstr ""
+msgstr "Por favor, introduzca su contraseña"
 
 #: src/bin/entrance_login.c:223
 msgid "Login failed"
