@@ -23,8 +23,6 @@ collections {
       parts {
          rect { name: "clip1";
             description { state: "default" 0.0;
-               visible: 1;
-               color: 255 255 255 255;
                rel1 {
                   to: "cur";
                   relative: 1.0 0.0;
@@ -42,12 +40,10 @@ collections {
          swallow { name: ENTRANCE_EDJE_PART_WALLPAPER;
             clip_to: "clip1";
             description { state: "default" 0.0;
-               visible: 1;
             }
          }
          swallow { name: ENTRANCE_EDJE_PART_SCREEN;
             description { state: "default" 0.0;
-               visible: 1;
             }
          }
       }
@@ -66,17 +62,14 @@ collections {
       parts {
          rect { name: "clip";
             description { state: "default" 0.0;
-               color: 255 255 255 255;
             }
             description { state: "show" 0.0;
-               color: 255 255 255 255;
             }
          }
          external { name: ENTRANCE_EDJE_PART_DATE;
             source: "elm/label";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 1;
                align: 0 0;
                rel1.relative: 0 0;
                rel1.offset: OFFSET 0;
@@ -87,7 +80,6 @@ collections {
          swallow { name: ENTRANCE_EDJE_PART_CLOCK;
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 1;
                align: 1 0;
                rel2.relative: 1 0;
                rel2.offset: -OFFSET 0;
@@ -98,7 +90,6 @@ collections {
          swallow { name: ENTRANCE_EDJE_PART_LOGIN;
             clip_to: "clip";
             description { state: "default" 0.0;
-               visible: 1;
             }
          }
          external { name: ENTRANCE_EDJE_PART_USERS;
@@ -107,7 +98,6 @@ collections {
                rel1.relative: 0 -0.5;
                min: 76 100;
                max: 1 100;
-               visible: 1;
                params {
                   bool: "horizontal" 0;
                   double: "vertical page relative" 0.0;
@@ -117,14 +107,12 @@ collections {
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.0;
-               visible: 1;
             }
          }
          external { name: ENTRANCE_EDJE_PART_ACTIONS;
             source: "elm/hoversel";
             description { state: "default" 0.0;
                fixed: 1 1;
-               visible: 1;
                max: 0 0;
                min: BUTTON_ICON_SIZE;
                align: 0 0;
@@ -145,7 +133,6 @@ collections {
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.5;
-               visible: 1;
             }
          }
          external { name: ENTRANCE_EDJE_PART_CONF;
@@ -171,7 +158,6 @@ collections {
             }
             description { state: "enabled" 0.0;
                inherit: "default" 0.5;
-               visible: 1;
             }
          }
 
@@ -235,12 +221,9 @@ collections {
          }
          swallow {
             name: ENTRANCE_EDJE_PART_LABEL;
-            effect: SOFT_SHADOW;
-            repeat_events: 0;
             description {
                 state: "default" 0.0;
                 align: 0.5 0.5;
-                color: 200 200 200 255;
                 max: 0 0;
                 min: ENTRY_SIZE;
                 rel2.offset: 0 -OFFSET*16;
@@ -253,12 +236,9 @@ collections {
          }
          swallow {
             name: ENTRANCE_EDJE_PART_LOGIN_LABEL;
-            effect: SOFT_SHADOW;
-            repeat_events: 0;
             description {
                 state: "default" 0.0;
                 align: 1 0.5;
-                color: 200 200 200 255;
                 max: 0 0;
                 min: ENTRY_SIZE;
                 rel2.offset: -320 -OFFSET*8;
@@ -271,7 +251,6 @@ collections {
          }
          swallow {
             name: ENTRANCE_EDJE_PART_LOGIN;
-            repeat_events: 0;
             description {
                state: "default" 0.0;
                align: 0 0.5;
@@ -286,12 +265,9 @@ collections {
          }
          swallow {
             name: ENTRANCE_EDJE_PART_PASSWORD_LABEL;
-            effect: SOFT_SHADOW;
-            repeat_events: 0;
             description {
                 state: "default" 0.0;
                 align: 1 0.5;
-                color: 200 200 200 255;
                 max: 0 0;
                 min: ENTRY_SIZE;
                 rel1.offset: -300 OFFSET*8;
@@ -304,7 +280,6 @@ collections {
          }
          swallow {
             name: ENTRANCE_EDJE_PART_PASSWORD;
-            repeat_events: 0;
             description {
                 state: "default" 0.0;
                 align: 0 0.5;
@@ -321,12 +296,10 @@ collections {
          external {
             name: login_button;
             source: "elm/button";
-            repeat_events: 0;
             description { state: "default" 0.0;
                max: BUTTON_SIZE;
                rel1.offset: 180 OFFSET*26;
                align: 0.5 1;
-               visible: 1;
                 params {
                     string: "label" "Login";
                     string: "icon" "start-here";
@@ -350,7 +323,6 @@ collections {
                max: BUTTON_SIZE;
                rel1.offset: -180 OFFSET*26;
                align: 0.5 1;
-               visible: 1;
             }
             description {
                 state: "default" 0.5;
@@ -415,9 +387,6 @@ collections {
             mouse_events: 0;
             description { state: "default" 0.0;
                min: 72 72;
-               visible: 1;
-               //aspect : 1.0 1.0;
-               //aspect_preference : BOTH;
             }
          }
       }
