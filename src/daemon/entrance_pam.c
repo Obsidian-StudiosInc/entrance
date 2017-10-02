@@ -304,3 +304,12 @@ entrance_pam_auth_set(const char *login, const char *passwd)
    return 0;
 }
 
+int
+entrance_pam_passwd_set(const char *passwd)
+{
+   _passwd = strdup(passwd);
+   if (!_passwd)
+     return 1;
+   return 0;
+}
+
