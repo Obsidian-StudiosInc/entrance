@@ -305,8 +305,8 @@ entrance_session_authenticate(const char *login, const char *passwd)
    Eina_Bool auth;
    _login = strdup(login);
 #ifdef HAVE_PAM
-   entrance_pam_init(PACKAGE, _dname, NULL);
-   auth = !!(!entrance_pam_auth_set(login, passwd)
+   entrance_pam_init(PACKAGE, _dname, login);
+   auth = !!(!entrance_pam_passwd_set(passwd)
              && !entrance_pam_authenticate());
 #else
    char *enc, *v;
