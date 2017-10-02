@@ -63,7 +63,7 @@ if has_nls
 	add_project_arguments('-DENABLE_NLS=1', language : 'c')
 endif
 if has_pam
-	add_project_arguments('-DPAM=1', language : 'c')
+	add_project_arguments('-DHAVE_PAM=1', language : 'c')
 endif
 if cc.has_header('stdlib.h')
 	add_project_arguments('-DHAVE_STDLIB_H=1', language : 'c')
