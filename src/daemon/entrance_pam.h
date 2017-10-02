@@ -22,7 +22,6 @@ void entrance_pam_shutdown(void);
 int entrance_pam_open_session(void);
 void entrance_pam_close_session(Eina_Bool opened);
 int entrance_pam_authenticate(void);
-int entrance_pam_auth_set(const char *login, const char *passwd);
 int entrance_pam_passwd_set(const char *passwd);
 int entrance_pam_end(void);
 
