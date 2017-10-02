@@ -24,7 +24,10 @@
   *   pam_close_session(...);        Tear-down session using the "session" modules
   *   pam_end(...);
   *   */
-static int _entrance_pam_conv(int num_msg, const struct pam_message **msg, struct pam_response **resp, void *appdata_ptr);
+static int _entrance_pam_conv(int num_msg,
+                              const struct pam_message **msg,
+                              struct pam_response **resp,
+                              void *appdata_ptr);
 
 static struct pam_conv _pam_conversation;
 static pam_handle_t* _pam_handle = NULL;
@@ -32,71 +35,39 @@ static int last_result;
 static char *_login = NULL;
 static char *_passwd = NULL;
 
-
-
 static int
-_entrance_pam_conv(int num_msg, const struct pam_message **msg,
-     struct pam_response **resp, void *appdata_ptr EINA_UNUSED)
+_entrance_pam_conv(int num_msg,
+                   const struct pam_message **msg,
+                   struct pam_response **resp,
+                   void *appdata_ptr EINA_UNUSED)
 {
-   int i, result = PAM_SUCCESS;
+   int i;
    *resp = (struct pam_response *) calloc(num_msg, sizeof(struct pam_response));
-   for (i = 0; i < num_msg; ++i)
+   for (i = 0; i < num_msg; i++)
      {
-        resp[i]->resp=0;
         resp[i]->resp_retcode=0;
-        result = msg[i]->msg_style;
-        switch(result)
+        switch(msg[i]->msg_style)
           {
            case PAM_PROMPT_ECHO_ON:
-              // We assume PAM is asking for the username
               PT("echo on");
               resp[i]->resp = _login;
               break;
-
            case PAM_PROMPT_ECHO_OFF:
               PT("echo off");
               resp[i]->resp = _passwd;
-              _passwd = NULL;
               break;
            case PAM_ERROR_MSG:
+              PT("error msg %s", msg[i]->msg);
               break;
-              PT("error msg");
            case PAM_TEXT_INFO:
               PT("info %s", msg[i]->msg);
               break;
-           case PAM_SUCCESS:
-              PT("success :)");
-              break;
            default:
-              PT("default");
+              break;
           }
-        if (result != PAM_SUCCESS) break;
      }
-   if (result != PAM_SUCCESS)
-     {
-        for (i = 0; i < num_msg; ++i)
-          {
-             if (resp[i]->resp==0) continue;
-             free(resp[i]->resp);
-             resp[i]->resp=0;
-          }
-        free(*resp);
-        *resp=0;
-     }
-   return result;
+   return PAM_SUCCESS;
 }
-
-static char *
-_get_running_username(void)
-{
-   char *result;
-   struct passwd *pwent = NULL;
-   pwent = getpwuid(getuid());
-   result = strdup(pwent->pw_name);
-   endpwent();
-   return (result);
-}
-
 
 int
 entrance_pam_open_session(void)
@@ -244,14 +215,11 @@ entrance_pam_init(const char *service, const char *display, const char *user)
 
    if (_pam_handle) entrance_pam_end();
    status = pam_start(service, user, &_pam_conversation, &_pam_handle);
-
    if (status != 0) goto pam_error;
    status = entrance_pam_item_set(ENTRANCE_PAM_ITEM_TTY, display);
    if (status != 0) goto pam_error;
-   status = entrance_pam_item_set(ENTRANCE_PAM_ITEM_RUSER, _get_running_username());
+   status = entrance_pam_item_set(ENTRANCE_PAM_ITEM_RUSER, user);
    if (status != 0) goto pam_error;
-//   status = entrance_pam_item_set(ENTRANCE_PAM_ITEM_RHOST, "localhost");
-//   if (status != 0) goto pam_error;
    return 0;
 
 pam_error:
@@ -319,6 +287,10 @@ entrance_pam_env_list_get(void)
 void
 entrance_pam_shutdown(void)
 {
+  if(_login)
+    free(_login);
+  if(_passwd)
+    free(_passwd);
 }
 
 int
