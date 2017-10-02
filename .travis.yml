@@ -6,7 +6,7 @@ env:
   global:
     - secure: APFXgkKcg8AJur2MTDfF5WwRX/7Yyop2IrMv+jIh5NIEI0exLOJvZiGoZ7zQd+DN+eX/u7oA5RobX/ETfOaVLdLs2U3SRCmmNO2nNr3qoIuMyTBrozbaphl8eYPqZB6JxusqR4swyycBaTGzDXUCTqA5HGjpmoDloO5s2URLS3F+1gO372wFaxgdH6YktYMErgnzpkA3MmO04nF0EDlHQmoxpQQNswQs46IWe96yuyCeoJBcgEtNpsFwIzeTRvT+nDluaxZ+dU47TlZmHIL17YIxNl+ZGwvB9frWTt8Pj4KhOx6+MMnNVF4KWzMtM4Bo0tvREXyWagknnAcmk6g6Mh7BoMIyovlVIZ7yqLkhbOdKgfziNEudvbT/Bta0NAY7VRXpZ8791y+eBviyu28IbObT1e8Elxr1ZRsaBEZOzuG2bryrMy4SI0yxGSqWZjskqRQ1ZlYUcLujGtfqGaKy+K1d+TB74nGPTrPzPSgVdUDYHM4SUPpDgxR7RQSe08k0/DNKoWijjt6H5JptgnQpQvn4/2a/p2XatWqommuKmsA+1hJgmOb8BnClNAK5i8BrzcQURrY/X3QuYMMHCjkjYt0jVnSPgLEwI2tfyK4y76igfpJc8uQ4kYWhFNFZj0uDWn+T15am3toCqUPTpDk3WYKP+DiqEEL5ghhrhO/tT90=
   matrix:
-    - MY_PV=0.1.0_alpha1
+    - MY_PV=3.0.0_alpha1
 
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
