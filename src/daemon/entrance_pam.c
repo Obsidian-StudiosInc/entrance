@@ -32,7 +32,6 @@ static int _entrance_pam_conv(int num_msg,
 static struct pam_conv _pam_conversation;
 static pam_handle_t* _pam_handle = NULL;
 static int last_result;
-static char *_login = NULL;
 static char *_passwd = NULL;
 
 static int
@@ -49,8 +48,6 @@ _entrance_pam_conv(int num_msg,
         switch(msg[i]->msg_style)
           {
            case PAM_PROMPT_ECHO_ON:
-              PT("echo on");
-              resp[i]->resp = _login;
               break;
            case PAM_PROMPT_ECHO_OFF:
               PT("echo off");
@@ -287,21 +284,8 @@ entrance_pam_env_list_get(void)
 void
 entrance_pam_shutdown(void)
 {
-  if(_login)
-    free(_login);
   if(_passwd)
     free(_passwd);
-}
-
-int
-entrance_pam_auth_set(const char *login, const char *passwd)
-{
-   if (!login)
-     return 1;
-   _login = strdup(login);
-   if (passwd)
-     _passwd = strdup(passwd);
-   return 0;
 }
 
 int
