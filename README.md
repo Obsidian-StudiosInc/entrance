@@ -121,3 +121,28 @@ errors in log file otherwise. Along with non-functional entrance.
 Presently not supported beyond build systems, no code written, just a 
 service file. There are plans to support logind/elogind for Wayland and 
 X. There is no ETA at this time.
+
+## Multiple Displays
+entrance supports multiple displays, with the login form residing on the 
+primary display. In some cases this does not work correctly. If using X, 
+you may need to set the following settings in your monitor sections.
+```
+Section "Monitor"
+	Identifier	"A"
+	Option		"position"	"0 0"
+EndSection
+
+Section "Monitor"
+	Identifier	"B"
+	Option		"LeftOf"	"A"
+EndSection
+
+Section "Monitor"
+	Identifier	"C"
+	Option		"RightOf"	"A"
+EndSection
+```
+Without such only the background will appear. The login form will not 
+appear along with the rest of the UI, and the cursor will be an X. This  
+likely due to bugs in entrance code. The work around is the previously 
+mentioned monitors section.
