@@ -98,32 +98,31 @@ There is a provided systemd service file for entrance. It is not know if
 this works or not.
 
 ### Entrance User
-entrance presently starts as root and then setuid entrance_client under 
+Entrance presently starts as root and then setuid entrance_client under 
 the user nobody. This was done via sudo and then su for a bit before 
-switch to setuid. Inherited design from the 2nd generation.
+switch to setuid. Entrance also used to run under "entrance"  
+users but was changed in this [past commit](https://git.enlightenment.org/misc/entrance.git/commit/?id=866fdf557acbfbf1f2404da9c3799020375c16d2)
+. Inherited design from the 2nd generation.
 
 It may be changed such that entrance runs under its own user, and does 
 not setuid or run under root. This will require creation of a user 
 account and adding permissions for the user for video, etc. It may be 
 possible to accomplish this now, starting entrance under a user say 
-"entrance". Also updating the not known to work entrance.conf 
-start_user option;
+"entrance". Via updating the not known to work entrance.conf start_user 
+option;
 ```
-value "start_user" string: "nobody";
+value "start_user" string: "entrance";
 ```
 
 You will likely also need to create a directory for entrance, and ensure 
 proper permissions. Since not running under root, entrance will not be 
 able to correct this, and does have code for such. Expect to see some 
-errors in log file otherwise. Along with non-functional entrance.
+errors in log file otherwise. Along with non-functional entrance. If 
+started as root, entrance will create directories with proper 
+permissions as needed.
 
-## logind/elogind aka systemd
-Presently not supported beyond build systems, no code written, just a 
-service file. There are plans to support logind/elogind for Wayland and 
-X. There is no ETA at this time.
-
-## Multiple Displays
-entrance supports multiple displays, with the login form residing on the 
+### Multiple Displays
+Entrance supports multiple displays, with the login form residing on the 
 primary display. In some cases this does not work correctly. If using X, 
 you may need to set the following settings in your monitor sections.
 ```
@@ -146,3 +145,8 @@ Without such only the background will appear. The login form will not
 appear along with the rest of the UI, and the cursor will be an X. This  
 likely due to bugs in entrance code. The work around is the previously 
 mentioned monitors section.
+
+## logind/elogind aka systemd
+Presently not supported beyond build systems, no code written, just a 
+service file. There are plans to support logind/elogind for Wayland and 
+X. There is no ETA at this time.
