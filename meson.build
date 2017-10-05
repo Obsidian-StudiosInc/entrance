@@ -27,6 +27,7 @@ xcb	= dependency('xcb')
 has_pam = get_option('pam')
 has_ck  = get_option('consolekit')
 has_nls = get_option('nls')
+has_logind = get_option('logind')
 
 if has_pam
         pam_dep = cc.find_library('pam')
@@ -64,6 +65,9 @@ endif
 if has_pam
 	add_project_arguments('-DHAVE_PAM=1', language : 'c')
 endif
+if has_logind
+	add_project_arguments('-DHAVE_LOGIND=1', language : 'c')
+endif
 if cc.has_header('stdlib.h')
 	add_project_arguments('-DHAVE_STDLIB_H=1', language : 'c')
 endif
@@ -87,10 +91,12 @@ configure_file(input  : 'data/entrance.conf.in',
                install_dir : join_paths(dir_syscfg, proj),
                configuration : cfg
 )
-configure_file(input  : 'data/entrance.service.in',
-               output : 'entrance.service',
-               configuration : cfg
-)
+if has_pam
+	configure_file(input  : 'data/entrance.service.in',
+                       output : 'entrance.service',
+                       configuration : cfg
+	)
+endif
 
 # install
 if has_pam
