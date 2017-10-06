@@ -44,6 +44,7 @@
 #define ENTRANCE_EDJE_PART_PASSWORD             "entrance.password"
 #define ENTRANCE_EDJE_PART_PASSWORD_LABEL       "entrance.password_label"
 #define ENTRANCE_EDJE_PART_SCREEN               "entrance.screen"
+#define ENTRANCE_EDJE_PART_UNAME                "entrance.uname"
 #define ENTRANCE_EDJE_PART_USERS                "entrance.users"
 #define ENTRANCE_EDJE_PART_WALLPAPER            "entrance.wallpaper.default"
 #define ENTRANCE_EDJE_PART_XSESSIONS            "entrance.xsessions"
