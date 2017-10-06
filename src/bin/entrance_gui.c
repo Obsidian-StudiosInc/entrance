@@ -2,6 +2,7 @@
 #include "entrance_edje.h"
 #include "Ecore_X.h"
 #include "time.h"
+#include <sys/utsname.h>
 
 
 typedef struct Entrance_Gui_ Entrance_Gui;
@@ -132,6 +133,23 @@ entrance_gui_init(const char *theme)
              o = elm_clock_add(ol);
              elm_clock_show_am_pm_set(o, EINA_TRUE);
              elm_object_part_content_set(ol, ENTRANCE_EDJE_PART_CLOCK, o);
+
+             /* uname */
+             struct utsname uname_str;
+             o = elm_label_add(ol);
+             if(uname(&uname_str)==0)
+               {
+                 char uname_value[1024];
+                 snprintf(uname_value,
+                         1024,
+                         "%s %s %s %s",
+                         uname_str.sysname,
+                         uname_str.nodename,
+                         uname_str.release,
+                         uname_str.machine);
+                 elm_object_text_set (o, uname_value);
+               }
+             elm_object_part_content_set(ol, ENTRANCE_EDJE_PART_UNAME, o);
 
              o = entrance_login_add(ol, screen);
              entrance_login_open_session_set(o, EINA_TRUE);
