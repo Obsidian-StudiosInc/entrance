@@ -264,8 +264,9 @@ collections {
                visible: 1;
             }
          }
-         swallow {
+         text {
             name: ENTRANCE_EDJE_PART_LABEL;
+            effect: SOFT_SHADOW;
             description {
                 state: "default" 0.0;
                 align: 0.5 0.5;
@@ -273,20 +274,27 @@ collections {
                 min: ENTRY_SIZE;
                 rel2.offset: 0 -OFFSET*16;
                 visible: 0;
+               text {
+                    size: 20;
+               }
             }
             description { state: "visible" 0.0;
                inherit: "default" 0.0;
                visible: 1;
             }
          }
-         swallow {
+         text {
             name: ENTRANCE_EDJE_PART_LOGIN_LABEL;
+            effect: SOFT_SHADOW;
             description {
                 state: "default" 0.0;
                 align: 1 0.5;
                 max: 0 0;
                 min: ENTRY_SIZE;
-                rel2.offset: -320 -OFFSET*8;
+                rel2.offset: -300 -OFFSET*8;
+               text {
+                    size: 20;
+               }
             }
             description {
                 state: "default" 0.5;
@@ -308,14 +316,18 @@ collections {
                align: 0.5 0.5;
             }
          }
-         swallow {
+         text {
             name: ENTRANCE_EDJE_PART_PASSWORD_LABEL;
+            effect: SOFT_SHADOW;
             description {
                 state: "default" 0.0;
                 align: 1 0.5;
                 max: 0 0;
                 min: ENTRY_SIZE;
-                rel1.offset: -300 OFFSET*8;
+                rel1.offset: -260 OFFSET*8;
+               text {
+                    size: 20;
+               }
             }
             description {
                 state: "default" 0.5;
