@@ -19,8 +19,8 @@ option('logind',
        description: 'Enable support for systemd logind or elogind')
 option('nls',
 	type: 'boolean',
-	default: true,
-	description: 'enable localization (default=true)')
+	value: true,
+	description: 'Enable localization (default=true)')
 option('pam',
        type       : 'boolean',
        value      : true,
