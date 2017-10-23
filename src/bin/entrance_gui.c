@@ -118,16 +118,11 @@ entrance_gui_init(const char *theme)
              elm_object_part_content_set(o, ENTRANCE_EDJE_PART_SCREEN, ol);
 
              /* date */
-             /* FIXME: EDJE should be handling color and size */
-             o = elm_object_part_content_get(ol, ENTRANCE_EDJE_PART_DATE);
-             evas_object_color_set(o, 51, 153, 255, 255);
              time_t t = time(0);
              struct tm tm = *localtime(&t);
              char date[64];
              strftime(date,64,"%B %d, %Y",&tm);
-             char markup[128];
-             snprintf(markup,128,"<font_size=36>%s</font_size>",date);
-             elm_object_text_set(o,markup);
+             elm_object_part_text_set(ol, ENTRANCE_EDJE_PART_DATE,date);
 
              /* clock */
              o = elm_clock_add(ol);
