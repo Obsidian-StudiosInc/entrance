@@ -87,7 +87,7 @@ collections {
             description {
                state: "default" 0.5;
                inherit: "default" 0.0;
-               rel1.offset: 0 0;
+               rel1.offset: -30 0;
                 map {
                     rotation.z: 0;
                 }
