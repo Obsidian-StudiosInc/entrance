@@ -34,8 +34,7 @@ static Entrance_Fill *_login_fill;
 static Entrance_Gui_Login *_login;
 
 #define ALERT_ERROR(widget,text) \
-  elm_object_text_set( \
-    elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_LABEL), text); \
+  elm_object_part_text_set(widget, ENTRANCE_EDJE_PART_LABEL, text); \
   elm_object_signal_emit(widget, ENTRANCE_EDJE_SIGNAL_AUTH_ERROR, ""); \
   _login->error = EINA_TRUE;
 
@@ -283,23 +282,15 @@ entrance_login_shutdown(void)
 Evas_Object *
 entrance_login_add(Evas_Object *obj, void *data)
 {
-   Evas_Object *h, *l, *o, *p, *t;
+   Evas_Object *h, *l, *o, *p;
 
    /* layout */
    _login = calloc(1, sizeof(Entrance_Gui_Login));
    _login->func.data = data;
    o = entrance_gui_theme_get(obj, ENTRANCE_EDJE_GROUP_LOGIN);
 
-   /* label */
-   t = elm_label_add(o);
-   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_LABEL, t);
-   evas_object_show(t);
-
    /* login label */
-   t = elm_label_add(o);
-   elm_object_text_set (t, _("Login"));
-   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_LOGIN_LABEL, t);
-   evas_object_show(t);
+   elm_object_part_text_set(o, ENTRANCE_EDJE_PART_LOGIN_LABEL, _("Login"));
 
    /* login */
    l = elm_entry_add(o);
@@ -310,10 +301,7 @@ entrance_login_add(Evas_Object *obj, void *data)
    evas_object_show(l);
 
    /* password label */
-   t = elm_label_add(o);
-   elm_object_text_set (t, _("Password"));
-   elm_object_part_content_set(o, ENTRANCE_EDJE_PART_PASSWORD_LABEL, t);
-   evas_object_show(t);
+   elm_object_part_text_set(o, ENTRANCE_EDJE_PART_PASSWORD_LABEL, _("Password"));
 
    /* password */
    p = elm_entry_add(o);
