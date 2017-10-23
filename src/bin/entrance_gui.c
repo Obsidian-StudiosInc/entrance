@@ -131,7 +131,6 @@ entrance_gui_init(const char *theme)
 
              /* uname */
              struct utsname uname_str;
-             o = elm_label_add(ol);
              if(uname(&uname_str)==0)
                {
                  char uname_value[1024];
@@ -142,9 +141,8 @@ entrance_gui_init(const char *theme)
                          uname_str.nodename,
                          uname_str.release,
                          uname_str.machine);
-                 elm_object_text_set (o, uname_value);
+                 elm_object_part_text_set (ol, ENTRANCE_EDJE_PART_UNAME, uname_value);
                }
-             elm_object_part_content_set(ol, ENTRANCE_EDJE_PART_UNAME, o);
 
              o = entrance_login_add(ol, screen);
              entrance_login_open_session_set(o, EINA_TRUE);
