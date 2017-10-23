@@ -66,21 +66,23 @@ collections {
             description { state: "show" 0.0;
             }
          }
-         external { name: ENTRANCE_EDJE_PART_DATE;
-            source: "elm/label";
+         text { name: ENTRANCE_EDJE_PART_DATE;
             description { state: "default" 0.0;
                fixed: 1 1;
                align: 0 0;
+               color: 51 153 255 255;
                rel1.relative: 0 0;
-//               rel1.offset: -OFFSET -72;
-               rel1.offset: -240 0;
-               max: 240 72;
-               min: 240 72;
-                map {
-                    on: 1;
-                    rotation.z: 90;
-                    perspective_on: 1;
-                }
+               rel1.offset: -400 0;
+               max: 400 72;
+               min: 400 72;
+               map {
+                   on: 1;
+                   rotation.z: 90;
+                   perspective_on: 1;
+               }
+               text {
+                    size: 36;
+               }
             }
             description {
                state: "default" 0.5;
