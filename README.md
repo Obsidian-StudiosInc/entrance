@@ -48,15 +48,17 @@ does not function correctly. If it is usable to log in at all.
 The broken, incomplete, unmaintained 2nd Genration Entrance 
 resides in Enlightenment's
 [entrance git 
-repository](https://git.enlightenment.org/misc/entrance.git/).
+repository](https://git.enlightenment.org/misc/entrance.git/). A branch 
+may be added to this repository for historical purposes.
 
 ### 1st Generation
 There was a project long ago that worked, and went 
 [MIA](http://xcomputerman.com/pages/entrance.html). Copies of the 
-sources for some releases. Ideally would great to get a copy of the old 
-entrance repo to add to this one for historical purposes. If you have a 
-copy of the old Entrance repository, please open an issue and provide 
-a link. That would be much appreciated!
+sources for some releases are in some distro repositories. A copy has 
+been obtained via a PCLinuxOS src rpm. Ideally would be great to get a 
+copy of the old entrance repo to add to this one for historical 
+purposes. If you have a copy of the old Entrance repository. Please 
+open an issue and provide a link. That would be much appreciated!
 
 ## Build
 Entrance presently uses meson build system, autotools has been dropped. 
@@ -149,4 +151,5 @@ mentioned monitors section.
 ## logind/elogind aka systemd
 Presently not supported beyond build systems, no code written, just a 
 service file. There are plans to support logind/elogind for Wayland and 
-X. There is no ETA at this time.
+X. Initial work is currently under way. No code has been committed yet. 
+There is no ETA at this time for completion.
