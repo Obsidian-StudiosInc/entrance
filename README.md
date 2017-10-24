@@ -8,7 +8,7 @@
 This is a fork and current development version.
 It is ALIVE! IT WORKS! (for me ©)
 
-![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/29548111-4d3460fa-86cc-11e7-8e19-3b7456be3190.jpg)
+![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/31921581-1c2f0d7c-b83e-11e7-8d90-1dac94ae8e5c.jpg)
 
 ## Known Issues
 - Custom user set background is broken
