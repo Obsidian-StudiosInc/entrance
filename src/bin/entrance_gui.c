@@ -710,7 +710,9 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
 }
 
 static void
-_entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_info)
+_entrance_gui_user_sel_cb(void *data,
+                          Evas_Object *obj EINA_UNUSED,
+                          void *event_info)
 {
    Entrance_Login *eu;
    eu = elm_object_item_data_get(event_info);
@@ -719,7 +721,9 @@ _entrance_gui_user_sel_cb(void *data, Evas_Object *obj EINA_UNUSED, void *event_
 
 
 static char *
-_entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part)
+_entrance_gui_user_text_get(void *data,
+                            Evas_Object *obj EINA_UNUSED,
+                            const char *part)
 {
    Entrance_Login *eu;
    eu = data;
@@ -733,7 +737,9 @@ _entrance_gui_user_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char
 }
 
 static Evas_Object *
-_entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const char *part)
+_entrance_gui_user_content_get(void *data EINA_UNUSED,
+                               Evas_Object *obj,
+                               const char *part)
 {
    Evas_Object *ic = NULL, *o;
    Entrance_Login *eu;
@@ -768,7 +774,9 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED, Evas_Object *obj, const c
 }
 
 static Eina_Bool
-_entrance_gui_user_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
+_entrance_gui_user_state_get(void *data EINA_UNUSED,
+                             Evas_Object *obj EINA_UNUSED,
+                             const char *part EINA_UNUSED)
 {
    return EINA_FALSE;
 }
@@ -778,17 +786,21 @@ _entrance_gui_user_state_get(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSE
 ///////////////////////////////////////////////////
 
 static char *
-_entrance_gui_action_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *part EINA_UNUSED)
+_entrance_gui_action_text_get(void *data,
+                              Evas_Object *obj EINA_UNUSED,
+                              const char *part EINA_UNUSED)
 {
    Entrance_Action *ea;
    ea = data;
    if ((part) && (!strcmp(part, "icon")))
-     return NULL;
+     return strdup(ea->icon);
    return strdup(ea->label);
 }
 
 static void
-_entrance_gui_action_clicked_cb(void *data EINA_UNUSED, Evas_Object *obj EINA_UNUSED, void *event_info)
+_entrance_gui_action_clicked_cb(void *data EINA_UNUSED,
+                                Evas_Object *obj EINA_UNUSED,
+                                void *event_info)
 {
    Entrance_Action *ea;
    ea = elm_object_item_data_get(event_info);
@@ -823,7 +835,9 @@ _entrance_gui_actions_populate()
 }
 
 static Eina_Bool
-_entrance_gui_cb_window_property(void *data EINA_UNUSED, int type EINA_UNUSED, void *event_info)
+_entrance_gui_cb_window_property(void *data EINA_UNUSED,
+                                 int type EINA_UNUSED,
+                                 void *event_info)
 {
    Ecore_X_Event_Window_Property *ev;
 
