@@ -1,5 +1,7 @@
 #include "entrance.h"
 
+#include <ctype.h>
+
 #ifdef STDC_HEADERS
 # include <stdlib.h>
 # include <stddef.h>
@@ -39,6 +41,7 @@ typedef struct Entrance_Action_Data__
 {
    unsigned char id;
    const char *label;
+   const char *icon;
    Entrance_Action_Cb func;
    void *data;
 } Entrance_Action_Data;
@@ -46,7 +49,9 @@ typedef struct Entrance_Action_Data__
 static Ecore_Exe *_action_exe = NULL;
 
 static Entrance_Action_Data *
-_entrance_action_add(const char *label, Entrance_Action_Cb func, void *data)
+_entrance_action_add(const char *label,
+                     Entrance_Action_Cb func,
+                     void *data)
 {
    Entrance_Action_Data *ead;
    ead = calloc(1, sizeof(Entrance_Action_Data));
@@ -54,6 +59,10 @@ _entrance_action_add(const char *label, Entrance_Action_Cb func, void *data)
    ead->func = func;
    ead->data = data;
    ead->id = (unsigned char)eina_list_count(_entrance_actions);
+   char icon[128];
+   snprintf(icon,128,"system-%s",label);
+   icon[7] = tolower(icon[7]);
+   ead->icon = eina_stringshare_add(icon);
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
                            _entrance_action_exe_event_del_cb, NULL);
    return ead;
@@ -83,6 +92,7 @@ entrance_action_get(void)
         ea = calloc(1, sizeof(Entrance_Action));
         ea->label = eina_stringshare_add(ead->label);
         ea->id = ead->id;
+        ea->icon = eina_stringshare_add(ead->icon);
         ret = eina_list_append(ret, ea);
      }
    return ret;
@@ -95,6 +105,7 @@ entrance_action_shutdown(void)
    EINA_LIST_FREE(_entrance_actions, ead)
      {
         eina_stringshare_del(ead->label);
+        eina_stringshare_del(ead->icon);
         free(ead);
      }
 }
@@ -133,7 +144,9 @@ _entrance_action_reboot(void *data EINA_UNUSED)
 }
 
 static Eina_Bool
-_entrance_action_exe_event_del_cb(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+_entrance_action_exe_event_del_cb(void *data EINA_UNUSED,
+                                  int type EINA_UNUSED,
+                                  void *event)
 {
    Ecore_Exe_Event_Del *ev;
    Eina_Bool ret = ECORE_CALLBACK_PASS_ON;
