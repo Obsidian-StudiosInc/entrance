@@ -62,6 +62,7 @@ typedef struct Entrance_Action_
 {
    unsigned char id;
    const char *label;
+   const char *icon;
 } Entrance_Action;
 
 typedef struct Entrance_Actions_Event_
