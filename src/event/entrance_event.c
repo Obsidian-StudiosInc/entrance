@@ -280,6 +280,8 @@ _entrance_event_actions_dd(void)
                                  label, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Action, "id",
                                  id, EET_T_UCHAR);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Action, "icon",
+                                 icon, EET_T_STRING);
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Actions_Event);
    eddl = eet_data_descriptor_stream_new(&eddcl);
    EET_DATA_DESCRIPTOR_ADD_LIST(eddl, Entrance_Actions_Event, "actions",
