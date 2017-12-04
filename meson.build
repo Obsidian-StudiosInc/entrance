@@ -91,14 +91,15 @@ configure_file(input  : 'data/entrance.conf.in',
                install_dir : join_paths(dir_syscfg, proj),
                configuration : cfg
 )
-if has_pam
+
+# install
+if has_logind
 	configure_file(input  : 'data/entrance.service.in',
                        output : 'entrance.service',
+                       install_dir : '/etc/systemd/system' ,
                        configuration : cfg
 	)
 endif
-
-# install
 if has_pam
 	configure_file(input  : 'data/entrance.pam.d',
                        output : 'entrance',
