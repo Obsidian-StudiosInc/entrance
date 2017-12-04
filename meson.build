@@ -96,7 +96,7 @@ configure_file(input  : 'data/entrance.conf.in',
 if has_logind
 	configure_file(input  : 'data/entrance.service.in',
                        output : 'entrance.service',
-                       install_dir : '/etc/systemd/system' ,
+                       install_dir : '/usr/lib/systemd/system' ,
                        configuration : cfg
 	)
 endif
