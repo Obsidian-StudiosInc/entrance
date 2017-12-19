@@ -447,24 +447,10 @@ entrance_session_list_get(void)
 static void
 _entrance_session_desktops_init(void)
 {
-   char buf[PATH_MAX];
-   Eina_List *dirs;
-   const char *path;
-   Eina_List *l;
-
    efreet_desktop_type_alias(EFREET_DESKTOP_TYPE_APPLICATION, "XSession");
-   /* Maybee need to scan other directories ? */
-   _entrance_session_desktops_scan("/etc/share/xsessions");
-   _entrance_session_desktops_scan("/etc/X11/dm/Sessions");
-   snprintf(buf, sizeof(buf), "%s/xsessions", efreet_data_home_get());
-   _entrance_session_desktops_scan(buf);
-   dirs = efreet_data_dirs_get();
-   EINA_LIST_FOREACH(dirs, l, path)
-     {
-        PT("scanning directory: %s", path);
-        snprintf(buf, sizeof(buf), "%s/xsessions", path);
-        _entrance_session_desktops_scan(buf);
-     }
+   _entrance_session_desktops_scan("/etc/X11/Sessions");
+   _entrance_session_desktops_scan("/usr/share/xsessions");
+   _entrance_session_desktops_scan("/usr/share/wayland-sessions");
 }
 
 static void
