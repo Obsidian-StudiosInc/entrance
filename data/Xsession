@@ -1,0 +1,61 @@
+#!/bin/sh
+# Copyright 2018 Obsidian-Studios, Inc.
+# Distributed under the terms of the GNU General Public License v3
+#
+# Entrance script to launch a session.
+
+echo "Entrance prepare session"
+
+# Load X profile
+for fn in "/etc/" "/etc/x" "$HOME/." "$HOME/.x"; do
+	if [ -f "${fn}profile" ]; then
+		echo "Loading X profile from ${fn}";
+		# shellcheck disable=SC1090
+		. "${fn}"
+	fi
+done
+
+# Load X resources
+for fn in "/etc/X11/" "/etc/X11/xinit/" "/etc/X11/xdm/" "$HOME/."; do
+	if [ -f "${fn}Xresources" ]; then
+		echo "Loading X resource: ${fn}"
+		xrdb -nocpp -merge "${fn}"
+	fi
+done
+
+# Load Xkeymaps
+for fn in "/etc/X11/" "${HOME}/."; do
+	if [ -f "${fn}Xkbmap" ]; then
+		echo "Loading X keymap: ${fn}"
+		setxkbmap "$(cat "${fn}")"
+		XKB_IN_USE=0
+	fi
+done
+
+# Load Xmodmap if no XKB used
+if [ ${XKB_IN_USE} ]; then
+	for fn in "/etc/X11/" "$HOME/."; do
+		if [ -f "${fn}Xmodmap" ]; then
+			echo "Loading modmap: ${fn}"
+			xmodmap "${fn}"
+		fi
+	done
+fi
+
+unset XKB_IN_USE
+
+# Sourcing all xinitrc scripts.
+xinitdir="/etc/X11/xinit/xinitrc.d"
+if [ -d "${xinitdir}" ]; then
+	for fn in "${xinitdir}/"*; do
+		if [ -f "${fn}" ] && [ -x "${fn}" ]; then
+			echo "Loading Xinit script ${fn}"
+			# shellcheck disable=SC1090
+			. "${fn}"
+		fi
+	done
+fi
+
+echo "X session prepare complete, now launching wm $*"
+
+exec "$@"
