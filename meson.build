@@ -84,15 +84,13 @@ cfg.set_quoted('PACKAGE_LIB_DIR'	, dir_lib)
 cfg.set_quoted('PACKAGE_SBIN_DIR'	, dir_sbin)
 cfg.set_quoted('SYSTEM_CONFIG_DIR'	, dir_syscfg)
 cfg.set_quoted('VERSION'		, ver)
-configure_file(output: 'config.h', configuration: cfg)
 
+configure_file(output: 'config.h', configuration: cfg)
 configure_file(input  : 'data/entrance.conf.in',
                output : 'entrance.conf',
                install_dir : join_paths(dir_syscfg, proj),
                configuration : cfg
 )
-
-# install
 if has_logind
 	configure_file(input  : 'data/entrance.service.in',
                        output : 'entrance.service',
@@ -107,6 +105,10 @@ if has_pam
                        configuration : cfg
 	)
 endif
+
+install_data(sources : 'data/Xsession',
+             install_dir : join_paths(dir_syscfg, proj)
+)
 
 ##### subdirs
 subdir('src/bin')
