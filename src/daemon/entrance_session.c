@@ -267,7 +267,7 @@ entrance_session_cookie(void)
    srand(entrance_session_seed_get());
    for (i=0; i<32; i+=4)
      {
-        word = rand() & 0xffff;
+        word = random() & 0xffff;
         lo = word & 0xff;
         hi = word >> 8;
         _mcookie[i] = dig[lo & 0x0f];
