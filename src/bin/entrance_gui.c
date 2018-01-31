@@ -683,7 +683,7 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
 
    srand(time(NULL));
    rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
-         * (double)rand()) / (RAND_MAX + 1.0));
+         * (double)random()) / (RAND_MAX + 1.0));
    if ((el) && (rnd < eina_list_count(user_icons)))
      {
         o = elm_icon_add(obj);
