@@ -3,33 +3,16 @@ compiler: gcc
 sudo: required
 dist: trusty
 
-cache:
-  apt: true
-
 env:
-  matrix:
-    - MY_PV=3.0.0_alpha1
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:niko2040/e19'
-    packages:
-      - gettext
-      - libc6-dbg
-      - libck-connector0 
-      - libck-connector-dev
-      - libefl
-      - libefl-dbg
-      - libefl-dev
-      - libpam0g-dev
-      - libpam-ck-connector
-      - python3-pip
+  - MY_PV=3.0.0_alpha1
 
 before_install:
   - if [ "${COVERITY_SCAN_BRANCH}" = "1" ]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-certificates.crt ; fi
 
 install:
+  - sudo add-apt-repository -y ppa:niko2040/e19
+  - sudo apt-get -qq update
+  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip libpam0g-dev
   - sudo pip3 install --upgrade pip
   - sudo pip3 install meson
   - mkdir .bin
@@ -41,7 +24,7 @@ before_script:
 
 jobs:
   include:
-    - stage: test build options
+    - stage: Test builds
     - env: BUILD_OPTS="-Dconsolekit=false"
     - env: BUILD_OPTS="-Dpam=false"
     - env: BUILD_OPTS="-Dconsolekit=false -Dpam=false"
