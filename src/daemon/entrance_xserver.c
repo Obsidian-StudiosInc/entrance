@@ -54,10 +54,10 @@ _xserver_start(void)
             ++num_token;
             token = strtok(NULL, " ");
           }
-        if (buf) free(buf);
         if (num_token)
           {
              int i;
+             if (buf) free(buf);
              if (!(buf = strdup(entrance_config->command.xinit_args)))
                goto xserver_error;
              if (!(args = calloc(num_token + 2, sizeof(char *))))
@@ -74,6 +74,7 @@ _xserver_start(void)
                     args[i] = token;
                   token = strtok(NULL, " ");
                }
+             if (buf) free(buf);
              args[num_token] = NULL;
           }
         else
@@ -84,7 +85,6 @@ _xserver_start(void)
              args[1] = NULL;
           }
         execv(args[0], args);
-        if (buf) free(buf);
         if (args) free(args);
         PT("Couldn't launch Xserver ...");
      }
