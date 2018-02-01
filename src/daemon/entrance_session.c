@@ -271,7 +271,7 @@ entrance_session_cookie(void)
    fp = fopen("/dev/urandom", "r");
    for (i=0; i<32; i+=4)
      {
-       if (!fp || !(fread(&rand,sizeof(rand),1,fp)))
+       if (!fp || (fread(&rand,sizeof(rand),1,fp))<=0)
          {
            clock_gettime(CLOCK_REALTIME, &time);
            rand = time.tv_nsec;
