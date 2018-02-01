@@ -1,4 +1,5 @@
 #include <sys/types.h>
+#include <time.h>
 #include <unistd.h>
 #include <grp.h>
 #ifndef HAVE_PAM
@@ -264,10 +265,20 @@ entrance_session_cookie(void)
    _mcookie = calloc(33, sizeof(char));
    _mcookie[0] = 'a';
 
-   srand(entrance_session_seed_get());
+   long rand;
+   struct timespec time;
+   FILE *fp;
+   fp = fopen("/dev/urandom", "r");
    for (i=0; i<32; i+=4)
      {
-        word = random() & 0xffff;
+       if (fp)
+         fread(&rand,sizeof(rand),1,fp); 
+       else
+         {
+           clock_gettime(CLOCK_REALTIME, &time);
+           rand = time.tv_nsec;
+         }
+        word = rand & 0xffff;
         lo = word & 0xff;
         hi = word >> 8;
         _mcookie[i] = dig[lo & 0x0f];
@@ -275,6 +286,9 @@ entrance_session_cookie(void)
         _mcookie[i+2] = dig[hi & 0x0f];
         _mcookie[i+3] = dig[hi >> 4];
      }
+   if(fp)
+     fclose(fp);
+
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s",
             entrance_config->command.xauth_file);
    putenv(strdup(buf));
