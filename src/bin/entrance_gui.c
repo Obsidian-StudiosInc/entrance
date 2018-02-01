@@ -681,9 +681,10 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    sys_icons = entrance_gui_icon_pool_get();
    theme_icons = entrance_gui_theme_icons();
 
-   srand(time(NULL));
+   struct timespec time;
+   clock_gettime(CLOCK_REALTIME, &time);
    rnd = (((eina_list_count(user_icons) + eina_list_count(sys_icons) + eina_list_count(theme_icons))
-         * (double)random()) / (RAND_MAX + 1.0));
+         * time.tv_nsec) / (INT_MAX + 1.0));
    if ((el) && (rnd < eina_list_count(user_icons)))
      {
         o = elm_icon_add(obj);
