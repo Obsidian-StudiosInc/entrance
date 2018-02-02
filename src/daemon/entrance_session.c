@@ -266,15 +266,16 @@ entrance_session_cookie(void)
    _mcookie[0] = 'a';
 
    long rand;
+   size_t read;
    struct timespec time;
    FILE *fp;
    fp = fopen("/dev/urandom", "r");
    for (i=0; i<32; i+=4)
      {
-       if (!fp || (fread(&rand,sizeof(rand),1,fp))<=0)
+       if (!fp || (read = fread(&rand,sizeof(rand),1,fp))<=0)
          {
            clock_gettime(CLOCK_REALTIME, &time);
-           rand = time.tv_nsec;
+           rand = read + time.tv_nsec;
          }
         word = rand & 0xffff;
         lo = word & 0xff;
