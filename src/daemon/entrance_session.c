@@ -266,7 +266,7 @@ entrance_session_cookie(void)
    _mcookie[0] = 'a';
 
    long rand;
-   size_t read;
+   size_t read = 0;
    struct timespec time;
    FILE *fp;
    fp = fopen("/dev/urandom", "r");
