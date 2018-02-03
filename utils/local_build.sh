@@ -28,7 +28,6 @@ done
 
 cp data/entrance.conf \
 	src/bin/entrance_client \
-	src/daemon/entrance_ck_launch \
 	src/daemon/entrance_wait \
 	test/entrance
 
