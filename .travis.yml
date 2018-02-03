@@ -42,7 +42,7 @@ jobs:
           branch_pattern: master
 
 script:
-  - meson --prefix /usr ${BUILD_OPTS} . build && .bin/ninja -C build
+  - if [ "${COVERITY_SCAN_BRANCH}" = "1" ]; then true; else meson --prefix /usr ${BUILD_OPTS} . build && .bin/ninja -C build ; fi
 
 notifications:
   email: false
