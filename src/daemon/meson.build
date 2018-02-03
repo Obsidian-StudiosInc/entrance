@@ -43,15 +43,3 @@ executable('entrance_wait', 'entrance_wait.c',
 	install			: true,
 	install_dir             : dir_lib
 )
-
-# entrance_ck_launch
-if has_ck
-        ck    = dependency('ck-connector')
-	executable('entrance_ck_launch', 'entrance_ck_launch.c',
-		include_directories	: inc,
-		dependencies		: [deps, ck],
-		gui_app			: true,
-		install			: true,
-		install_dir             : dir_lib
-	)
-endif
