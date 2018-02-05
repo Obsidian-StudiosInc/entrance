@@ -74,7 +74,6 @@ _xserver_start(void)
                     args[i] = token;
                   token = strtok(NULL, " ");
                }
-             if (buf) free(buf);
              args[num_token] = NULL;
           }
         else
@@ -85,6 +84,7 @@ _xserver_start(void)
              args[1] = NULL;
           }
         execv(args[0], args);
+        if (buf) free(buf);
         if (args) free(args);
         PT("Couldn't launch Xserver ...");
      }
