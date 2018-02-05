@@ -31,6 +31,7 @@ _env_set(const char *dname)
 static int
 _xserver_start(void)
 {
+   char *abuf = NULL;
    char *buf = NULL;
    char **args = NULL;
    pid_t pid;
@@ -58,15 +59,15 @@ _xserver_start(void)
         if (num_token)
           {
              int i;
-             if (!(buf = strdup(entrance_config->command.xinit_args)))
+             if (!(abuf = strdup(entrance_config->command.xinit_args)))
                goto xserver_error;
              if (!(args = calloc(num_token + 2, sizeof(char *))))
                {
-                  if (buf) free(buf);
+                  if (abuf) free(abuf);
                   goto xserver_error;
                }
              args[0] = (char *)entrance_config->command.xinit_path;
-             token = strtok(buf, " ");
+             token = strtok(abuf, " ");
              ++num_token;
              for(i = 1; i < num_token; ++i)
                {
@@ -84,7 +85,7 @@ _xserver_start(void)
              args[1] = NULL;
           }
         execv(args[0], args);
-        if (buf) free(buf);
+        if (abuf) free(abuf);
         if (args) free(args);
         PT("Couldn't launch Xserver ...");
      }
