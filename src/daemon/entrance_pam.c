@@ -87,14 +87,10 @@ entrance_pam_open_session(void)
          break;
      }
    last_result = pam_open_session(_pam_handle, 0);
-   switch(last_result)
+   if(last_result!=PAM_SUCCESS)
      {
-      default:
-         //case PAM_SESSION_ERROR: ???
-         pam_setcred(_pam_handle, PAM_DELETE_CRED);
-         entrance_pam_end();
-      case PAM_SUCCESS:
-         break;
+       pam_setcred(_pam_handle, PAM_DELETE_CRED);
+       entrance_pam_end();
      }
    return 0;
 }
@@ -104,30 +100,17 @@ entrance_pam_close_session(const Eina_Bool opened)
 {
    PT("PAM close session");
    last_result = pam_close_session(_pam_handle, PAM_SILENT);
-   switch (last_result)
+   if(last_result!=PAM_SUCCESS)
      {
-      default:
-         //case PAM_SESSION_ERROR:
-         PT("error on close session");
-         pam_setcred(_pam_handle, PAM_DELETE_CRED);
-         entrance_pam_end();
-      case PAM_SUCCESS:
-         break;
+       PT("error on close session");
+       pam_setcred(_pam_handle, PAM_DELETE_CRED);
+       entrance_pam_end();
      }
    if (opened)
      {
-        last_result = pam_setcred(_pam_handle, PAM_DELETE_CRED);
-        switch(last_result)
-          {
-           default:
-           case PAM_CRED_ERR:
-           case PAM_CRED_UNAVAIL:
-           case PAM_CRED_EXPIRED:
-           case PAM_USER_UNKNOWN:
-              entrance_pam_end();
-           case PAM_SUCCESS:
-              break;
-          }
+       last_result = pam_setcred(_pam_handle, PAM_DELETE_CRED);
+       if(last_result!=PAM_SUCCESS)
+         entrance_pam_end();
      }
 }
 
@@ -241,15 +224,11 @@ entrance_pam_item_get(ENTRANCE_PAM_ITEM_TYPE type)
 {
    const void *data;
    last_result = pam_get_item(_pam_handle, type, &data);
-   switch (last_result) {
-      default:
-      case PAM_SYSTEM_ERR:
-         entrance_pam_end();
-         PT("error on pam item get");
-      case PAM_PERM_DENIED: /* Here data was NULL */
-      case PAM_SUCCESS:
-         break;
-   }
+   if(last_result!=PAM_SUCCESS)
+     {
+        PT("error on pam item get");
+        entrance_pam_end();
+     }
    return data;
 }
 
@@ -260,16 +239,10 @@ entrance_pam_env_set(const char *env, const char *value)
    if (!env || !value) return 1;
    snprintf(buf, sizeof(buf), "%s=%s", env, value);
    last_result = pam_putenv(_pam_handle, buf);
-   switch (last_result)
+   if(last_result!=PAM_SUCCESS)
      {
-      default:
-      case PAM_PERM_DENIED:
-      case PAM_ABORT:
-      case PAM_BUF_ERR:
-         entrance_pam_end();
-         return 1;
-      case PAM_SUCCESS:
-         break;
+       entrance_pam_end();
+       return 1;
      }
    return 0;
 
