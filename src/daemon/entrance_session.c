@@ -98,7 +98,7 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
    if (pwd->pw_shell[0] == '\0')
      {
         setusershell();
-        strcpy(pwd->pw_shell, getusershell());
+        strncpy(pwd->pw_shell, getusershell(), sizeof(pwd->pw_shell)-1);
         endusershell();
      }
 #ifdef HAVE_PAM
