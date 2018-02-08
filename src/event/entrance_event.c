@@ -14,6 +14,8 @@
 #define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
 #define ENTRANCE_EVENT_POOLS_NAME "EntranceEventPools"
 #define ENTRANCE_EVENT_THEMES_NAME "EntranceEventThemes"
+#define EET_LOGIN_ADD(NAME, TYPE) \
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
 
 static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
@@ -247,8 +249,6 @@ _entrance_event_conf_user_dd(Eina_Bool stream)
    eddi = _entrance_event_image_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = eet_data_descriptor_stream_new(&eddc);
-#define EET_LOGIN_ADD(NAME, TYPE) \
-   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
    EET_LOGIN_ADD(login, EET_T_STRING);
    EET_LOGIN_ADD(image.path, EET_T_STRING);
    EET_LOGIN_ADD(image.group, EET_T_STRING);
@@ -265,7 +265,6 @@ _entrance_event_conf_user_dd(Eina_Bool stream)
         EET_DATA_DESCRIPTOR_ADD_LIST(edd, Entrance_Login, "background_pool",
                                      background_pool, eddi);
      }
-#undef EET_LOGIN_ADD
    return edd;
 }
 
