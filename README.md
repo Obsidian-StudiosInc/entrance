@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/travis/Obsidian-StudiosInc/entrance/master.svg?colorA=9977bb&style=plastic)](https://travis-ci.org/Obsidian-StudiosInc/entrance)
 [![Build Status](https://img.shields.io/shippable/59415c1aa155af0700adbcb3/master.svg?colorA=9977bb&style=plastic)](https://app.shippable.com/projects/59415c1aa155af0700adbcb3/)
 [![Code Quality](https://img.shields.io/coverity/scan/12936.svg?colorA=9977bb&style=plastic)](https://scan.coverity.com/projects/obsidian-studiosinc-entrance)
+[![Code Quality](https://sonarcloud.io/api/project_badges/measure?project=entrance&metric=alert_status)](https://sonarcloud.io/dashboard?id=entrance)
 
 
 This is a fork and current development version.
