@@ -42,7 +42,8 @@ static void
 _login_check_auth(Evas_Object *widget)
 {
    Evas_Object *o;
-   const char *host, *passwd;
+   const char *host;
+   const char *passwd;
 
    o = elm_object_part_content_get(widget, ENTRANCE_EDJE_PART_LOGIN);
    host = elm_entry_markup_to_utf8(elm_object_text_get(o));
@@ -153,7 +154,8 @@ _login_xsession_text_get(void *data, Evas_Object *obj EINA_UNUSED, const char *p
 static void
 _login_xsession_update(Evas_Object *obj)
 {
-   Evas_Object *o, *icon;
+   Evas_Object *icon;
+   Evas_Object *o;
 
    o = elm_object_part_content_get(obj, ENTRANCE_EDJE_PART_XSESSIONS);
    if (!_login->session) return;
@@ -183,7 +185,8 @@ _login_xsession_update(Evas_Object *obj)
 static void
 _login_xsession_guess(void *data, const char *user)
 {
-   const Eina_List *users, *l;
+   const Eina_List *l;
+   const Eina_List *users;
    Entrance_Login *eu;
 
    users = entrance_gui_users_get();
@@ -282,7 +285,10 @@ entrance_login_shutdown(void)
 Evas_Object *
 entrance_login_add(Evas_Object *obj, void *data)
 {
-   Evas_Object *h, *l, *o, *p;
+   Evas_Object *h;
+   Evas_Object *l;
+   Evas_Object *o;
+   Evas_Object *p;
 
    /* layout */
    _login = calloc(1, sizeof(Entrance_Gui_Login));
