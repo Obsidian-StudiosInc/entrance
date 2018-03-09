@@ -258,7 +258,8 @@ void
 entrance_session_cookie(void)
 {
    uint16_t word;
-   uint8_t hi, lo;
+   uint8_t hi;
+   uint8_t lo;
    int i;
    char buf[PATH_MAX];
 
