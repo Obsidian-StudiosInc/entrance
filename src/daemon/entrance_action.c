@@ -58,7 +58,8 @@ entrance_action_get(void)
 {
    Entrance_Action_Data *ead;
    Entrance_Action *ea;
-   Eina_List *l, *ret = NULL;
+   Eina_List *l;
+   Eina_List *ret = NULL;
 
    EINA_LIST_FOREACH(_entrance_actions, l, ead)
      {
