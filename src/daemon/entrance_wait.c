@@ -37,8 +37,9 @@ main (int argc EINA_UNUSED, char **argv EINA_UNUSED)
    char *pid;
    char *sid;
    struct sigaction action;
+   pid_t rpid;
+   pid_t spid;
 
-   pid_t rpid, spid;
    pid = getenv("ENTRANCE_XPID");
    sid = getenv("ENTRANCE_SPID");
    if (!pid) return -1;
