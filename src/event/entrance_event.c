@@ -116,8 +116,10 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
 static Eet_Data_Descriptor *
 _entrance_event_xsessions_dd(void)
 {
-   Eet_Data_Descriptor_Class eddc, eddcl;
-   Eet_Data_Descriptor *edd, *eddl;
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *eddl;
+   Eet_Data_Descriptor_Class eddc;
+   Eet_Data_Descriptor_Class eddcl;
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Xsession);
    edd = eet_data_descriptor_stream_new(&eddc);
@@ -230,8 +232,10 @@ _entrance_event_image_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_users_dd(void)
 {
-   Eet_Data_Descriptor *edd, *eddl;
-   Eet_Data_Descriptor_Class eddc, eddcl;
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *eddl;
+   Eet_Data_Descriptor_Class eddc;
+   Eet_Data_Descriptor_Class eddcl;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = _entrance_event_conf_user_dd(EINA_TRUE);
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddcl, Entrance_Users_Event);
@@ -244,7 +248,8 @@ _entrance_event_users_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_conf_user_dd(Eina_Bool stream)
 {
-   Eet_Data_Descriptor *edd, *eddi;
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *eddi;
    Eet_Data_Descriptor_Class eddc;
    eddi = _entrance_event_image_dd();
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
@@ -271,8 +276,10 @@ _entrance_event_conf_user_dd(Eina_Bool stream)
 static Eet_Data_Descriptor *
 _entrance_event_actions_dd(void)
 {
-   Eet_Data_Descriptor *edd, *eddl;
-   Eet_Data_Descriptor_Class eddc, eddcl;
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *eddl;
+   Eet_Data_Descriptor_Class eddc;
+   Eet_Data_Descriptor_Class eddcl;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Action);
    edd = eet_data_descriptor_stream_new(&eddc);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Action, "label",
@@ -302,7 +309,8 @@ _entrance_event_action_dd(void)
 static Eet_Data_Descriptor *
 _entrance_event_pools_dd(void)
 {
-   Eet_Data_Descriptor *edd, *eddi;
+   Eet_Data_Descriptor *edd;
+   Eet_Data_Descriptor *eddi;
    Eet_Data_Descriptor_Class eddc;
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Pools);
    edd = eet_data_descriptor_stream_new(&eddc);
