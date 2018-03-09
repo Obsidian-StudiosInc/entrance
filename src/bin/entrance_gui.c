@@ -70,9 +70,14 @@ entrance_gui_init(const char *theme)
 
    Ecore_X_Window xw;
    Entrance_Screen *screen;
-   int i, j;
-   int x, y, w, h;
-   int ww = 0, hh = 0;
+   int i;
+   int j;
+   int x;
+   int y;
+   int w;
+   int h;
+   int hh = 0;
+   int ww = 0;
 
    PT("Gui init: %s", theme);
    _gui = calloc(1, sizeof(Entrance_Gui));
@@ -98,7 +103,8 @@ entrance_gui_init(const char *theme)
    elm_win_title_set(_gui->win, PACKAGE);
    for(j = 0; j < i; ++j)
      {
-        Evas_Object *o, *ol;
+        Evas_Object *o;
+        Evas_Object *ol;
         screen = calloc(1, sizeof(Entrance_Screen));
         if (!screen) return 1;
 
@@ -265,7 +271,8 @@ _entrance_gui_string_to_entrance_image(Eina_List *src, char *stdfile, char *mask
 {
    //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
    Eina_List *result = NULL;
-   char *src_str, path[PATH_MAX];
+   char path[PATH_MAX];
+   char *src_str;
    Entrance_Image *img;
    EINA_LIST_FREE(src, src_str)
      {
@@ -298,7 +305,8 @@ entrance_gui_theme_icons(void)
 static Eina_List*
 _entrance_gui_theme_icons_cache_fill(Evas_Object *obj, const char *themename)
 {
-   Evas_Object *edje, *o;
+   Evas_Object *edje;
+   Evas_Object *o;
    char buf[PATH_MAX];
    Eina_List *icons = NULL;
 
@@ -341,7 +349,8 @@ Eina_List *
 entrance_gui_stringlist_get(const char *str)
 {
    Eina_List *list = NULL;
-   const char *s, *b;
+   const char *b;
+   const char *s;
    if (!str) return NULL;
    for (b = s = str; 1; s++)
      {
@@ -673,7 +682,9 @@ _entrance_gui_user_icon_random_get(Evas_Object *obj, const char *username)
    Evas_Object *o = NULL;
    Entrance_Image *img;
    const Entrance_Login *el;
-   Eina_List *user_icons = NULL, *sys_icons = NULL, *theme_icons = NULL;
+   Eina_List *sys_icons = NULL;
+   Eina_List *theme_icons = NULL;
+   Eina_List *user_icons = NULL;
 
    el = entrance_gui_user_get(username);
    if (el)
@@ -742,7 +753,8 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED,
                                Evas_Object *obj,
                                const char *part)
 {
-   Evas_Object *ic = NULL, *o;
+   Evas_Object *ic = NULL;
+   Evas_Object *o;
    Entrance_Login *eu;
    eu = data;
    if (eu && !strcmp(part, "elm.swallow.icon"))
