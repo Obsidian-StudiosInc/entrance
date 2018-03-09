@@ -2,6 +2,8 @@ language: c
 compiler: gcc
 sudo: required
 dist: trusty
+python:
+  - "3.5"
 
 cache:
   directories:
