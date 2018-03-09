@@ -330,7 +330,8 @@ _entrance_autologin_lock_get(void)
 {
    FILE *f;
    char buf[4096];
-   double uptime, sleep_time;
+   double sleep_time;
+   double uptime;
    struct stat st_login;
 
    f = fopen("/proc/uptime", "r");
