@@ -47,7 +47,8 @@ static void
 _entrance_connect_auth(const char *login, Eina_Bool granted)
 {
    Entrance_Connect_Auth *auth;
-   Eina_List *l, *ll;
+   Eina_List *l;
+   Eina_List *ll;
 
    EINA_LIST_FOREACH_SAFE(_auth_list, l, ll, auth)
      {
