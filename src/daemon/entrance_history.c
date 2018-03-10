@@ -67,13 +67,16 @@ _entrance_history_read(void)
 
    ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
                  EET_FILE_MODE_READ_WRITE);
-   if (!(ef)
-       || !(_entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY)))
+   if (!ef)
      {
-        PT("Error on reading last session login");
-        _entrance_history = calloc(1, sizeof(Entrance_History));
-     }
-   eet_close(ef);
+       _entrance_history = eet_data_read(ef, _eddh, ENTRANCE_SESSION_KEY);
+       if(!_entrance_history)
+         {
+           PT("Error on reading last session login");
+           _entrance_history = calloc(1, sizeof(Entrance_History));
+         }
+     eet_close(ef);
+    }
 }
 
 static void
