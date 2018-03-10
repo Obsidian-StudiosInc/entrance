@@ -87,7 +87,7 @@ _xserver_start(void)
           }
         execv(args[0], args);
         if (abuf) free(abuf);
-        if (args) free(args);
+        free(args);
         PT("Couldn't launch Xserver ...");
      }
    return pid;
