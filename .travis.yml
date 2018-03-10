@@ -42,6 +42,7 @@ jobs:
 script:
   - meson --prefix /usr ${OPTS} . build
   - ${SONAR} .bin/ninja -C build
+  - if [ "${SONAR}" ]; then find . -name '*.gcno' -exec sh -c 'gcov -b {} -o $(dirname {})' \;; fi
   - if [ "${SONAR}" ]; then sonar-scanner; fi
 
 notifications:
