@@ -34,6 +34,7 @@ _xserver_start(void)
    char *abuf = NULL;
    char *buf = NULL;
    char **args = NULL;
+   char *saveptr = NULL;
    pid_t pid;
 
    PT("Launching xserver");
@@ -49,11 +50,11 @@ _xserver_start(void)
 
         if (!(buf = strdup(entrance_config->command.xinit_args)))
           goto xserver_error;
-        token = strtok(buf, " ");
+        token = strtok_r(buf, " ", &saveptr);
         while(token)
           {
             ++num_token;
-            token = strtok(NULL, " ");
+            token = strtok_r(NULL, " ", &saveptr);
           }
         if (buf) free(buf);
         if (num_token)
@@ -67,13 +68,13 @@ _xserver_start(void)
                   goto xserver_error;
                }
              args[0] = (char *)entrance_config->command.xinit_path;
-             token = strtok(abuf, " ");
+             token = strtok_r(abuf, " ", &saveptr);
              ++num_token;
              for(i = 1; i < num_token; ++i)
                {
                   if (token)
                     args[i] = token;
-                  token = strtok(NULL, " ");
+                  token = strtok_r(NULL, " ", &saveptr);
                }
              args[num_token] = NULL;
           }
