@@ -231,6 +231,7 @@ _entrance_user_init(void)
    FILE *f;
    Entrance_Login *eu;
    Eina_List *lu = NULL;
+   char *saveptr;
    char *token;
    char *user;
    int uid;
@@ -241,9 +242,9 @@ _entrance_user_init(void)
      {
         while (fgets(buf, sizeof(buf), f))
           {
-             user = strtok(buf, ":");
-             strtok(NULL, ":");
-             token = strtok(NULL, ":");
+             user = strtok_r(buf, ":", &saveptr);
+             strtok_r(NULL, ":", &saveptr);
+             token = strtok_r(NULL, ":", &saveptr);
              uid = atoi(token);
              if (uid > 999 && uid < 65534)
                  lu = eina_list_append(lu, eina_stringshare_add(user));
