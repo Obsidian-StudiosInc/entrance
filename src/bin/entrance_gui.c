@@ -126,7 +126,7 @@ entrance_gui_init(const char *theme)
              /* date */
              time_t t = time(0);
              struct tm local_tm;
-             struct tm tm = localtime_r(&t, &local_tm);
+             struct tm tm = *localtime_r(&t, &local_tm);
              char date[64];
              strftime(date,64,"%B %d, %Y",&tm);
              elm_object_part_text_set(ol, ENTRANCE_EDJE_PART_DATE,date);
