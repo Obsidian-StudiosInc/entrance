@@ -141,10 +141,8 @@ _open_log()
 void
 entrance_close_log()
 {
-   {
-      fclose(stderr);
-      fclose(stdout);
-   }
+  fclose(stderr);
+  fclose(stdout);
 }
 
 static void
