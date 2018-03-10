@@ -402,11 +402,8 @@ _entrance_session_find_command(const char *path, const char *session)
      {
         EINA_LIST_FOREACH(_xsessions, l, xsession)
           {
-             if (!strcmp(xsession->name, session))
-               {
-                  if (xsession->command)
-                    return xsession->command;
-               }
+             if (!strcmp(xsession->name, session) && xsession->command)
+               return xsession->command;
           }
      }
    snprintf(buf, sizeof(buf), "%s/%s",
