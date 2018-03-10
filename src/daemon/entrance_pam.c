@@ -80,11 +80,11 @@ entrance_pam_open_session(void)
       case PAM_PERM_DENIED:
          PT("PAM error on login password");
          return 1;
-      default:
-         PT("PAM open warning unknow error");
-         return 1;
       case PAM_SUCCESS:
          break;
+      default:
+         PT("PAM open warning unknown error");
+         return 1;
      }
    last_result = pam_open_session(_pam_handle, 0);
    if(last_result!=PAM_SUCCESS)
@@ -150,17 +150,15 @@ entrance_pam_authenticate(void)
       case PAM_PERM_DENIED:
          PT("PAM permission denied !");
          return 1;
+      case PAM_SUCCESS:
+         break;
       default:
          PT("PAM auth warning unknown error");
          return 1;
-      case PAM_SUCCESS:
-         break;
      }
    last_result=pam_acct_mgmt(_pam_handle, PAM_SILENT);
    switch(last_result)
      {
-      default:
-         //case PAM_NEW_AUTHTOKEN_REQD:
       case PAM_ACCT_EXPIRED:
          PT("PAM user acct expired error");
          entrance_pam_end();
@@ -177,6 +175,9 @@ entrance_pam_authenticate(void)
          return 1;
       case PAM_SUCCESS:
          break;
+      default:
+         PT("PAM auth warning unknown error");
+         return 1;
      }
 
    return 0;
