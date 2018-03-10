@@ -39,58 +39,59 @@ _xserver_start(void)
 
    PT("Launching xserver");
    pid = fork();
-   if (!pid)
-     {
-        char *token;
-        int num_token = 0;
-        entrance_close_log();
-        signal(SIGTTIN, SIG_IGN);
-        signal(SIGTTOU, SIG_IGN);
-        signal(SIGUSR1, SIG_IGN);
+   if (pid)
+     return pid;
 
-        if (!(buf = strdup(entrance_config->command.xinit_args)))
-          goto xserver_error;
-        token = strtok_r(buf, " ", &saveptr);
-        while(token)
-          {
-            ++num_token;
-            token = strtok_r(NULL, " ", &saveptr);
-          }
-        if (buf) free(buf);
-        if (num_token)
-          {
-             int i;
-             if (!(abuf = strdup(entrance_config->command.xinit_args)))
-               goto xserver_error;
-             if (!(args = calloc(num_token + 2, sizeof(char *))))
-               {
-                  if (abuf) free(abuf);
-                  goto xserver_error;
-               }
-             args[0] = (char *)entrance_config->command.xinit_path;
-             token = strtok_r(abuf, " ", &saveptr);
-             ++num_token;
-             for(i = 1; i < num_token; ++i)
-               {
-                  if (token)
-                    args[i] = token;
-                  token = strtok_r(NULL, " ", &saveptr);
-               }
-             args[num_token] = NULL;
-          }
-        else
-          {
-             if (!(args = calloc(2, sizeof(char*))))
-               goto xserver_error;
-             args[0] = (char *)entrance_config->command.xinit_path;
-             args[1] = NULL;
-          }
-        execv(args[0], args);
-        if (abuf) free(abuf);
-        free(args);
-        PT("Couldn't launch Xserver ...");
+   char *token;
+   int num_token = 0;
+   entrance_close_log();
+   signal(SIGTTIN, SIG_IGN);
+   signal(SIGTTOU, SIG_IGN);
+   signal(SIGUSR1, SIG_IGN);
+
+   if (!(buf = strdup(entrance_config->command.xinit_args)))
+     goto xserver_error;
+   token = strtok_r(buf, " ", &saveptr);
+   while(token)
+     {
+       ++num_token;
+       token = strtok_r(NULL, " ", &saveptr);
      }
+   if (buf) free(buf);
+   if (num_token)
+     {
+        int i;
+        if (!(abuf = strdup(entrance_config->command.xinit_args)))
+          goto xserver_error;
+        if (!(args = calloc(num_token + 2, sizeof(char *))))
+          {
+             if (abuf) free(abuf);
+             goto xserver_error;
+          }
+        args[0] = (char *)entrance_config->command.xinit_path;
+        token = strtok_r(abuf, " ", &saveptr);
+        ++num_token;
+        for(i = 1; i < num_token; ++i)
+          {
+             if (token)
+               args[i] = token;
+             token = strtok_r(NULL, " ", &saveptr);
+          }
+        args[num_token] = NULL;
+     }
+   else
+     {
+        if (!(args = calloc(2, sizeof(char*))))
+          goto xserver_error;
+        args[0] = (char *)entrance_config->command.xinit_path;
+        args[1] = NULL;
+     }
+   execv(args[0], args);
+   if (abuf) free(abuf);
+   free(args);
+   PT("Failed to launch Xserver ...");
    return pid;
+
 xserver_error:
    _exit(EXIT_FAILURE);
 }
