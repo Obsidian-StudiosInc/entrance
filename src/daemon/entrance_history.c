@@ -253,11 +253,12 @@ _entrance_user_init(void)
         eu = _entrance_history_match(user);
         if (!eu)
           {
-             if ((eu = (Entrance_Login *) calloc(1, sizeof(Entrance_Login))))
-               {
-                  eu->login = eina_stringshare_add(user);
-                  eu->remember_session = EINA_TRUE;
-               }
+            eu = (Entrance_Login *) calloc(1, sizeof(Entrance_Login));
+            if (eu)
+              {
+                eu->login = eina_stringshare_add(user);
+                eu->remember_session = EINA_TRUE;
+              }
           }
         eina_stringshare_del(user);
         if(eu)
