@@ -202,103 +202,92 @@ _entrance_main(const char *dname)
    struct stat st;
 
    PT("starting...");
-   if (!entrance_config->autologin)
+   if (entrance_config->autologin)
      {
-        if (!_entrance_client)
+       ecore_main_loop_quit();
+       return;
+     }
+   if (_entrance_client)
+     return;
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
+   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
+   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
+   if (entrance_config->start_user
+       && entrance_config->start_user[0])
+     pwd = getpwnam(entrance_config->start_user);
+   if (!pwd)
+     {
+       PT("The given user %s, is not valid."
+          "Falling back to nobody", entrance_config->start_user);
+        pwd = getpwnam("nobody");
+        user = "nobody";
+        assert(pwd);
+     }
+   else
+     user = entrance_config->start_user;
+   if (!pwd->pw_dir || !strcmp(pwd->pw_dir, "/"))
+     {
+        PT("No home directory for client");
+        home_path = ENTRANCE_CONFIG_HOME_PATH;
+        if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
           {
-             ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-                                     _entrance_client_del, NULL);
-             ecore_event_handler_add(ECORE_EXE_EVENT_ERROR,
-                                     _entrance_client_error, NULL);
-             ecore_event_handler_add(ECORE_EXE_EVENT_DATA,
-                                     _entrance_client_data, NULL);
-             if (entrance_config->start_user
-                 && entrance_config->start_user[0]) {
-                  pwd = getpwnam(entrance_config->start_user);
-             }
-             if (!pwd)
+             PT("Creating new home directory for client");
+             ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
+             chown(ENTRANCE_CONFIG_HOME_PATH, pwd->pw_uid, pwd->pw_gid);
+          }
+        else
+          {
+             if (!ecore_file_is_dir(ENTRANCE_CONFIG_HOME_PATH))
                {
-                 PT("The given user %s, is not valid."
-                    "Falling back to nobody", entrance_config->start_user);
-                  pwd = getpwnam("nobody");
-                  user = "nobody";
-                  assert(pwd);
+                  PT("Hum a file already exists here "
+                     ENTRANCE_CONFIG_HOME_PATH" sorry but"
+                     "I remove it, I need it ^^");
+                  ecore_file_remove(ENTRANCE_CONFIG_HOME_PATH);
+                  ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
+                  chown(ENTRANCE_CONFIG_HOME_PATH, pwd->pw_uid, pwd->pw_gid);
                }
-             else
-               {
-                  user = entrance_config->start_user;
-               }
-             if (!pwd->pw_dir || !strcmp(pwd->pw_dir, "/"))
-               {
-                  PT("No home directory for client");
-                  home_path = ENTRANCE_CONFIG_HOME_PATH;
-                  if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
-                    {
-                       PT("Creating new home directory for client");
-                       ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
-                       chown(ENTRANCE_CONFIG_HOME_PATH,
-                             pwd->pw_uid, pwd->pw_gid);
-                    }
-                  else
-                    {
-                       if (!ecore_file_is_dir(ENTRANCE_CONFIG_HOME_PATH))
-                         {
-                            PT("Hum a file already exists here "
-                               ENTRANCE_CONFIG_HOME_PATH" sorry but"
-                               "I remove it, I need it ^^");
-                            ecore_file_remove(ENTRANCE_CONFIG_HOME_PATH);
-                            ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
-                            chown(ENTRANCE_CONFIG_HOME_PATH,
-                                  pwd->pw_uid, pwd->pw_gid);
-                         }
-                    }
-               }
-             else
-               {
-                  home_path = pwd->pw_dir;
-               }
-             PT("Home directory %s", home_path);
-             home_dir = open(home_path, O_RDONLY);
-             if(!home_dir || home_dir<0)
-               {
-                 PT("Failed to open home directory %s", home_path);
-                 ecore_main_loop_quit();
-                 return;
-               }
-             if(flock(home_dir, LOCK_SH)==-1)
-               {
-                 PT("Failed to lock home directory %s", home_path);
-                 close(home_dir);
-                 ecore_main_loop_quit();
-                 return;
-               }
-             if(fstat(home_dir, &st)!= -1)
-               {
-                 if ((st.st_uid != pwd->pw_uid)
-                     || (st.st_gid != pwd->pw_gid))
-                   {
-                      PT("chown home directory %s", home_path);
-                      fchown(home_dir, pwd->pw_uid, pwd->pw_gid);
-                   }
-                 snprintf(buf, sizeof(buf),
-                          "export HOME=%s; export USER=%s;"
-                          "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";"
-                          PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
-                          home_path, user, dname, entrance_config->theme,
-                          st.st_gid,st.st_uid);
-                 PT("Exec entrance_client: %s", buf);
-
-                 _entrance_client =
-                    ecore_exe_pipe_run(buf,
-                                       ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
-                                       NULL);
-               }
-             flock(home_dir, LOCK_UN);
-             close(home_dir);
           }
      }
    else
-     ecore_main_loop_quit();
+     home_path = pwd->pw_dir;
+   PT("Home directory %s", home_path);
+   home_dir = open(home_path, O_RDONLY);
+   if(!home_dir || home_dir<0)
+     {
+       PT("Failed to open home directory %s", home_path);
+       ecore_main_loop_quit();
+       return;
+     }
+   if(flock(home_dir, LOCK_SH)==-1)
+     {
+       PT("Failed to lock home directory %s", home_path);
+       close(home_dir);
+       ecore_main_loop_quit();
+       return;
+     }
+   if(fstat(home_dir, &st)!= -1)
+     {
+       if ((st.st_uid != pwd->pw_uid)
+           || (st.st_gid != pwd->pw_gid))
+         {
+            PT("chown home directory %s", home_path);
+            fchown(home_dir, pwd->pw_uid, pwd->pw_gid);
+         }
+       snprintf(buf, sizeof(buf),
+                "export HOME=%s; export USER=%s;"
+                "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";"
+                PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
+                home_path, user, dname, entrance_config->theme,
+                st.st_gid,st.st_uid);
+       PT("Exec entrance_client: %s", buf);
+
+       _entrance_client =
+          ecore_exe_pipe_run(buf,
+                             ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
+                             NULL);
+     }
+   flock(home_dir, LOCK_UN);
+   close(home_dir);
 }
 
 static Eina_Bool
