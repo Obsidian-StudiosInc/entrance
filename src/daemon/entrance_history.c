@@ -21,8 +21,6 @@ entrance_history_init(void)
 {
    Eet_Data_Descriptor *edd;
    Eet_Data_Descriptor_Class eddc;
-   // TODO add idler to load history and thread stuff
-   // TODO screenshot a new session after 3 min
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Login);
    edd = entrance_event_user_dd();
