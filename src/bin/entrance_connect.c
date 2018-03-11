@@ -112,7 +112,6 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
           {
              PT("UNKNOW signal %d", eev->type);
           }
-        //free(eev);
      }
    return ECORE_CALLBACK_RENEW;
 }
