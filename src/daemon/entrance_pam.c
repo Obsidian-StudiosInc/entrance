@@ -5,25 +5,6 @@
 #include "entrance.h"
 #include "entrance_pam.h"
 
- /*
-  *   ...
-  *   pam_start(...);                Initializes the PAM library
-  *   ...
-  *   if ( ! pam_authenticate(...) ) Autenticates using modules
-  *      error_exit();
-  *   ...
-  *   if ( ! pam-acct_mgmt(...) )    Checks for a valid, unexpired account and
-  *                                   verifies access restrictions with "account" modules
-  *       error_exit();
-  *   ...
-  *   pam_setcred(...)               Sets extra credentials, e.g. a Kerberos ticket
-  *   ...
-  *   pam_open_session(...);         Sets up the session with "session" modules
-  *   do_stuff();
-  *
-  *   pam_close_session(...);        Tear-down session using the "session" modules
-  *   pam_end(...);
-  *   */
 static int _entrance_pam_conv(int num_msg,
                               const struct pam_message **msg,
                               struct pam_response **resp,
