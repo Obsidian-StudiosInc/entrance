@@ -14,7 +14,7 @@
 #define ENTRANCE_USER_MAX 33
 
 static Eina_Bool _open_log();
-static Eina_Bool _entrance_main(const char *dname);
+static void _entrance_main(const char *dname);
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
@@ -191,7 +191,7 @@ _entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, void *event)
    return ECORE_CALLBACK_DONE;
 }
 
-static Eina_Bool
+static void
 _entrance_main(const char *dname)
 {
    struct passwd *pwd = NULL;
@@ -263,14 +263,14 @@ _entrance_main(const char *dname)
                {
                  PT("Failed to open home directory %s", home_path);
                  ecore_main_loop_quit();
-                 return ECORE_CALLBACK_CANCEL;
+                 return;
                }
              if(flock(home_dir, LOCK_SH)==-1)
                {
                  PT("Failed to lock home directory %s", home_path);
                  close(home_dir);
                  ecore_main_loop_quit();
-                 return ECORE_CALLBACK_CANCEL;
+                 return;
                }
              if(fstat(home_dir, &st)!= -1)
                {
@@ -299,7 +299,6 @@ _entrance_main(const char *dname)
      }
    else
      ecore_main_loop_quit();
-   return ECORE_CALLBACK_CANCEL;
 }
 
 static Eina_Bool
