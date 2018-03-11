@@ -215,7 +215,6 @@ _entrance_history_match(const char *login)
 
    EINA_LIST_FOREACH(_entrance_history->history, l, el)
      {
-//        if (!strcmp(el->login, login))
         if (el->login == login)
           break;
      }
