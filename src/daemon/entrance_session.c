@@ -262,7 +262,7 @@ entrance_session_cookie(void)
    _mcookie = calloc(33, sizeof(char));
    _mcookie[0] = 'a';
 
-   long rand;
+   long rand = 0;
    size_t read = 0;
    struct timespec time;
    FILE *fp;
