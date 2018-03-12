@@ -176,10 +176,11 @@ entrance_config_init()
 
    if (stat( "/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
      _users_get();
-   else if(stat(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", &conf) > 0)
+   else
      {
-        if (cache.st_mtime < conf.st_mtime)
-           _users_get();
+       int stat_cache = stat(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", &conf);
+       if (stat_cache == 0 && cache.st_mtime < conf.st_mtime)
+         _users_get();
      }
    entrance_config = _cache_get();
 }
