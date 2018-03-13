@@ -269,12 +269,12 @@ entrance_session_cookie(void)
    fp = fopen("/dev/urandom", "r");
    for (i=0; i<32; i+=4)
      {
-       if (!fp)
+       if (fp)
            read = fread(&rand,sizeof(rand),1,fp);
-       if (read>0)
+       if (read<=0)
          {
            clock_gettime(CLOCK_REALTIME, &time);
-           rand = read + time.tv_nsec;
+           rand = time.tv_nsec;
          }
         word = rand & 0xffff;
         lo = word & 0xff;
