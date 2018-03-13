@@ -271,7 +271,7 @@ entrance_session_cookie(void)
      {
        if (fp)
            read = fread(&rand,sizeof(rand),1,fp);
-       if (read<=0)
+       if (read)
          {
            clock_gettime(CLOCK_REALTIME, &time);
            rand = time.tv_nsec;
