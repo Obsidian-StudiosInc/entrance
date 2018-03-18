@@ -32,7 +32,7 @@ jobs:
     - env: OPTS="-Dconsolekit=false -Dpam=false"
     - stage: Sonar Cloud
       env:
-        - OPTS="-Dpam=true -Dlogind=true"
+        - OPTS="-Ddebug=true -Dpam=true -Dlogind=true"
         - SONAR="build-wrapper-linux-x86-64 --out-dir bw-output"
       addons:
         sonarcloud:
