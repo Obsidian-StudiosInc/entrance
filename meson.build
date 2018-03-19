@@ -51,11 +51,13 @@ dir_syscfg = join_paths(dir_prefix, get_option('sysconfdir'))
 # project args
 add_project_arguments('-DHAVE_CONFIG_H=1', language : 'c')
 if get_option('debug')
-	add_project_arguments('-g', language : 'c')
-	add_project_arguments('-fprofile-arcs', language : 'c')
-	add_project_arguments('-ftest-coverage', language : 'c')
-	add_project_link_arguments('-fprofile-arcs', language : 'c')
-	add_project_link_arguments('-ftest-coverage', language : 'c')
+	add_project_arguments('-g',
+                              '-fprofile-arcs',
+                              '-ftest-coverage',
+                              language : 'c')
+	add_project_link_arguments('-fprofile-arcs',
+                              '-ftest-coverage',
+                              language : 'c')
 endif
 if cc.has_header('alloca.h')
 	add_project_arguments('-DHAVE_ALLOCA_H=1', language : 'c')
