@@ -45,6 +45,7 @@ script:
   - meson --prefix /usr ${OPTS} . build
   - ${SONAR} .bin/ninja -C build
   - if [ "${SONAR}" ]; then sudo .bin/ninja -C build install ; fi
+  - if [ ! -d /var/run ]; then sudo mkdir -p /var/run ; fi
   - if [ "${SONAR}" ]; then sudo /usr/sbin/entrance ; fi
   - if [ -f /var/log/entrance.log ]; then cat /var/log/entrance.log ; fi
   - if [ "${SONAR}" ]; then sudo find . -name '*.gcda' -print; fi
