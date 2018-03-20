@@ -10,6 +10,10 @@ Name=XSession
 Comment=Xsession
 Exec=/etc/entrance/Xsession
 TryExec=/etc/entrance/Xsession
+Icon=
+Type=Application
 " > /usr/share/xsessions/Xsession.desktop
+
+cat /usr/share/xsessions/Xsession.desktop
 
 /usr/sbin/entrance
