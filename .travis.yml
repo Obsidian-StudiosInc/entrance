@@ -35,8 +35,6 @@ jobs:
       env:
         - OPTS="-Ddebug=true -Dpam=true -Dlogind=true"
         - SONAR="build-wrapper-linux-x86-64 --out-dir bw-output"
-        - XAUTHORIZATIO=""
-        - XAUTHORITY=""
       addons:
         sonarcloud:
           organization: obsidian-studiosinc-github
@@ -47,7 +45,7 @@ script:
   - meson --prefix /usr ${OPTS} . build
   - ${SONAR} .bin/ninja -C build
   - if [ "${SONAR}" ]; then sudo .bin/ninja -C build install ; fi
-  - if [ "${SONAR}" ]; then sudo /usr/sbin/entrance ; fi
+  - if [ "${SONAR}" ]; then sudo - /usr/sbin/entrance ; fi
   - if [ -f /var/log/entrance.log ]; then cat /var/log/entrance.log ; fi
   - if [ "${SONAR}" ]; then find . -name '*.gcno' -exec sh -c 'gcov -b {} -o $(dirname {})' \;; fi
   - if [ "${SONAR}" ]; then sonar-scanner; fi
