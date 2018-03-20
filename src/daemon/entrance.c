@@ -441,6 +441,7 @@ main (int argc, char ** argv)
      }
 
    eet_init();
+   efreet_init();
    entrance_config_init();
    if (!entrance_config)
      {
@@ -494,7 +495,6 @@ main (int argc, char ** argv)
           }
      }
    PT("Welcome");
-   efreet_init();
    /* Initialise event handler */
 
    signal(SIGQUIT, _signal_cb);
