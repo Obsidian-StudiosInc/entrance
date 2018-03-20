@@ -55,11 +55,8 @@ _entrance_session_cookie_add(const char *mcookie, const char *display,
          PT("write auth fail !");
          return 1;
       }
-    PT("remove display %s", display);
     fprintf(cmd, "remove %s\n", display);
-    PT("add %s . %s", display, auth_file);
     fprintf(cmd, "add %s . %s\n", display, mcookie);
-    PT("xauth cmd exit");
     fprintf(cmd, "exit\n");
     pclose(cmd);
     return 0;
