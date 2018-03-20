@@ -287,12 +287,21 @@ entrance_session_cookie(void)
    if(fp)
      fclose(fp);
 
+   fp = fopen(entrance_config->command.xauth_file,"a+");
+   if(!fp)
+     {
+       PT("unable to create xauth %s",entrance_config->command.xauth_file);
+       return;
+     }
+   fclose(fp);
+
    snprintf(buf, sizeof(buf), "XAUTHORITY=%s",
             entrance_config->command.xauth_file);
    putenv(strdup(buf));
    _entrance_session_cookie_add(_mcookie, _dname,
                             entrance_config->command.xauth_path,
                             entrance_config->command.xauth_file);
+
    _entrance_session_desktops_init();
 }
 
