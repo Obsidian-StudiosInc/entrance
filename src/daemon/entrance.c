@@ -494,7 +494,6 @@ main (int argc, char ** argv)
           }
      }
    PT("Welcome");
-   ecore_init();
    efreet_init();
    /* Initialise event handler */
 
