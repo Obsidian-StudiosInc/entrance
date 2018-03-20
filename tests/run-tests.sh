@@ -4,5 +4,6 @@
 printenv
 
 unset XAUTHORI{ZATION,TY}
+unset XDG_{SESSION_ID,RUNTIME_DIR}
 
-/usr/bin/entrance
+/usr/sbin/entrance
