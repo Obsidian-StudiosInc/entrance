@@ -15,7 +15,7 @@ install:
   - sudo add-apt-repository -y ppa:niko2040/e19
   - sudo apt-get -qq update
   - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip libpam0g-dev
-  - if [ "${SONAR}" ]; then sudo apt-get install -y xorg ; fi
+  - if [ "${SONAR}" ]; then sudo apt-get install -y xorg xserver-xorg-video-dummy ; fi
   - sudo pip3 install --upgrade pip
   - sudo pip3 install meson==0.44
   - mkdir .bin
@@ -47,6 +47,7 @@ script:
   - if [ "${SONAR}" ]; then sudo .bin/ninja -C build install ; fi
   - if [ "${SONAR}" ]; then sudo tests/run-tests.sh ; fi
   - if [ -f /var/log/entrance.log ]; then cat /var/log/entrance.log ; fi
+  - if [ -f /var/log/X*.log ]; then cat /var/log/X*.log ; fi
   - if [ "${SONAR}" ]; then find . -name '*.gcno' -exec sh -c 'gcov -b {} -o $(dirname {})' \;; fi
   - if [ "${SONAR}" ]; then sonar-scanner; fi
 
