@@ -181,8 +181,8 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
           PT("Error could not remove session log file");
 
 #ifdef HAVE_CONSOLEKIT
-        snprintf(buf, sizeof(buf), "ck-launch-session %s > %s/.entrance_session.log 2>&1",
-                 cmd, pwd->pw_dir);
+        snprintf(buf, sizeof(buf), "ck-launch-session %s  %s > %s/.entrance_session.log 2>&1",
+                 entrance_config->command.session_login, cmd, pwd->pw_dir);
 #else
         snprintf(buf, sizeof(buf), "%s %s > %s/.entrance_session.log 2>&1",
                  entrance_config->command.session_login, cmd, pwd->pw_dir);
