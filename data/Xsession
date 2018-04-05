@@ -8,7 +8,8 @@ echo "Entrance prepare session"
 
 # Load X profile
 for fn in "/etc/" "/etc/x" "$HOME/." "$HOME/.x"; do
-	if [ -f "${fn}profile" ]; then
+	fn="${fn}profile"
+	if [ -f "${fn}" ]; then
 		echo "Loading X profile from ${fn}";
 		# shellcheck disable=SC1090
 		. "${fn}"
@@ -17,7 +18,8 @@ done
 
 # Load X resources
 for fn in "/etc/X11/" "/etc/X11/xinit/" "/etc/X11/xdm/" "$HOME/."; do
-	if [ -f "${fn}Xresources" ]; then
+	fn="${fn}Xresources"
+	if [ -f "${fn}" ]; then
 		echo "Loading X resource: ${fn}"
 		xrdb -nocpp -merge "${fn}"
 	fi
@@ -25,7 +27,8 @@ done
 
 # Load Xkeymaps
 for fn in "/etc/X11/" "${HOME}/."; do
-	if [ -f "${fn}Xkbmap" ]; then
+	fn="${fn}Xkbmap"
+	if [ -f "${fn}" ]; then
 		echo "Loading X keymap: ${fn}"
 		setxkbmap "$(cat "${fn}")"
 		XKB_IN_USE=0
@@ -35,7 +38,8 @@ done
 # Load Xmodmap if no XKB used
 if [ ${XKB_IN_USE} ]; then
 	for fn in "/etc/X11/" "$HOME/."; do
-		if [ -f "${fn}Xmodmap" ]; then
+		fn="${fn}Xmodmap"
+		if [ -f "${fn}" ]; then
 			echo "Loading modmap: ${fn}"
 			xmodmap "${fn}"
 		fi
