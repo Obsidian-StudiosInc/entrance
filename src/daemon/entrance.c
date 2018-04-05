@@ -275,9 +275,10 @@ _entrance_main(const char *dname)
          }
        snprintf(buf, sizeof(buf),
                 "export HOME=%s; export USER=%s;"
-                "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";"
+                "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";%s "
                 PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
-                home_path, user, dname, entrance_config->theme,
+                home_path, user, entrance_config->command.session_login,
+                dname, entrance_config->theme,
                 st.st_gid,st.st_uid);
        PT("Exec entrance_client: %s", buf);
 
