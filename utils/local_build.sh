@@ -2,7 +2,7 @@
 
 MY_PWD="$(pwd)"
 
-[[ -d build ]] && rm -r build
+[[ -d build ]] && rm -fr build
 
 CFLAGS=-g
 MY_PWD+="/build"
@@ -27,6 +27,7 @@ done
 [[ ! -L  test/elementary ]] && ln -s /usr/share/elementary test/elementary
 
 cp data/entrance.conf \
+	../data/Xsession \
 	src/bin/entrance_client \
 	src/daemon/entrance_wait \
 	test/entrance
