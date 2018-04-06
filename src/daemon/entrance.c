@@ -225,6 +225,7 @@ _entrance_main(const char *dname)
      }
    else
      user = entrance_config->start_user;
+   PT("running under user : %s",user);
    if (!pwd->pw_dir || !strcmp(pwd->pw_dir, "/"))
      {
         PT("No home directory for client");
