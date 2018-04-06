@@ -14,6 +14,12 @@ Type=Application
 
 /usr/sbin/entrance
 
-kill -SIGUSR1 $(pgrep entrance)
+EPID=$(pgrep entrance)
+
+kill -SIGUSR1 ${EPID}
+
+sleep 3
+
+kill ${EPID}
 
 #systemctl start entrance
