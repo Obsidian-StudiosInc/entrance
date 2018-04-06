@@ -44,7 +44,6 @@ _xserver_start(void)
 
    char *token;
    int num_token = 0;
-   entrance_close_log();
    signal(SIGTTIN, SIG_IGN);
    signal(SIGTTOU, SIG_IGN);
    signal(SIGUSR1, SIG_IGN);
@@ -86,6 +85,11 @@ _xserver_start(void)
         args[0] = (char *)entrance_config->command.xinit_path;
         args[1] = NULL;
      }
+   PT("Executing: %s %s",
+      entrance_config->command.xinit_path,
+      entrance_config->command.xinit_args);
+   // ideally close on success, otherwise proceeding PT is never outputted
+   entrance_close_log();
    execv(args[0], args);
    if (abuf) free(abuf);
    free(args);
@@ -93,6 +97,7 @@ _xserver_start(void)
    return pid;
 
 xserver_error:
+   PT("Failed to launch Xserver ...");
    _exit(EXIT_FAILURE);
 }
 
