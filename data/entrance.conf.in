@@ -70,6 +70,6 @@ group "Entrance_Config" struct {
     /* Use a virtual keyboard */
     value "virtual_keyboard" uchar: 0;
 
-    /* the user to log in with */
+    /* Run/start entrance under this user */
     value "start_user" string: "nobody";
 }
