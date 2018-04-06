@@ -15,13 +15,13 @@ install:
   - sudo add-apt-repository -y ppa:niko2040/e19
   - sudo apt-get -qq update
   - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip libpam0g-dev
-  - if [ "${SONAR}" ]; then sudo apt-get install -y xorg xserver-xorg-core xserver-xorg-video-dummy ; fi
+  - if [ "${SONAR}" ]; then sudo apt-get install -y xorg xserver-xorg-video-dummy ; fi
   - sudo pip3 install --upgrade pip
   - sudo pip3 install meson==0.44
   - mkdir .bin
   - curl -L https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o .bin/ninja-linux.zip
   - unzip .bin/ninja-linux.zip -d .bin
-  - sudo curl -L https://xpra.org/xorg.conf -o /etc/X11/xorg.conf
+  - if [ "${SONAR}" ]; then sudo curl -L https://xpra.org/xorg.conf -o /etc/X11/xorg.conf ; fi
 
 before_script:
   - export PATH=$PATH:$PWD/.bin
