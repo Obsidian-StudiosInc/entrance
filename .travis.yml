@@ -51,7 +51,7 @@ script:
   - if [ -f /var/log/X*.log ]; then cat /var/log/X*.log ; fi
   - if [ "${SONAR}" ]; then sudo find . -name '*.gcda' -exec chmod 0644 {} \;; fi
   - if [ "${SONAR}" ]; then find . -name '*.gcno' -exec sh -c 'gcov -b {} -o $(dirname {})' \;; fi
-  - if [ "${SONAR}" ]; then sonar-scanner; fi
+  - if [ "${SONAR}" ]; then ln -s entrance/src ../src ; sonar-scanner; fi
 
 notifications:
   email: false
