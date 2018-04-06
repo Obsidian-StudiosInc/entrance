@@ -14,9 +14,11 @@ Icon=
 Type=Application
 " > /usr/share/xsessions/Xsession.desktop
 
+useradd -d /var/cache/entrance/client -g user entrance
+
 #	"s/vt7/-noreset +extension GLX +extension RANDR +extension RENDER/" \
 sed -i -e \
-	"s|nobody|travis|"
+	"s|nobody|entrance|"
 	/etc/entrance/entrance.conf
 
 /usr/sbin/entrance
