@@ -14,6 +14,6 @@ Icon=
 Type=Application
 " > /usr/share/xsessions/Xsession.desktop
 
-cat /usr/share/xsessions/Xsession.desktop
+sed -i -e "s/vt7//" /etc/entrance/entrance.conf
 
 /usr/sbin/entrance
