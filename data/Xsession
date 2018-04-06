@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright 2018 Obsidian-Studios, Inc.
 # Distributed under the terms of the GNU General Public License v3
 #
@@ -9,7 +9,7 @@ echo "Entrance prepare session"
 # Load X profile
 for fn in "/etc/" "/etc/x" "$HOME/." "$HOME/.x"; do
 	fn="${fn}profile"
-	if [ -f "${fn}" ]; then
+	if [[ -f "${fn}" ]]; then
 		echo "Loading X profile from ${fn}";
 		# shellcheck disable=SC1090
 		. "${fn}"
@@ -19,7 +19,7 @@ done
 # Load X resources
 for fn in "/etc/X11/" "/etc/X11/xinit/" "/etc/X11/xdm/" "$HOME/."; do
 	fn="${fn}Xresources"
-	if [ -f "${fn}" ]; then
+	if [[ -f "${fn}" ]]; then
 		echo "Loading X resource: ${fn}"
 		xrdb -nocpp -merge "${fn}"
 	fi
@@ -28,7 +28,7 @@ done
 # Load Xkeymaps
 for fn in "/etc/X11/" "${HOME}/."; do
 	fn="${fn}Xkbmap"
-	if [ -f "${fn}" ]; then
+	if [[ -f "${fn}" ]]; then
 		echo "Loading X keymap: ${fn}"
 		setxkbmap "$(cat "${fn}")"
 		XKB_IN_USE=0
@@ -36,10 +36,10 @@ for fn in "/etc/X11/" "${HOME}/."; do
 done
 
 # Load Xmodmap if no XKB used
-if [ ${XKB_IN_USE} ]; then
+if [[ ${XKB_IN_USE} ]]; then
 	for fn in "/etc/X11/" "$HOME/."; do
 		fn="${fn}Xmodmap"
-		if [ -f "${fn}" ]; then
+		if [[ -f "${fn}" ]]; then
 			echo "Loading modmap: ${fn}"
 			xmodmap "${fn}"
 		fi
@@ -50,9 +50,9 @@ unset XKB_IN_USE
 
 # Sourcing all xinitrc scripts.
 xinitdir="/etc/X11/xinit/xinitrc.d"
-if [ -d "${xinitdir}" ]; then
+if [[ -d "${xinitdir}" ]]; then
 	for fn in "${xinitdir}/"*; do
-		if [ -f "${fn}" ] && [ -x "${fn}" ]; then
+		if [[ -f "${fn}" ]] && [[ -x "${fn}" ]]; then
 			echo "Loading Xinit script ${fn}"
 			# shellcheck disable=SC1090
 			. "${fn}"
