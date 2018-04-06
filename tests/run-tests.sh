@@ -14,8 +14,10 @@ Icon=
 Type=Application
 " > /usr/share/xsessions/Xsession.desktop
 
-sed -i -e \
-	"s/vt7/-noreset +extension GLX +extension RANDR +extension RENDER/" \
-	/etc/entrance/entrance.conf
+#sed -i -e \
+#	"s/vt7/-noreset +extension GLX +extension RANDR +extension RENDER/" \
+#	/etc/entrance/entrance.conf
 
 /usr/sbin/entrance
+
+kill -SIGUSR1 $(pgrep entrance)
