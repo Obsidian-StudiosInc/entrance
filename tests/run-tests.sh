@@ -1,7 +1,7 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
-
+export SHELL="/bin/bash"
 
 [[ ! -d /usr/share/xsessions ]] && mkdir -p /usr/share/xsessions
 
