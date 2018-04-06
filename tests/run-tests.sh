@@ -1,6 +1,8 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
+export XDG_RUNTIME_DIR="/run/user/0/"
+
 [[ ! -d /usr/share/xsessions ]] && mkdir -p /usr/share/xsessions
 
 echo "[Desktop Entry]
