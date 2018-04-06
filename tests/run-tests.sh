@@ -21,8 +21,8 @@ Type=Application
 #	"s|nobody|entrance|"
 #	/etc/entrance/entrance.conf
 
-#/usr/sbin/entrance
+/usr/sbin/entrance
 
-#kill -SIGUSR1 $(pgrep entrance)
+kill -SIGUSR1 $(pgrep entrance)
 
-systemctl start entrance
+#systemctl start entrance
