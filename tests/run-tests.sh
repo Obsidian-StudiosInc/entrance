@@ -24,6 +24,8 @@ kill -SIGUSR1 ${EPID}
 
 sleep 3
 
-killall -9 entrance
+kill ${EPID}
+
+ps xa
 
 #systemctl start entrance
