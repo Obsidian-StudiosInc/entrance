@@ -3,7 +3,7 @@
 
 export XDG_RUNTIME_DIR="/run/user/0"
 
-for d in "${XDG_RUNTIME_DIR}" /usr/share/xsessions; do
+for d in "${XDG_RUNTIME_DIR}"{,/.ecore/efreetd} /usr/share/xsessions; do
 	[[ ! -d "${d}" ]] && mkdir -p "${d}"
 done
 
