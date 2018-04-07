@@ -26,5 +26,6 @@ sleep 3
 
 kill $(pgrep entrance_client)
 kill ${EPID}
+killall -9 X > /dev/null 2>&1
 
 #systemctl start entrance
