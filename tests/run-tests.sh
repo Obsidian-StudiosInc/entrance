@@ -24,7 +24,7 @@ kill -SIGUSR1 ${EPID}
 
 sleep 3
 
-kill ${EPID}
 kill $(pgrep entrance_client)
+kill ${EPID}
 
 #systemctl start entrance
