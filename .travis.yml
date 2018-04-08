@@ -48,7 +48,7 @@ script:
   - if [ "${SONAR}" ]; then sudo tests/run-tests.sh ; fi
   - if [ -f /var/log/entrance.log ]; then cat /var/log/entrance.log ; fi
   - if [ -f /var/log/X*.log ]; then cat /var/log/X*.log ; fi
-  - if [ "${SONAR}" ]; then sudo chmod 0777 /home{,/travis}; find /home/travis -type d -exec chmod 0777 {} \;; fi
+  - if [ "${SONAR}" ]; then sudo chmod 0777 /home/travis; find /home/travis -type d -exec chmod 0777 {} \;; fi
   - if [ "${SONAR}" ]; then sudo find . -name '*.gcda' -exec chmod -v 0666 {} \;; fi
   - if [ "${SONAR}" ]; then find /home -name '*.gcno' -exec sh -c 'gcov -b -p {} -o $(dirname {})' \;; fi
   - if [ "${SONAR}" ]; then sonar-scanner; fi
