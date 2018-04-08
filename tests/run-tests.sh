@@ -1,7 +1,7 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
-find /run /var/run -type -d .ecore -print
+find /run /var/run -type d .ecore -print
 
 export XDG_RUNTIME_DIR="/tmp/ecore"
 
