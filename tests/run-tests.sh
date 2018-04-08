@@ -1,9 +1,11 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
+find /run /var/run -type -d .ecore -print
+
 export XDG_RUNTIME_DIR="/tmp/ecore"
 
-for d in "${XDG_RUNTIME_DIR}" /usr/share/xsessions; do
+for d in "${XDG_RUNTIME_DIR}"{,/.ecore} /usr/share/xsessions; do
 	[[ ! -d "${d}" ]] && mkdir -p "${d}"
 done
 
