@@ -16,6 +16,8 @@ Icon=
 Type=Application
 " > /usr/share/xsessions/Xsession.desktop
 
+sed -i -e "s|nobody|travis|" /etc/entrance/entrance.conf
+
 /usr/sbin/entrance
 
 EPID="$(pgrep entrance)"
