@@ -28,7 +28,7 @@ kill -SIGUSR1 ${EPID}
 
 sleep 10
 
-killall entrance
+killall X
 
 ps x o pid,user,group,command
 
