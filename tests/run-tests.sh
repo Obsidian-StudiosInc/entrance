@@ -1,7 +1,7 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
-find /run /var/run -type d .ecore -print
+find /run /var/run -type d '.ecore' -print
 
 export XDG_RUNTIME_DIR="/tmp/ecore"
 
@@ -28,8 +28,7 @@ kill -SIGUSR1 ${EPID}
 
 sleep 30
 
-killall X
-killall entrance
+killall -9 X
 
 ps x o pid,user,group,command
 
