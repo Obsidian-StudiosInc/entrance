@@ -30,6 +30,6 @@ sleep 10
 
 killall entrance
 
-ps xa
+ps x o pid,user,group,command
 
 #systemctl start entrance
