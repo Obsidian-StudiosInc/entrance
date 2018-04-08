@@ -35,9 +35,11 @@ static void
 _signal_cb(int sig)
 {
    PT("signal %d received", sig);
-   //FIXME  if I don't have main loop at this time ?
    if (_entrance_client)
-     ecore_exe_terminate(_entrance_client);
+     {
+       PT("terminate client");
+       ecore_exe_terminate(_entrance_client);
+     }
    else
      ecore_main_loop_quit();
 }
