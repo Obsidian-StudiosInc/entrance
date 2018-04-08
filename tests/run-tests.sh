@@ -1,8 +1,6 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
-find /run /var/run -type d '.ecore' -print
-
 export XDG_RUNTIME_DIR="/tmp/ecore"
 
 for d in "${XDG_RUNTIME_DIR}"{,/.ecore} /usr/share/xsessions; do
@@ -20,15 +18,17 @@ Type=Application
 
 /usr/sbin/entrance
 
-EPID=$(pgrep entrance)
-
-echo "EPID=${EPID}"
+EPID="$(pgrep entrance)"
 
 kill -SIGUSR1 ${EPID}
 
 sleep 30
 
-killall -9 X
+kill ${EPID}
+
+EPID="$(pgrep X)"
+
+[[ ${EPID} ]] && kill -9 ${EPID}
 
 ps x o pid,user,group,command
 
