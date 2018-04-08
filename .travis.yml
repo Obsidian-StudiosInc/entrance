@@ -3,10 +3,6 @@ compiler: gcc
 sudo: required
 dist: trusty
 
-cache:
-  directories:
-    - $HOME/.sonar/cache
-
 env:
   global:
     - MY_PV=3.0.0_alpha1
@@ -33,6 +29,9 @@ jobs:
     - env: OPTS="-Dpam=false"
     - env: OPTS="-Dconsolekit=false -Dpam=false"
     - stage: Sonar Cloud
+      cache:
+        directories:
+          - $HOME/.sonar/cache
       env:
         - OPTS="-Ddebug=true -Dpam=true -Dlogind=true"
         - SONAR="build-wrapper-linux-x86-64 --out-dir bw-output"
