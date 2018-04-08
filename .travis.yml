@@ -50,7 +50,7 @@ script:
   - if [ -f /var/log/X*.log ]; then cat /var/log/X*.log ; fi
   - if [ "${SONAR}" ]; then sudo chmod 0777 /home/travis; find /home/travis -type d -exec chmod 0777 {} \;; fi
   - if [ "${SONAR}" ]; then sudo find . -name '*.gcda' -exec chmod -v 0666 {} \;; fi
-  - if [ "${SONAR}" ]; then cd build ; find . -name '*.gcno' -exec sh -c 'gcov -b -p {} -o $(dirname {})' \; cd ../ ; fi
+  - if [ "${SONAR}" ]; then cd build ; find src/ -name '*.gcno' -exec sh -c 'gcov -b -p {} -o $(dirname {})' \; cd ../ ; fi
   - if [ "${SONAR}" ]; then sonar-scanner; fi
 
 notifications:
