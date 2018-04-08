@@ -26,9 +26,10 @@ echo "EPID=${EPID}"
 
 kill -SIGUSR1 ${EPID}
 
-sleep 10
+sleep 30
 
 killall X
+killall entrance
 
 ps x o pid,user,group,command
 
