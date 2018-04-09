@@ -26,12 +26,14 @@ kill -SIGUSR1 ${EPID}
 
 sleep 60
 
+ps xa o pid,user,group,command  | grep -e X -e entrance
+
 kill ${EPID}
 
 EPID="$(pgrep X)"
 
 [[ ${EPID} ]] && kill -9 ${EPID}
 
-ps x o pid,user,group,command
+ps xa o pid,user,group,command  | grep -e X -e entrance
 
 #systemctl start entrance
