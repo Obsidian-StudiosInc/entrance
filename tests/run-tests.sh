@@ -24,7 +24,7 @@ EPID="$(pgrep entrance)"
 
 kill -SIGUSR1 ${EPID}
 
-sleep 30
+sleep 60
 
 kill ${EPID}
 
