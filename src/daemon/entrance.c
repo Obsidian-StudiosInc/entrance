@@ -303,8 +303,11 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 
    ev = event;
    if (ev->exe != _entrance_client)
-     return ECORE_CALLBACK_PASS_ON;
-   PT("client have terminated");
+     {
+       PT("ev->exe != _entrance_client");
+       return ECORE_CALLBACK_PASS_ON;
+     }
+   PT("client terminated");
    ecore_main_loop_quit();
    _entrance_client = NULL;
 
