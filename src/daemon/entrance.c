@@ -304,9 +304,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    ev = event;
    if (ev->exe != _entrance_client)
      {
-       PT("ev->exe != _entrance_client");
-       if(ev->exe->pid)
-         PT("ev->exe->pid %d", ev->exe->pid);
+       PT("ev->pid %d", ev->pid);
        return ECORE_CALLBACK_PASS_ON;
      }
    PT("client terminated");
