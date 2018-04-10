@@ -56,11 +56,17 @@ main(int argc, char **argv)
    if(gid>0)
      setgid(gid);
    else
-     setgid(NOBODY);
+     {
+       PT("root gid not allowed, defaulting to nobody");
+       setgid(NOBODY);
+     }
    if(uid>0)
      setuid(uid);
    else
-     setuid(NOBODY);
+     {
+       PT("root uid not allowed, defaulting to nobody");
+       setuid(NOBODY);
+     }
    eina_init();
    if (!display)
      {
