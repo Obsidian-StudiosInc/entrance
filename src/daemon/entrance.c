@@ -291,6 +291,9 @@ _entrance_main(const char *dname)
           ecore_exe_pipe_run(buf,
                              ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
                              NULL);
+       if(_entrance_client)
+         PT("entrance_client started pid %d",
+            ecore_exe_pid_get(_entrance_client));
      }
    flock(home_dir, LOCK_UN);
    close(home_dir);
