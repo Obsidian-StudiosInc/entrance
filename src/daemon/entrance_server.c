@@ -141,7 +141,7 @@ _entrance_server_write_cb(const void *data, size_t size, void *user_data EINA_UN
 }
 
 void
-entrance_server_init(void)
+entrance_server_init(gid_t uid, uid_t gid)
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
@@ -154,7 +154,7 @@ entrance_server_init(void)
    if (!_entrance_server)
      PT("server init fail");
    else
-     chown("/tmp/.ecore_service|entrance|42",65534,65534);
+     chown("/tmp/.ecore_service|entrance|42",gid,uid);
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
                                _entrance_server_add, NULL);

@@ -29,7 +29,8 @@ static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
-
+static gid_t entrance_gid = 0;
+static uid_t entrance_uid = 0;
 
 static void
 _signal_cb(int sig)
@@ -232,13 +233,15 @@ _entrance_main(const char *dname)
        !strcmp(pwd->pw_dir, "/") ||
        !strcmp(pwd->pw_dir, "/nonexistent"))
      {
+       entrance_gid = pwd->pw_gid;
+       entrance_uid = pwd->pw_uid;
         PT("No home directory for client");
         home_path = ENTRANCE_CONFIG_HOME_PATH;
         if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
           {
              PT("Creating new home directory for client");
              ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
-             chown(ENTRANCE_CONFIG_HOME_PATH, pwd->pw_uid, pwd->pw_gid);
+             chown(ENTRANCE_CONFIG_HOME_PATH, entrance_uid, entrance_gid);
           }
         else
           {
@@ -249,7 +252,7 @@ _entrance_main(const char *dname)
                      "I remove it, I need it ^^");
                   ecore_file_remove(ENTRANCE_CONFIG_HOME_PATH);
                   ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
-                  chown(ENTRANCE_CONFIG_HOME_PATH, pwd->pw_uid, pwd->pw_gid);
+                  chown(ENTRANCE_CONFIG_HOME_PATH, entrance_uid, entrance_gid);
                }
           }
      }
@@ -272,11 +275,11 @@ _entrance_main(const char *dname)
      }
    if(fstat(home_dir, &st)!= -1)
      {
-       if ((st.st_uid != pwd->pw_uid)
-           || (st.st_gid != pwd->pw_gid))
+       if ((st.st_uid != entrance_uid)
+           || (st.st_gid != entrance_gid))
          {
             PT("chown home directory %s", home_path);
-            fchown(home_dir, pwd->pw_uid, pwd->pw_gid);
+            fchown(home_dir, entrance_uid, entrance_gid);
          }
        snprintf(buf, sizeof(buf),
                 "export HOME=%s; export USER=%s;"
@@ -284,7 +287,7 @@ _entrance_main(const char *dname)
                 PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
                 home_path, user, entrance_config->command.session_login,
                 dname, entrance_config->theme,
-                st.st_gid,st.st_uid);
+                entrance_gid,entrance_uid);
        PT("Exec entrance_client: %s", buf);
 
        _entrance_client =
@@ -547,7 +550,7 @@ main (int argc, char ** argv)
         PT("action init");
         entrance_action_init();
         PT("server init");
-        entrance_server_init();
+        entrance_server_init(entrance_uid, entrance_gid);
         PT("starting main loop");
         ecore_main_loop_begin();
         PT("main loop end");
