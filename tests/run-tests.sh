@@ -24,7 +24,9 @@ EPID="$(pgrep entrance)"
 
 kill -SIGUSR1 ${EPID}
 
-sleep 60
+echo "Going to sleep"
+sleep 120
+echo ""
 
 ps xa o pid,user,group,command
 echo ""
