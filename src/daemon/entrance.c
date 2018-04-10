@@ -229,12 +229,12 @@ _entrance_main(const char *dname)
    else
      user = entrance_config->start_user;
    PT("running under user : %s",user);
+   entrance_gid = pwd->pw_gid;
+   entrance_uid = pwd->pw_uid;
    if (!pwd->pw_dir ||
        !strcmp(pwd->pw_dir, "/") ||
        !strcmp(pwd->pw_dir, "/nonexistent"))
      {
-       entrance_gid = pwd->pw_gid;
-       entrance_uid = pwd->pw_uid;
         PT("No home directory for client");
         home_path = ENTRANCE_CONFIG_HOME_PATH;
         if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
