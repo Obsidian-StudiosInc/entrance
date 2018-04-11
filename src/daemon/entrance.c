@@ -13,17 +13,17 @@
 #define ENTRANCE_CONFIG_HOME_PATH "/var/cache/entrance/client"
 #define ENTRANCE_USER_MAX 33
 
-static Eina_Bool _open_log();
-static void _entrance_main(const char *dname);
-static void _remove_lock();
-static void _signal_cb(int sig);
-static void _signal_log(int sig);
-static void _entrance_autologin_lock_set(void);
 static Eina_Bool _entrance_autologin_lock_get(void);
 static Eina_Bool _entrance_client_error(void *data, int type, void *event);
 static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
+static Eina_Bool _open_log();
+static void _entrance_autologin_lock_set(void);
+static void _entrance_main(const char *dname);
 static void _entrance_wait(void);
+static void _remove_lock();
+static void _signal_cb(int sig);
+static void _signal_log(int sig);
 
 static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
@@ -32,147 +32,56 @@ static Ecore_Exe *_entrance_client = NULL;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 
-static void
-_signal_cb(int sig)
+static const Ecore_Getopt options =
 {
-   PT("signal %d received", sig);
-   if (_entrance_client)
-     {
-       PT("terminate client");
-       ecore_exe_terminate(_entrance_client);
-     }
-   else
-     ecore_main_loop_quit();
-}
+  PACKAGE,
+  "%prog [options]",
+  VERSION,
+  "(C) 201e Enlightenment, see AUTHORS",
+  "GPL, see COPYING",
+  "Entrance is a login manager, written using core efl libraries",
+  EINA_TRUE,
+  {
+    ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
+    ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
+    ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
+    ECORE_GETOPT_HELP ('h', "help"),
+    ECORE_GETOPT_VERSION('V', "version"),
+    ECORE_GETOPT_COPYRIGHT('R', "copyright"),
+    ECORE_GETOPT_LICENSE('L', "license"),
+    ECORE_GETOPT_SENTINEL
+  }
+};
 
-static void
-_signal_log(int sig EINA_UNUSED)
-{
-   PT("reopen the log file");
-   entrance_close_log();
-   _open_log();
-}
 
 static Eina_Bool
-_get_lock()
+_entrance_autologin_lock_get(void)
 {
    FILE *f;
-   char buf[128];
-   int my_pid;
-
-   my_pid = getpid();
-   f = fopen(entrance_config->lockfile, "r");
-   if (!f)
-     {
-        /* No lockfile, so create one */
-        f = fopen(entrance_config->lockfile, "w");
-        if (!f)
-          {
-             PT("Couldn't create lockfile!");
-             return (EINA_FALSE);
-          }
-        snprintf(buf, sizeof(buf), "%d", my_pid);
-        if (!fwrite(buf, strlen(buf), 1, f))
-          {
-             fclose(f);
-             PT("Couldn't write the lockfile");
-             return EINA_FALSE;
-          }
-        fclose(f);
-     }
-   else
-     {
-        int pid = 0;
-        /* read the lockfile */
-        if (fgets(buf, sizeof(buf), f))
-          pid = atoi(buf);
-        fclose(f);
-        if (pid == my_pid)
-          return EINA_TRUE;
-
-        PT("A lock file are present another instance are present ?");
-        return EINA_FALSE;
-     }
-
-   return EINA_TRUE;
-}
-
-static void
-_update_lock()
-{
-   FILE *f;
-   char buf[128];
-   f = fopen(entrance_config->lockfile, "w");
-   if(!f)
-     {
-       PT("Could not open lockfile");
-       return;
-     }
-   snprintf(buf, sizeof(buf), "%d", getpid());
-   if (!fwrite(buf, strlen(buf), 1, f))
-     PT("Could not update lockfile");
-   fclose(f);
-}
-
-static void
-_remove_lock()
-{
-   if(remove(entrance_config->lockfile)== -1)
-     PT("Could not remove lockfile");
-}
-
-static Eina_Bool
-_open_log()
-{
-   FILE *elog;
-   elog = fopen(entrance_config->logfile, "a");
-   if (!elog)
-     {
-        PT("could not open logfile !");
-        return EINA_FALSE;
-     }
-   fclose(elog);
-   if (!freopen(entrance_config->logfile, "a", stdout))
-     PT("Error on reopen stdout");
-   setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
-   if (!freopen(entrance_config->logfile, "a", stderr))
-     PT("Error on reopen stderr");
-   setvbuf(stderr, NULL, _IONBF, BUFSIZ);
-   return EINA_TRUE;
-}
-
-void
-entrance_close_log()
-{
-  fclose(stderr);
-  fclose(stdout);
-}
-
-static void
-_entrance_wait(void)
-{
-   // XXX: use eina_prefix! hardcoding paths . :(
-   execl(PACKAGE_BIN_DIR"/entrance_wait", PACKAGE_SBIN_DIR"/entrance", NULL);
-   PT("HUM HUM HUM can't wait ...");
-   _exit(1);
-}
-
-static Eina_Bool
-_entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
-{
    char buf[4096];
-   Ecore_Exe_Event_Data *ev;
-   size_t size;
+   double sleep_time;
+   double uptime;
+   struct stat st_login;
 
-   ev = event;
-   size = ev->size;
+   f = fopen("/proc/uptime", "r");
+   if (f)
+     {
+        fgets(buf,  sizeof(buf), f);
+        if(fscanf(f, "%lf %lf", &uptime, &sleep_time) <= 0)
+          PT("Could not read uptime input stream");
+        fclose(f);
+        if (stat("/var/run/entrance/login", &st_login) > 0)
+           return EINA_FALSE;
+        else
+           return EINA_TRUE;
+     }
+   return EINA_FALSE;
+}
 
-   if ((unsigned int)ev->size > sizeof(buf) - 1)
-     size = sizeof(buf) - 1;
-
-   strncpy(buf, (char*)ev->data, size);
-   EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
-   return ECORE_CALLBACK_DONE;
+static void
+_entrance_autologin_lock_set(void)
+{
+   system("touch /var/cache/entrance/login");
 }
 
 static Eina_Bool
@@ -191,6 +100,47 @@ _entrance_client_data(void *d EINA_UNUSED, int t EINA_UNUSED, void *event)
 
    snprintf(buf, size + 1, "%s", (char*)ev->data);
    EINA_LOG_DOM_INFO(_entrance_client_log, "%s", buf);
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+{
+   Ecore_Exe_Event_Del *ev;
+
+   ev = event;
+   if (ev->exe != _entrance_client)
+     {
+       PT("kill %d", ev->pid);
+       if(!kill(ev->pid,SIGTERM))
+         {
+           PT("kill -9 %d", ev->pid);
+           kill(ev->pid,SIGKILL);
+         }
+       return ECORE_CALLBACK_PASS_ON;
+     }
+   PT("client terminated");
+   ecore_main_loop_quit();
+   _entrance_client = NULL;
+
+   return ECORE_CALLBACK_DONE;
+}
+
+static Eina_Bool
+_entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+{
+   char buf[4096];
+   Ecore_Exe_Event_Data *ev;
+   size_t size;
+
+   ev = event;
+   size = ev->size;
+
+   if ((unsigned int)ev->size > sizeof(buf) - 1)
+     size = sizeof(buf) - 1;
+
+   strncpy(buf, (char*)ev->data, size);
+   EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
 }
 
@@ -302,83 +252,130 @@ _entrance_main(const char *dname)
    close(home_dir);
 }
 
-static Eina_Bool
-_entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+static void
+_entrance_wait(void)
 {
-   Ecore_Exe_Event_Del *ev;
+   // XXX: use eina_prefix! hardcoding paths . :(
+   execl(PACKAGE_BIN_DIR"/entrance_wait", PACKAGE_SBIN_DIR"/entrance", NULL);
+   PT("HUM HUM HUM can't wait ...");
+   _exit(1);
+}
 
-   ev = event;
-   if (ev->exe != _entrance_client)
+static Eina_Bool
+_get_lock()
+{
+   FILE *f;
+   char buf[128];
+   int my_pid;
+
+   my_pid = getpid();
+   f = fopen(entrance_config->lockfile, "r");
+   if (!f)
      {
-       PT("kill %d", ev->pid);
-       if(!kill(ev->pid,SIGTERM))
-         {
-           PT("kill -9 %d", ev->pid);
-           kill(ev->pid,SIGKILL);
-         }
-       return ECORE_CALLBACK_PASS_ON;
+        /* No lockfile, so create one */
+        f = fopen(entrance_config->lockfile, "w");
+        if (!f)
+          {
+             PT("Couldn't create lockfile!");
+             return (EINA_FALSE);
+          }
+        snprintf(buf, sizeof(buf), "%d", my_pid);
+        if (!fwrite(buf, strlen(buf), 1, f))
+          {
+             fclose(f);
+             PT("Couldn't write the lockfile");
+             return EINA_FALSE;
+          }
+        fclose(f);
      }
-   PT("client terminated");
-   ecore_main_loop_quit();
-   _entrance_client = NULL;
+   else
+     {
+        int pid = 0;
+        /* read the lockfile */
+        if (fgets(buf, sizeof(buf), f))
+          pid = atoi(buf);
+        fclose(f);
+        if (pid == my_pid)
+          return EINA_TRUE;
 
-   return ECORE_CALLBACK_DONE;
+        PT("A lock file are present another instance are present ?");
+        return EINA_FALSE;
+     }
+
+   return EINA_TRUE;
+}
+
+static Eina_Bool
+_open_log()
+{
+   FILE *elog;
+   elog = fopen(entrance_config->logfile, "a");
+   if (!elog)
+     {
+        PT("could not open logfile !");
+        return EINA_FALSE;
+     }
+   fclose(elog);
+   if (!freopen(entrance_config->logfile, "a", stdout))
+     PT("Error on reopen stdout");
+   setvbuf(stdout, NULL, _IOLBF, BUFSIZ);
+   if (!freopen(entrance_config->logfile, "a", stderr))
+     PT("Error on reopen stderr");
+   setvbuf(stderr, NULL, _IONBF, BUFSIZ);
+   return EINA_TRUE;
 }
 
 static void
-_entrance_autologin_lock_set(void)
+_remove_lock()
 {
-   system("touch /var/cache/entrance/login");
+   if(remove(entrance_config->lockfile)== -1)
+     PT("Could not remove lockfile");
 }
 
-static Eina_Bool
-_entrance_autologin_lock_get(void)
+static void
+_signal_cb(int sig)
+{
+   PT("signal %d received", sig);
+   if (_entrance_client)
+     {
+       PT("terminate client");
+       ecore_exe_terminate(_entrance_client);
+     }
+   else
+     ecore_main_loop_quit();
+}
+
+static void
+_signal_log(int sig EINA_UNUSED)
+{
+   PT("reopen the log file");
+   entrance_close_log();
+   _open_log();
+}
+
+static void
+_update_lock()
 {
    FILE *f;
-   char buf[4096];
-   double sleep_time;
-   double uptime;
-   struct stat st_login;
-
-   f = fopen("/proc/uptime", "r");
-   if (f)
+   char buf[128];
+   f = fopen(entrance_config->lockfile, "w");
+   if(!f)
      {
-        fgets(buf,  sizeof(buf), f);
-        if(fscanf(f, "%lf %lf", &uptime, &sleep_time) <= 0)
-          PT("Could not read uptime input stream");
-        fclose(f);
-        if (stat("/var/run/entrance/login", &st_login) > 0)
-           return EINA_FALSE;
-        else
-           return EINA_TRUE;
+       PT("Could not open lockfile");
+       return;
      }
-   return EINA_FALSE;
+   snprintf(buf, sizeof(buf), "%d", getpid());
+   if (!fwrite(buf, strlen(buf), 1, f))
+     PT("Could not update lockfile");
+   fclose(f);
 }
 
-
-
-
-static const Ecore_Getopt options =
+void
+entrance_close_log()
 {
-   PACKAGE,
-   "%prog [options]",
-   VERSION,
-   "(C) 201e Enlightenment, see AUTHORS",
-   "GPL, see COPYING",
-   "Entrance is a login manager, written using core efl libraries",
-   EINA_TRUE,
-   {
-      ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
-      ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
-      ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use "
-                              "Xephyr."),
-      ECORE_GETOPT_HELP ('h', "help"),
-      ECORE_GETOPT_VERSION('V', "version"),
-      ECORE_GETOPT_COPYRIGHT('R', "copyright"),
-      ECORE_GETOPT_LICENSE('L', "license"),
-      ECORE_GETOPT_SENTINEL
-   }
-};
+  fclose(stderr);
+  fclose(stdout);
+}
 
 int
 main (int argc, char ** argv)
