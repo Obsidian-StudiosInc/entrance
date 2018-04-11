@@ -20,14 +20,6 @@ Ecore_Event_Handler *_handler_start;
  * connection schemes.  Xdm uses this feature to recognize when connecting to
  * the server is possible.
  * */
-static void
-_env_set(const char *dname)
-{
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "DISPLAY=%s", dname);
-   putenv(strdup(buf));
-}
-
 static int
 _xserver_start(void)
 {
@@ -102,10 +94,12 @@ xserver_error:
 }
 
 static Eina_Bool
-_xserver_started(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
+_xserver_started(void *data EINA_UNUSED,
+                 int type EINA_UNUSED,
+                 void *event EINA_UNUSED)
 {
    PT("xserver started");
-   _env_set(_xserver->dname);
+   setenv("DISPLAY",_xserver->dname,1);
    _xserver->start(_xserver->dname);
    return ECORE_CALLBACK_PASS_ON;
 }
@@ -114,7 +108,6 @@ int
 entrance_xserver_init(Entrance_X_Cb start, const char *dname)
 {
    int pid;
-   char buf[64];
    sigset_t newset;
    sigemptyset(&newset);
 
@@ -122,8 +115,7 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    pid = _xserver_start();
-   snprintf(buf, sizeof(buf), "ENTRANCE_XPID=%d", pid);
-   putenv(strdup(buf));
+   setenv("ENTRANCE_XPID", (char *)&pid, 1);
    PT("xserver adding signal user handler");
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
