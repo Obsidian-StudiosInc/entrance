@@ -19,7 +19,7 @@ static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
-static void _entrance_main(const char *dname);
+static void _entrance_start(const char *dname);
 static void _entrance_wait(void);
 static void _remove_lock();
 static void _signal_cb(int sig);
@@ -145,7 +145,7 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
 }
 
 static void
-_entrance_main(const char *dname)
+_entrance_start(const char *dname)
 {
    struct passwd *pwd = NULL;
    const char *user;
@@ -515,12 +515,12 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("xserver init");
-        pid = entrance_xserver_init(_entrance_main, dname);
+        pid = entrance_xserver_init(_entrance_start, dname);
      }
    else
      {
         putenv(strdup("ENTRANCE_XPID=-1"));
-        _entrance_main(dname);
+        _entrance_start(dname);
      }
    PT("history init");
    entrance_history_init();
