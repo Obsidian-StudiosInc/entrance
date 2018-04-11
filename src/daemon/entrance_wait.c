@@ -10,8 +10,6 @@
 #endif
 
 static void _entrance_wait_action(int sig, siginfo_t *si, void *data);
-static void kill_wait();
-
 
 static pid_t _x_pid = 0;
 
@@ -20,14 +18,8 @@ _entrance_wait_action(int sig EINA_UNUSED,
                       siginfo_t * si EINA_UNUSED,
                       void *data EINA_UNUSED)
 {
-    kill_wait();
+    kill(_x_pid, SIGTERM);
     setenv("ENTRANCE_QUIT", "1", 1);
-}
-
-static void
-kill_wait(void)
-{
-   kill(_x_pid, SIGTERM);
 }
 
 int
@@ -67,13 +59,9 @@ main (int argc EINA_UNUSED, char **argv EINA_UNUSED)
                return -1;
           }
         else if (rpid == _x_pid)
-          {
-             break;
-          }
+          break;
         else if (rpid == spid)
-          {
-             kill_wait();
-          }
+          kill(_x_pid, SIGTERM);
      }
 
    if (WIFEXITED(status) && WEXITSTATUS(status))
@@ -82,4 +70,3 @@ main (int argc EINA_UNUSED, char **argv EINA_UNUSED)
 
    return -1;
 }
-
