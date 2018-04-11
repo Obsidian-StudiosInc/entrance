@@ -22,7 +22,7 @@ sed -i -e "s|nobody|travis|" /etc/entrance/entrance.conf
 
 EPID="$(pgrep entrance)"
 
-kill -SIGUSR1 ${EPID}
+#kill -SIGUSR1 ${EPID}
 
 SLEEP=180
 
