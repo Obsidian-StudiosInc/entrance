@@ -153,8 +153,12 @@ entrance_server_init(gid_t uid, uid_t gid)
                                         "entrance", 42, NULL);
    if (!_entrance_server)
      PT("server init fail");
-   else
-     chown("/tmp/.ecore_service|entrance|42",gid,uid);
+   else if(!chown("/tmp/.ecore_service|entrance|42",gid,uid)) {
+     if(errno==ENOENT)
+       PT("chown failed, socket does not exist");
+     else
+       PT("chown failed");
+   }
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
                                _entrance_server_add, NULL);
