@@ -17,7 +17,7 @@ install:
   - mkdir .bin
   - curl -L https://github.com/ninja-build/ninja/releases/download/v1.8.2/ninja-linux.zip -o .bin/ninja-linux.zip
   - unzip .bin/ninja-linux.zip -d .bin
-  - if [ "${SONAR}" ]; then sudo cp -v tests/xorg.conf /etc/X11/xorg.conf; rm -v /usr/lib/xorg/modules/input/mouse_drv.so ; fi
+  - if [ "${SONAR}" ]; then sudo cp -v tests/xorg.conf /etc/X11/xorg.conf; rm -fv /usr/lib/xorg/modules/input/mouse_drv.so ; fi
 
 before_script:
   - export PATH=$PATH:$PWD/.bin
