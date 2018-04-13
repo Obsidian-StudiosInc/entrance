@@ -589,7 +589,6 @@ main (int argc, char ** argv)
    PT("pam shutdown");
 #endif
    _entrance_autologin_lock_set();
-   efreet_shutdown();
    PT("ecore shutdown");
    ecore_shutdown();
    PT("session shutdown");
@@ -618,6 +617,7 @@ main (int argc, char ** argv)
    else
      PT("No session to wait, exiting");
    entrance_close_log();
+   efreet_shutdown();
    return 0;
 }
 
