@@ -92,9 +92,12 @@ main(int argc, char **argv)
    entrance_gui_shutdown();
    PT("login shutdown");
    entrance_login_shutdown();
+   PT("elm shutdown");
    elm_shutdown();
+   PT("ecore shutdown");
    ecore_x_shutdown();
    ecore_shutdown();
+   PT("eina shutdown");
    eina_shutdown();
    PT("exit");
    return EXIT_SUCCESS;
