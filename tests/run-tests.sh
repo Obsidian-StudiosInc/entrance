@@ -33,6 +33,9 @@ echo "${0} Waking up"
 ps xa o pid,user,group,command
 echo ""
 
+ls -la /tmp
+echo ""
+
 kill ${EPID}
 
 EPID="$(pgrep X)"
