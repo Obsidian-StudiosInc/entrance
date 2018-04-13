@@ -30,8 +30,8 @@ static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
-static char *home_path = NULL;
-static char *entrance_user = NULL;
+static char *entrance_home_path = NULL;
+static const char *entrance_user = NULL;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 
@@ -151,6 +151,7 @@ static void
 _entrance_start(const char *dname)
 {
    char buf[PATH_MAX];
+   char *home_path = NULL;
    int home_dir;
    struct stat st;
 
@@ -165,6 +166,10 @@ _entrance_start(const char *dname)
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
+   if(entrance_home_path)
+       home_path = entrance_home_path;
+   else
+       home_path = ENTRANCE_CONFIG_HOME_PATH;
    home_dir = open(home_path, O_RDONLY);
    if(!home_dir || home_dir<0)
      {
@@ -234,7 +239,6 @@ _entrance_uid_gid_init()
        !strcmp(pwd->pw_dir, "/nonexistent"))
      {
         PT("No home directory for client");
-        home_path = ENTRANCE_CONFIG_HOME_PATH;
         if (!ecore_file_exists(ENTRANCE_CONFIG_HOME_PATH))
           {
              PT("Creating new home directory for client");
@@ -255,8 +259,8 @@ _entrance_uid_gid_init()
           }
      }
    else
-     home_path = pwd->pw_dir;
-   PT("Home directory %s", home_path);
+     entrance_home_path = strdup(pwd->pw_dir);
+   PT("Home directory %s", entrance_home_path);
 }
 
 static void
@@ -532,6 +536,10 @@ main (int argc, char ** argv)
         putenv(strdup("ENTRANCE_XPID=-1"));
         _entrance_start(dname);
      }
+
+   if(entrance_home_path)
+     free(entrance_home_path);
+
    PT("history init");
    entrance_history_init();
    if ((entrance_config->autologin) && _entrance_autologin_lock_get())
