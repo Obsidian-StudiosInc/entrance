@@ -38,9 +38,9 @@ echo ""
 
 kill ${EPID}
 
-EPID="$(pgrep X)"
+#EPID="$(pgrep X)"
 
-[[ ${EPID} ]] && kill -9 ${EPID}
+#[[ ${EPID} ]] && kill -9 ${EPID}
 
 ps xa o pid,user,group,command
 
