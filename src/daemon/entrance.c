@@ -616,6 +616,7 @@ main (int argc, char ** argv)
      }
    else
      PT("No session to wait, exiting");
+   PT("close log and exit");
    entrance_close_log();
    efreet_shutdown();
    return 0;
