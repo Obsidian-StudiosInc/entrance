@@ -36,9 +36,9 @@ echo ""
 ls -la /tmp
 echo ""
 
-kill ${EPID}
+killall entrance_client
 
-#killall entrance_client
+kill ${EPID}
 
 #EPID="$(pgrep X)"
 
