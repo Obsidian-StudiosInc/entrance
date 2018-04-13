@@ -153,7 +153,9 @@ entrance_server_init(gid_t uid, uid_t gid)
                                         "entrance", 42, NULL);
    if (!_entrance_server)
      PT("server init fail");
-   else if(!chown("/tmp/.ecore_service|entrance|42",gid,uid)) {
+   else
+     PT("chown client socket uid %d gid %d",uid,gid);
+   if(!chown("/tmp/.ecore_service|entrance|42",uid,gid)) {
      if(errno==ENOENT)
        PT("chown failed, socket does not exist");
      else
