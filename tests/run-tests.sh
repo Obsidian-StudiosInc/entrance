@@ -38,6 +38,8 @@ echo ""
 
 kill ${EPID}
 
+killall entrance_client
+
 #EPID="$(pgrep X)"
 
 #[[ ${EPID} ]] && kill -9 ${EPID}
