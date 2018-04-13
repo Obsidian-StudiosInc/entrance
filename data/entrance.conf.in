@@ -4,7 +4,7 @@ group "Entrance_Config" struct {
     /* X server path */
     value "xinit_path" string: "/usr/bin/X";
     /* X server args */
-    value "xinit_args" string: "-nolisten tcp -br vt7";
+    value "xinit_args" string: "-nolisten tcp -br vt7 :0";
 
     /* xauth path binary */
     value "xauth_path" string: "/usr/bin/xauth";
