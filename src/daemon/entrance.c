@@ -32,6 +32,7 @@ static Ecore_Exe *_entrance_client = NULL;
 
 static char *entrance_home_path = NULL;
 static const char *entrance_user = NULL;
+static pid_t entrance_client_pid = 0;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 
@@ -114,11 +115,11 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
    ev = event;
    if (ev->exe != _entrance_client)
      {
-       PT("kill %d", ev->pid);
-       if(!kill(ev->pid,SIGTERM))
+       PT("received pid %d, kill %d", ev->pid, entrance_client_pid);
+       if(!kill(entrance_client_pid,SIGTERM))
          {
-           PT("kill -9 %d", ev->pid);
-           kill(ev->pid,SIGKILL);
+           PT("escalating to kill -9 %d", ev->pid, entrance_client_pid);
+           kill(entrance_client_pid,SIGKILL);
          }
        return ECORE_CALLBACK_PASS_ON;
      }
@@ -204,8 +205,10 @@ _entrance_start(const char *dname)
                              ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
                              NULL);
        if(_entrance_client)
-         PT("entrance_client started pid %d",
-            ecore_exe_pid_get(_entrance_client));
+         {
+           entrance_client_pid = ecore_exe_pid_get(_entrance_client);
+           PT("entrance_client started pid %d", entrance_client_pid);
+         }
      }
    flock(home_dir, LOCK_UN);
    close(home_dir);
