@@ -118,7 +118,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
        PT("received pid %d, kill %d", ev->pid, entrance_client_pid);
        if(!kill(entrance_client_pid,SIGTERM))
          {
-           PT("escalating to kill -9 %d", ev->pid, entrance_client_pid);
+           PT("escalating to kill -9 %d", entrance_client_pid);
            kill(entrance_client_pid,SIGKILL);
          }
        return ECORE_CALLBACK_PASS_ON;
