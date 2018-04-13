@@ -30,8 +30,8 @@ static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
-static const char *home_path = NULL;
-static const char *entrance_user = NULL;
+static char *home_path = NULL;
+static char *entrance_user = NULL;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 
