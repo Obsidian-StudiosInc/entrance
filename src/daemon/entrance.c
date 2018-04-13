@@ -151,7 +151,7 @@ static void
 _entrance_start(const char *dname)
 {
    char buf[PATH_MAX];
-   char *home_path = NULL;
+   char *home_path = ENTRANCE_CONFIG_HOME_PATH;
    int home_dir;
    struct stat st;
 
@@ -168,8 +168,6 @@ _entrance_start(const char *dname)
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
    if(entrance_home_path)
        home_path = entrance_home_path;
-   else
-       home_path = ENTRANCE_CONFIG_HOME_PATH;
    home_dir = open(home_path, O_RDONLY);
    if(!home_dir || home_dir<0)
      {
@@ -537,9 +535,6 @@ main (int argc, char ** argv)
         _entrance_start(dname);
      }
 
-   if(entrance_home_path)
-     free(entrance_home_path);
-
    PT("history init");
    entrance_history_init();
    if ((entrance_config->autologin) && _entrance_autologin_lock_get())
@@ -607,6 +602,8 @@ main (int argc, char ** argv)
    entrance_config_shutdown();
    PT("eet shutdown");
    eet_shutdown();
+   if(entrance_home_path)
+     free(entrance_home_path);
    free(dname);
    if (!_xephyr)
      {
