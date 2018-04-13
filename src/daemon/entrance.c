@@ -20,6 +20,7 @@ static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
 static void _entrance_start(const char *dname);
+static void _entrance_uid_gid_init();
 static void _entrance_wait(void);
 static void _remove_lock();
 static void _signal_cb(int sig);
@@ -29,6 +30,8 @@ static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
+static const char *home_path = NULL;
+static const char *entrance_user = NULL;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 
@@ -147,10 +150,7 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
 static void
 _entrance_start(const char *dname)
 {
-   struct passwd *pwd = NULL;
-   const char *user;
    char buf[PATH_MAX];
-   const char *home_path;
    int home_dir;
    struct stat st;
 
@@ -165,6 +165,54 @@ _entrance_start(const char *dname)
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
+   home_dir = open(home_path, O_RDONLY);
+   if(!home_dir || home_dir<0)
+     {
+       PT("Failed to open home directory %s", home_path);
+       ecore_main_loop_quit();
+       return;
+     }
+   if(flock(home_dir, LOCK_SH)==-1)
+     {
+       PT("Failed to lock home directory %s", home_path);
+       close(home_dir);
+       ecore_main_loop_quit();
+       return;
+     }
+   if(fstat(home_dir, &st)!= -1)
+     {
+       if ((st.st_uid != entrance_uid)
+           || (st.st_gid != entrance_gid))
+         {
+            PT("chown home directory %s", home_path);
+            fchown(home_dir, entrance_uid, entrance_gid);
+         }
+       snprintf(buf, sizeof(buf),
+                "export HOME=%s; export USER=%s;"
+                "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";%s "
+                PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
+                home_path, entrance_user, entrance_config->command.session_login,
+                dname, entrance_config->theme,
+                entrance_gid,entrance_uid);
+       PT("Exec entrance_client: %s", buf);
+
+       _entrance_client =
+          ecore_exe_pipe_run(buf,
+                             ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
+                             NULL);
+       if(_entrance_client)
+         PT("entrance_client started pid %d",
+            ecore_exe_pid_get(_entrance_client));
+     }
+   flock(home_dir, LOCK_UN);
+   close(home_dir);
+}
+
+static void
+_entrance_uid_gid_init()
+{
+   struct passwd *pwd = NULL;
+
    if (entrance_config->start_user
        && entrance_config->start_user[0])
      pwd = getpwnam(entrance_config->start_user);
@@ -173,12 +221,12 @@ _entrance_start(const char *dname)
        PT("The given user %s, is not valid."
           "Falling back to nobody", entrance_config->start_user);
         pwd = getpwnam("nobody");
-        user = "nobody";
+        entrance_user = "nobody";
         assert(pwd);
      }
    else
-     user = entrance_config->start_user;
-   PT("running under user : %s",user);
+     entrance_user = entrance_config->start_user;
+   PT("running under user : %s",entrance_user);
    entrance_gid = pwd->pw_gid;
    entrance_uid = pwd->pw_uid;
    if (!pwd->pw_dir ||
@@ -209,47 +257,6 @@ _entrance_start(const char *dname)
    else
      home_path = pwd->pw_dir;
    PT("Home directory %s", home_path);
-   home_dir = open(home_path, O_RDONLY);
-   if(!home_dir || home_dir<0)
-     {
-       PT("Failed to open home directory %s", home_path);
-       ecore_main_loop_quit();
-       return;
-     }
-   if(flock(home_dir, LOCK_SH)==-1)
-     {
-       PT("Failed to lock home directory %s", home_path);
-       close(home_dir);
-       ecore_main_loop_quit();
-       return;
-     }
-   if(fstat(home_dir, &st)!= -1)
-     {
-       if ((st.st_uid != entrance_uid)
-           || (st.st_gid != entrance_gid))
-         {
-            PT("chown home directory %s", home_path);
-            fchown(home_dir, entrance_uid, entrance_gid);
-         }
-       snprintf(buf, sizeof(buf),
-                "export HOME=%s; export USER=%s;"
-                "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";%s "
-                PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
-                home_path, user, entrance_config->command.session_login,
-                dname, entrance_config->theme,
-                entrance_gid,entrance_uid);
-       PT("Exec entrance_client: %s", buf);
-
-       _entrance_client =
-          ecore_exe_pipe_run(buf,
-                             ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_ERROR,
-                             NULL);
-       if(_entrance_client)
-         PT("entrance_client started pid %d",
-            ecore_exe_pid_get(_entrance_client));
-     }
-   flock(home_dir, LOCK_UN);
-   close(home_dir);
 }
 
 static void
@@ -383,7 +390,6 @@ main (int argc, char ** argv)
    int args;
    int pid = -1;
    char *dname;
-   char *entrance_user = NULL;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
 
@@ -512,6 +518,10 @@ main (int argc, char ** argv)
    PT("session init");
    entrance_session_init(dname);
    entrance_session_cookie();
+
+   if(!entrance_config->autologin)
+     _entrance_uid_gid_init();
+
    if (!_xephyr)
      {
         PT("xserver init");
