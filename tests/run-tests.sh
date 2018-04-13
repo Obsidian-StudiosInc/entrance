@@ -36,13 +36,13 @@ echo ""
 ls -la /tmp
 echo ""
 
-kill ${EPID}
+#kill ${EPID}
 
 #killall entrance_client
 
-#EPID="$(pgrep X)"
+EPID="$(pgrep X)"
 
-#[[ ${EPID} ]] && kill -9 ${EPID}
+[[ ${EPID} ]] && kill -9 ${EPID}
 
 ps xa o pid,user,group,command
 
