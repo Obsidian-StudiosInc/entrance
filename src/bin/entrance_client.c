@@ -94,8 +94,9 @@ main(int argc, char **argv)
    entrance_login_shutdown();
    PT("elm shutdown");
    elm_shutdown();
-   PT("ecore shutdown");
+   PT("ecore x shutdown");
    ecore_x_shutdown();
+   PT("ecore shutdown");
    ecore_shutdown();
    PT("eina shutdown");
    eina_shutdown();
