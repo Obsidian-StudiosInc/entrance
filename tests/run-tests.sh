@@ -36,7 +36,7 @@ echo ""
 ls -la /tmp
 echo ""
 
-killall entrance_client
+#killall entrance_client
 
 kill ${EPID}
 
