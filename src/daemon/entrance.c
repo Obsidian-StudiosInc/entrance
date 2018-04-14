@@ -351,7 +351,7 @@ _signal_cb(int sig)
    if (_entrance_client)
      {
        PT("terminate client");
-       ecore_exe_terminate(_entrance_client);
+       kill(entrance_client_pid,SIGTERM);
      }
    else
      ecore_main_loop_quit();
