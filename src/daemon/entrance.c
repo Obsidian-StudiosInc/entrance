@@ -173,8 +173,6 @@ _entrance_start(const char *dname)
    if(!home_dir || home_dir<0)
      {
        PT("Failed to open home directory %s", home_path);
-       if(home_dir)
-         close(home_dir);
        ecore_main_loop_quit();
        return;
      }
