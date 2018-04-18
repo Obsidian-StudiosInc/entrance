@@ -460,7 +460,8 @@ main (int argc, char ** argv)
         if (daemon(0, 1) == -1)
           {
              PT("Error on daemonize !");
-             quit_option = EINA_TRUE;
+             entrance_config_shutdown();
+             exit(1);
           }
         _update_lock();
         int fd;
