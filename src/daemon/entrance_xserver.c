@@ -56,7 +56,7 @@ _xserver_start(void)
           goto xserver_error;
         if (!(args = calloc(num_token + 2, sizeof(char *))))
           {
-             if (abuf) free(abuf);
+             free(abuf);
              goto xserver_error;
           }
         args[0] = (char *)entrance_config->command.xinit_path;
