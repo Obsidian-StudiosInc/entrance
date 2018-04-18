@@ -48,7 +48,7 @@ _xserver_start(void)
        ++num_token;
        token = strtok_r(NULL, " ", &saveptr);
      }
-   if (buf) free(buf);
+   free(buf);
    if (num_token)
      {
         int i;
