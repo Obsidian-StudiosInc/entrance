@@ -26,7 +26,6 @@ static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
 
-static Eina_Bool _testing = 0;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
@@ -47,8 +46,7 @@ static const Ecore_Getopt options =
   EINA_TRUE,
   {
     ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
-    ECORE_GETOPT_STORE_TRUE('t', "test", "run in test mode."),
-    ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run in test mode and use Xephyr."),
+    ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run under Xephyr."),
     ECORE_GETOPT_HELP ('h', "help"),
     ECORE_GETOPT_VERSION('V', "version"),
     ECORE_GETOPT_COPYRIGHT('R', "copyright"),
@@ -401,7 +399,6 @@ main (int argc, char ** argv)
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_BOOL(nodaemon),
-        ECORE_GETOPT_VALUE_BOOL(_testing),
         ECORE_GETOPT_VALUE_BOOL(_xephyr),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -442,20 +439,12 @@ main (int argc, char ** argv)
 
    if (_xephyr)
      {
-        _testing = EINA_TRUE;
+        nodaemon = EINA_TRUE;
         dname = strdup(ENTRANCE_XEPHYR);
         putenv(strdup("ENTRANCE_XEPHYR=1"));
      }
    else
      dname = strdup(ENTRANCE_DISPLAY);
-   if (!_testing && getenv("ENTRANCE_TESTING"))
-     _testing = EINA_TRUE;
-
-   if (_testing)
-     {
-        putenv(strdup("ENTRANCE_TESTING=1"));
-        nodaemon = EINA_TRUE;
-     }
 
    eet_init();
    efreet_init();
@@ -465,10 +454,8 @@ main (int argc, char ** argv)
         PT("No config loaded, sorry must quit ...");
         exit(1);
      }
-   if (!_testing && !_get_lock())
-     {
+   if (!_get_lock())
         exit(1);
-     }
 
    if (!nodaemon && entrance_config->daemonize)
      {
@@ -486,7 +473,7 @@ main (int argc, char ** argv)
           }
      }
 
-   if (!_testing && !_open_log())
+   if (!_open_log())
      {
         PT("Can't open log file !!!!");
         entrance_config_shutdown();
