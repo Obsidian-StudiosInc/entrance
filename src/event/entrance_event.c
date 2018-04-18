@@ -261,7 +261,6 @@ _entrance_event_conf_user_dd(Eina_Bool stream)
    EET_LOGIN_ADD(bg.group, EET_T_STRING);
    EET_LOGIN_ADD(lsess, EET_T_STRING);
    EET_LOGIN_ADD(remember_session, EET_T_INT);
-   // TODO screenshot
 
    if (stream)
      {
