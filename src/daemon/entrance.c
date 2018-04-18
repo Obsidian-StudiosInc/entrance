@@ -416,7 +416,7 @@ main (int argc, char ** argv)
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
      {
-        PT("ERROR: could not parse options.");
+        fprintf(stderr, "ERROR: could not parse options.");
         return -1;
      }
 
