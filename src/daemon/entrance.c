@@ -407,18 +407,12 @@ main (int argc, char ** argv)
         ECORE_GETOPT_VALUE_NONE
      };
 
-   if (quit_option)
-     exit(1);
-
-   eina_init();
-   eina_log_threads_enable();
-   ecore_init();
-   _entrance_log = eina_log_domain_register("entrance", EINA_COLOR_CYAN);
-   _entrance_client_log = eina_log_domain_register("entrance_client",
-                                                   EINA_COLOR_CYAN);
-   eina_log_domain_level_set("entrance", 5);
-   eina_log_domain_level_set("entrance_client", 5);
-
+   if (getuid() != 0)
+     {
+        fprintf(stderr, "Sorry, only root can run this program!");
+        return 1;
+     }
+   
    args = ecore_getopt_parse(&options, values, argc, argv);
    if (args < 0)
      {
@@ -429,11 +423,15 @@ main (int argc, char ** argv)
    if (quit_option)
      return 0;
 
-   if (getuid() != 0)
-     {
-        fprintf(stderr, "Sorry, only root can run this program!");
-        return 1;
-     }
+   eina_init();
+   eina_log_threads_enable();
+   ecore_init();
+   _entrance_log = eina_log_domain_register("entrance", EINA_COLOR_CYAN);
+   _entrance_client_log = eina_log_domain_register("entrance_client",
+                                                   EINA_COLOR_CYAN);
+   eina_log_domain_level_set("entrance", 5);
+   eina_log_domain_level_set("entrance_client", 5);
+
    if (!_xephyr && getenv("ENTRANCE_XEPHYR"))
      _xephyr = EINA_TRUE;
 
