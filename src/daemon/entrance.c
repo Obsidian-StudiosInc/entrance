@@ -410,6 +410,9 @@ main (int argc, char ** argv)
         ECORE_GETOPT_VALUE_NONE
      };
 
+   if (quit_option)
+     exit(1);
+
    eina_init();
    eina_log_threads_enable();
    ecore_init();
@@ -483,11 +486,6 @@ main (int argc, char ** argv)
           }
      }
 
-   if (quit_option)
-     {
-        entrance_config_shutdown();
-        exit(1);
-     }
    if (!_testing && !_open_log())
      {
         PT("Can't open log file !!!!");
