@@ -6,7 +6,6 @@
 #include <Eina.h>
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
-#include <assert.h>
 
 #define ENTRANCE_DISPLAY ":0.0"
 #define ENTRANCE_XEPHYR ":1.0"
@@ -226,7 +225,6 @@ _entrance_uid_gid_init()
           "Falling back to nobody", entrance_config->start_user);
         pwd = getpwnam("nobody");
         entrance_user = "nobody";
-        assert(pwd);
      }
    else
      entrance_user = entrance_config->start_user;
