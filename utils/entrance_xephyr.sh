@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#export XDG_RUNTIME_DIR="/tmp/entrance"
+
+#[[ -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
+
+#chown nobody:nobody -R "${XDG_RUNTIME_DIR}"
+
 DPI=${DPI:-142}
 SCREEN=${SCREEN:-1024x768}
 ENTRANCE=${ENTRANCE:-src/daemon/entrance}
