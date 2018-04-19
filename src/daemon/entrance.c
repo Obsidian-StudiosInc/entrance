@@ -450,7 +450,7 @@ main (int argc, char ** argv)
         PT("No config loaded, sorry must quit ...");
         exit(1);
      }
-   if (!_get_lock())
+   if (!_xephyr && !_get_lock())
         exit(1);
 
    if (!nodaemon && entrance_config->daemonize)
