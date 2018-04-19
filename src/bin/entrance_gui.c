@@ -606,24 +606,19 @@ entrance_gui_vkbd_enabled_get(void)
    return _gui->vkbd_enabled;
 }
 
-/* FIXME: Use or drop path/group variables restore ability to set background? 
 static Evas_Object *
 _entrance_gui_background_obj_get(Evas_Object *par,
-                                 const char *path EINA_UNUSED,
-                                 const char *group EINA_UNUSED)
+                                 const char *path,
+                                 const char *group)
 {
   Evas_Object *bg = NULL;
-  bg = elm_layout_add(par);
-  if (!elm_layout_file_set(bg,
-                           PACKAGE_DATA_DIR"/../elementary/themes/default.edj",
-                           "e/desktop/background"))
+  if (path)
     {
-      evas_object_del(bg);
-      return NULL;
+      bg = elm_bg_add(par);
+      elm_bg_file_set(bg, path, group);
     }
   return bg;
 }
- */
 
 static void
 _entrance_gui_update(void)
@@ -637,9 +632,9 @@ _entrance_gui_update(void)
         if (_gui->changed & ENTRANCE_CONF_WALLPAPER)
           {
              PT("Set background %s - %s", _gui->bg.path, _gui->bg.group);
-/* FIXME: Restore ability to set a background via some means
-             bg = _entrance_gui_background_obj_get(screen->transition, _gui->bg.path, _gui->bg.group);
-*/
+             bg = _entrance_gui_background_obj_get(screen->transition,
+                                                   _gui->bg.path,
+                                                   _gui->bg.group);
              if (!bg)
                {
                   const char *path = PACKAGE_DATA_DIR"/../elementary/themes/default.edj";
