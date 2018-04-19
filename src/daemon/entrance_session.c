@@ -389,13 +389,13 @@ entrance_session_login(const char *session, Eina_Bool push)
    if (!cmd)
      {
         PT("Error !!! No command to launch, can't open a session :'(");
-        return ECORE_CALLBACK_CANCEL;
+        return EINA_FALSE;
      }
    PT("launching session %s for user %s", cmd, _login);
    _entrance_session_run(pwd, cmd, buf);
    snprintf(buf, sizeof(buf), "ENTRANCE_USER=%s", pwd->pw_name);
    putenv(buf);
-   return ECORE_CALLBACK_CANCEL;
+   return EINA_TRUE;
 }
 
 static const char *
