@@ -14,7 +14,7 @@ meson \
 	--sysconfdir "${MY_PWD}/test" \
 	-Ddebug=true \
 	$@ . build
-ninja -C build
+scan-build ninja -C build
 mv -v build/entrance.conf build/data
 cd build
 
@@ -29,7 +29,6 @@ done
 cp data/entrance.conf \
 	../data/Xsession \
 	src/bin/entrance_client \
-	src/daemon/entrance_wait \
 	test/entrance
 
 cp data/themes/default/default.edj test/entrance/themes
