@@ -18,7 +18,7 @@ static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
-static void _entrance_start(const char *dname);
+static void _entrance_start(const char *entrance_display);
 static void _entrance_uid_gid_init();
 static void _entrance_wait(void);
 static void _remove_lock();
@@ -28,6 +28,7 @@ static void _signal_log(int sig);
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 
+static char *entrance_display = NULL;
 static char *entrance_home_path = NULL;
 static const char *entrance_user = NULL;
 static pid_t entrance_client_pid = 0;
@@ -146,7 +147,7 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
 }
 
 static void
-_entrance_start(const char *dname)
+_entrance_start(const char *entrance_display)
 {
    char buf[PATH_MAX];
    char *home_path = ENTRANCE_CONFIG_HOME_PATH;
@@ -193,7 +194,7 @@ _entrance_start(const char *dname)
                 "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";%s "
                 PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
                 home_path, entrance_user, entrance_config->command.session_login,
-                dname, entrance_config->theme,
+                entrance_display, entrance_config->theme,
                 entrance_gid,entrance_uid);
        PT("Exec entrance_client: %s", buf);
 
@@ -390,7 +391,6 @@ main (int argc, char ** argv)
 {
    int args;
    int pid = -1;
-   char *dname;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
 
@@ -436,11 +436,11 @@ main (int argc, char ** argv)
    if (_xephyr)
      {
         nodaemon = EINA_TRUE;
-        dname = strdup(ENTRANCE_XEPHYR);
+        entrance_display = strdup(ENTRANCE_XEPHYR);
         putenv(strdup("ENTRANCE_XEPHYR=1"));
      }
    else
-     dname = strdup(ENTRANCE_DISPLAY);
+     entrance_display = strdup(ENTRANCE_DISPLAY);
 
    eet_init();
    efreet_init();
@@ -485,7 +485,7 @@ main (int argc, char ** argv)
         if(user)
           {
             entrance_xserver_wait();
-            entrance_session_init(dname);
+            entrance_session_init(entrance_display);
             entrance_session_end(user);
             free(user);
           }
@@ -503,7 +503,7 @@ main (int argc, char ** argv)
    signal(SIGUSR2, _signal_log);
 
    PT("session init");
-   entrance_session_init(dname);
+   entrance_session_init(entrance_display);
    entrance_session_cookie();
 
    if(!entrance_config->autologin)
@@ -512,12 +512,12 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("xserver init");
-        pid = entrance_xserver_init(_entrance_start, dname);
+        pid = entrance_xserver_init(_entrance_start, entrance_display);
      }
    else
      {
         putenv(strdup("ENTRANCE_XPID=-1"));
-        _entrance_start(dname);
+        _entrance_start(entrance_display);
      }
 
    PT("history init");
@@ -526,12 +526,12 @@ main (int argc, char ** argv)
      {
         PT("autologin init");
         xcb_connection_t *disp = NULL;
-        disp = xcb_connect(dname, NULL);
+        disp = xcb_connect(entrance_display, NULL);
         PT("main loop begin");
         ecore_main_loop_begin();
         PT("auth user");
 #ifdef HAVE_PAM
-        entrance_pam_init(PACKAGE, dname, entrance_config->userlogin);
+        entrance_pam_init(PACKAGE, entrance_display, entrance_config->userlogin);
 #endif
         PT("login user");
         entrance_session_login(
@@ -588,7 +588,7 @@ main (int argc, char ** argv)
    eet_shutdown();
    if(entrance_home_path)
      free(entrance_home_path);
-   free(dname);
+   free(entrance_display);
    if (!_xephyr)
      {
         PT("ending xserver");
