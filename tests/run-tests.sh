@@ -22,19 +22,11 @@ sed -i -e "s|nobody|travis|" /etc/entrance/entrance.conf
 
 EPID="$(pgrep entrance)"
 
-#kill -SIGUSR1 ${EPID}
-
 SLEEP=180
 
 echo "${0} Going to sleep for ${SLEEP}"
 sleep ${SLEEP}
 echo "${0} Waking up"
-
-ps xa o pid,user,group,command
-echo ""
-
-ls -la /tmp
-echo ""
 
 killall entrance_client
 
@@ -43,11 +35,3 @@ sleep 5
 kill ${EPID}
 
 sleep 5
-
-#EPID="$(pgrep X)"
-
-#[[ ${EPID} ]] && kill -9 ${EPID}
-
-ps xa o pid,user,group,command
-
-#systemctl start entrance
