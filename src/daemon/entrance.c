@@ -126,12 +126,15 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
      {
        if((session_pid = entrance_session_pid_get())>0)
          {
-           PT("session running, waiting...");
-           while (entrance_signal &&
-                  (-1 == waitpid(session_pid, NULL, 0)));
+           PT("session running pid %d, waiting...", session_pid);
+           while (!entrance_signal &&
+                  ( waitpid(session_pid, NULL, 0) > 0 ));
          }
-       PT("restarting client");
-       _entrance_start(entrance_display);
+       if(!entrance_signal)
+         {
+           PT("restarting client");
+           _entrance_start(entrance_display);
+         }
      }
    return ECORE_CALLBACK_DONE;
 }
@@ -343,6 +346,8 @@ _remove_lock()
 static void
 _signal_cb(int sig)
 {
+   pid_t session_pid = 0;
+
    PT("signal %d received", sig);
    entrance_signal = sig;
    if (_entrance_client)
@@ -351,7 +356,11 @@ _signal_cb(int sig)
        kill(entrance_client_pid,SIGTERM);
      }
    else
-     ecore_main_loop_quit();
+     {
+       if((session_pid = entrance_session_pid_get())>0)
+           kill(session_pid,SIGTERM);
+       ecore_main_loop_quit();
+     }
 }
 
 static void
