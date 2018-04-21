@@ -38,7 +38,11 @@ echo ""
 
 killall entrance_client
 
+sleep 5
+
 kill ${EPID}
+
+sleep 5
 
 #EPID="$(pgrep X)"
 
