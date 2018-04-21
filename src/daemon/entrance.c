@@ -21,7 +21,6 @@ static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
 static void _entrance_start(const char *entrance_display);
 static void _entrance_uid_gid_init();
-static void _entrance_wait(void);
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
@@ -276,15 +275,6 @@ _entrance_uid_gid_init()
    else
      entrance_home_path = strdup(pwd->pw_dir);
    PT("Home directory %s", entrance_home_path);
-}
-
-static void
-_entrance_wait(void)
-{
-   // XXX: use eina_prefix! hardcoding paths . :(
-   execl(PACKAGE_BIN_DIR"/entrance_wait", PACKAGE_SBIN_DIR"/entrance", NULL);
-   PT("HUM HUM HUM can't wait ...");
-   _exit(1);
 }
 
 static Eina_Bool
