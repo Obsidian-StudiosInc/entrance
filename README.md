@@ -11,8 +11,6 @@ It is ALIVE! IT WORKS! (for me ©)
 ![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/31921581-1c2f0d7c-b83e-11e7-8d90-1dac94ae8e5c.jpg)
 
 ## Known Issues
-- Problems stopping/restarting entrance after log in
-[Issue #5](https://github.com/Obsidian-StudiosInc/entrance/issues/5)
 - Settings UI is broken, hidden for now
 [Issue #6](https://github.com/Obsidian-StudiosInc/entrance/issues/6)
 
