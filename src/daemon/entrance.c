@@ -1,6 +1,7 @@
 #include "entrance.h"
 #include <sys/file.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <Eina.h>
@@ -31,6 +32,7 @@ static Ecore_Exe *_entrance_client = NULL;
 static char *entrance_display = NULL;
 static char *entrance_home_path = NULL;
 static const char *entrance_user = NULL;
+static int entrance_signal = 0;
 static pid_t entrance_client_pid = 0;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
@@ -109,6 +111,7 @@ static Eina_Bool
 _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Exe_Event_Del *ev;
+   pid_t session_pid = 0;
 
    ev = event;
    if (ev->exe != _entrance_client)
@@ -122,9 +125,23 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
        return ECORE_CALLBACK_PASS_ON;
      }
    PT("client terminated");
-   ecore_main_loop_quit();
    _entrance_client = NULL;
-
+   if(ev->exit_signal==SIGTERM)
+     {
+       PT("stopping server");
+       ecore_main_loop_quit();
+     }
+   else
+     {
+       if((session_pid = entrance_session_pid_get())>0)
+         {
+           PT("session running, waiting...");
+           while (entrance_signal &&
+                  (-1 == waitpid(session_pid, NULL, 0)));
+         }
+       PT("restarting client");
+       _entrance_start(entrance_display);
+     }
    return ECORE_CALLBACK_DONE;
 }
 
@@ -345,6 +362,7 @@ static void
 _signal_cb(int sig)
 {
    PT("signal %d received", sig);
+   entrance_signal = sig;
    if (_entrance_client)
      {
        PT("terminate client");
@@ -575,12 +593,6 @@ main (int argc, char ** argv)
    ecore_shutdown();
    PT("session shutdown");
    entrance_session_shutdown();
-   if (entrance_session_logged_get())
-     {
-        PT("user logged, waiting...");
-        _entrance_wait();
-        /* no more running here */
-     }
    _remove_lock();
    PT("config shutdown");
    entrance_config_shutdown();
