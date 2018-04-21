@@ -34,12 +34,3 @@ else
 		install_dir             : dir_sbin
 	)
 endif
-
-# entrance_wait
-executable('entrance_wait', 'entrance_wait.c',
-	include_directories	: [inc, top_inc],
-	dependencies		: [deps, ecore_x],
-	gui_app			: true,
-	install			: true,
-	install_dir             : dir_lib
-)
