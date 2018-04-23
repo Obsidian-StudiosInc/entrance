@@ -566,10 +566,7 @@ main (int argc, char ** argv)
    entrance_history_shutdown();
    PT("history shutdown");
    if (_xephyr)
-     {
-        //ecore_exe_terminate(xephyr);
-        PT("Xephyr shutdown");
-     }
+     PT("Xephyr shutdown");
    else
      {
         entrance_xserver_shutdown();
