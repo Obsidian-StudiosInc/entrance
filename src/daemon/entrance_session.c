@@ -163,8 +163,9 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         env[n++]=0;
 #endif
         snprintf(buf, sizeof(buf),
-                 "%s %s",
+                 "%s %s %s",
                  entrance_config->command.session_start,
+                 _dname,
                  pwd->pw_name);
         if (-1 == system(buf))
           PT("Error on session start command");
@@ -208,8 +209,8 @@ entrance_session_end(const char *user)
    entrance_pam_init(PACKAGE, _dname, user);
 #endif
    char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf),
-            "%s %s", entrance_config->command.session_stop, user);
+   snprintf(buf, sizeof(buf), "%s %s %s",
+            entrance_config->command.session_stop, _dname, user);
    if (-1 == system(buf))
      PT("Error on session stop command");
    entrance_session_close(EINA_TRUE);
