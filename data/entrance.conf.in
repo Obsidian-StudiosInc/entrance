@@ -6,7 +6,7 @@ group "Entrance_Config" struct {
     /* X display for client, server, and session */
     value "xdisplay" string: ":0.0";
     /* X server args */
-    value "xinit_args" string: "-nolisten tcp -br vt7 :0.0";
+    value "xinit_args" string: "-nolisten tcp -br vt7";
 
     /* xauth path binary */
     value "xauth_path" string: "/usr/bin/xauth";
