@@ -21,6 +21,7 @@ struct _Entrance_Config
         const char *shutdown;
         const char *reboot;
         const char *suspend;
+        unsigned short vtnr;
      } command;
    const char *userlogin;
    const char *lockfile;
