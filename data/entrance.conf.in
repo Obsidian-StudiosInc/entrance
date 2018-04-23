@@ -5,7 +5,7 @@ group "Entrance_Config" struct {
     value "xinit_path" string: "/usr/bin/X";
     /* X display for client, server, and session */
     value "xdisplay" string: ":0";
-    /* X server args */
+    /* X server args, xdisplay is appended at the end */
     value "xinit_args" string: "-nolisten tcp -br vt7";
 
     /* xauth path binary */
@@ -13,12 +13,14 @@ group "Entrance_Config" struct {
     /* xauth file for server */
     value "xauth_file" string: "/var/run/entrance.auth";
 
-    /* Commands executed  before starting a session */
-    value "session_start" string: "/usr/bin/sessreg -a -l :0";
+    /* Commands executed  before starting a session
+       xdisplay is appended at the end */
+    value "session_start" string: "/usr/bin/sessreg -a -l";
     /* Commands executed  to launch a session */
     value "session_login" string: "@SYSTEM_CONFIG_DIR@/entrance/Xsession";
-    /* Commands executed when exiting a session */
-    value "session_stop" string: "/usr/bin/sessreg -d -l :0";
+    /* Commands executed when exiting a session
+       xdisplay is appended at the end */
+    value "session_stop" string: "/usr/bin/sessreg -d -l";
 
 
     /* Commands executed to shutdown */
