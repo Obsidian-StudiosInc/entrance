@@ -19,6 +19,7 @@ _defaults_set(Entrance_Config *config)
    config->command.xauth_path = eina_stringshare_add("/usr/bin/xauth");
    config->command.xauth_file = eina_stringshare_add("/var/run/entrance.auth");
    config->command.xdisplay = eina_stringshare_add(":0.0");
+   config->command.vtnr = 7;
    config->command.session_start = eina_stringshare_add("/usr/bin/sessreg -a -l" );
    config->command.session_login = eina_stringshare_add(SYSTEM_CONFIG_DIR"/entrance/Xsession");
    config->command.session_stop = eina_stringshare_add("/usr/bin/sessreg -d -l");
@@ -155,6 +156,7 @@ entrance_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "xauth_path", command.xauth_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "xauth_file", command.xauth_file, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "xdisplay", command.xdisplay, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "vtnr", command.vtnr, EET_T_USHORT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "session_start", command.session_start, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "session_login", command.session_login, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "session_stop", command.session_stop, EET_T_STRING);
