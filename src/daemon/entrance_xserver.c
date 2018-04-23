@@ -54,7 +54,7 @@ _xserver_start(void)
         int i;
         if (!(abuf = strdup(entrance_config->command.xinit_args)))
           goto xserver_error;
-        if (!(args = calloc(num_token + 2, sizeof(char *))))
+        if (!(args = calloc(num_token + 3, sizeof(char *))))
           {
              free(abuf);
              goto xserver_error;
@@ -68,6 +68,8 @@ _xserver_start(void)
                args[i] = token;
              token = strtok_r(NULL, " ", &saveptr);
           }
+        args[num_token] = (char *)entrance_config->command.xdisplay;
+        num_token++;
         args[num_token] = NULL;
      }
    else
@@ -77,9 +79,10 @@ _xserver_start(void)
         args[0] = (char *)entrance_config->command.xinit_path;
         args[1] = NULL;
      }
-   PT("Executing: %s %s",
+   PT("Executing: %s %s %s",
       entrance_config->command.xinit_path,
-      entrance_config->command.xinit_args);
+      entrance_config->command.xinit_args,
+      entrance_config->command.xdisplay);
    // ideally close on success, otherwise proceeding PT is never outputted
    entrance_close_log();
    execv(args[0], args);
