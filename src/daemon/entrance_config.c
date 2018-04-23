@@ -19,9 +19,9 @@ _defaults_set(Entrance_Config *config)
    config->command.xauth_path = eina_stringshare_add("/usr/bin/xauth");
    config->command.xauth_file = eina_stringshare_add("/var/run/entrance.auth");
    config->command.xdisplay = eina_stringshare_add(":0.0");
-   config->command.session_start = eina_stringshare_add("/usr/bin/sessreg -a -l :0.0" );
+   config->command.session_start = eina_stringshare_add("/usr/bin/sessreg -a -l" );
    config->command.session_login = eina_stringshare_add(SYSTEM_CONFIG_DIR"/entrance/Xsession");
-   config->command.session_stop = eina_stringshare_add("/usr/bin/sessreg -d -l :0.0");
+   config->command.session_stop = eina_stringshare_add("/usr/bin/sessreg -d -l");
    config->command.shutdown = eina_stringshare_add("/usr/bin/shutdown -h now");
    config->command.reboot = eina_stringshare_add("/usr/bin/shutdown -r now");
    config->command.suspend = eina_stringshare_add("/usr/sbin/suspend");
