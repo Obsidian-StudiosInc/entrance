@@ -14,6 +14,7 @@ struct _Entrance_Config
         const char *xinit_args;
         const char *xauth_path;
         const char *xauth_file;
+        const char *xdisplay;
         const char *session_start;
         const char *session_login;
         const char *session_stop;
