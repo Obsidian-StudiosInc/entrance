@@ -27,6 +27,7 @@ _xserver_start(void)
    char *buf = NULL;
    char **args = NULL;
    char *saveptr = NULL;
+   char vt[128] = {0};
    pid_t pid;
 
    PT("Launching xserver");
@@ -54,7 +55,7 @@ _xserver_start(void)
         int i;
         if (!(abuf = strdup(entrance_config->command.xinit_args)))
           goto xserver_error;
-        if (!(args = calloc(num_token + 3, sizeof(char *))))
+        if (!(args = calloc(num_token + 4, sizeof(char *))))
           {
              free(abuf);
              goto xserver_error;
@@ -68,6 +69,9 @@ _xserver_start(void)
                args[i] = token;
              token = strtok_r(NULL, " ", &saveptr);
           }
+        snprintf(vt, sizeof(vt), "vt%d", entrance_config->command.vtnr);
+        args[num_token] = vt;
+        num_token++;
         args[num_token] = (char *)entrance_config->command.xdisplay;
         num_token++;
         args[num_token] = NULL;
@@ -79,9 +83,10 @@ _xserver_start(void)
         args[0] = (char *)entrance_config->command.xinit_path;
         args[1] = NULL;
      }
-   PT("Executing: %s %s %s",
+   PT("Executing: %s %s vt%d %s",
       entrance_config->command.xinit_path,
       entrance_config->command.xinit_args,
+      entrance_config->command.vtnr,
       entrance_config->command.xdisplay);
    // ideally close on success, otherwise proceeding PT is never outputted
    entrance_close_log();
