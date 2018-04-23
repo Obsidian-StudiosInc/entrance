@@ -8,7 +8,6 @@
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
 
-#define ENTRANCE_DISPLAY ":0.0"
 #define ENTRANCE_XEPHYR ":1.0"
 #define ENTRANCE_CONFIG_HOME_PATH "/var/cache/entrance/client"
 #define ENTRANCE_USER_MAX 33
@@ -442,15 +441,6 @@ main (int argc, char ** argv)
    if (!_xephyr && getenv("ENTRANCE_XEPHYR"))
      _xephyr = EINA_TRUE;
 
-   if (_xephyr)
-     {
-        nodaemon = EINA_TRUE;
-        entrance_display = strdup(ENTRANCE_XEPHYR);
-        putenv(strdup("ENTRANCE_XEPHYR=1"));
-     }
-   else
-     entrance_display = strdup(ENTRANCE_DISPLAY);
-
    eet_init();
    efreet_init();
    entrance_config_init();
@@ -459,6 +449,16 @@ main (int argc, char ** argv)
         PT("No config loaded, sorry must quit ...");
         exit(1);
      }
+
+   if (_xephyr)
+     {
+        nodaemon = EINA_TRUE;
+        entrance_display = strdup(ENTRANCE_XEPHYR);
+        putenv(strdup("ENTRANCE_XEPHYR=1"));
+     }
+   else
+     entrance_display = strdup(entrance_config->command.xdisplay);
+
    if (!_xephyr && !_get_lock())
         exit(1);
 
