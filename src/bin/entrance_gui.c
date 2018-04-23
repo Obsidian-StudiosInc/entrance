@@ -774,7 +774,7 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED,
           {
              o = entrance_gui_theme_get(obj, eu->image.group);
           }
-        //TODO if this fails we maybe should wipe those fields in the config and use a random one
+
         evas_object_size_hint_weight_set(o, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
         evas_object_show(o);
         elm_object_part_content_set(ic ,"entrance.icon", o);
