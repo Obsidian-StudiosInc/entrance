@@ -116,7 +116,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
      return ECORE_CALLBACK_PASS_ON;
    PT("client terminated");
    _entrance_client = NULL;
-   if(ev->exit_signal==SIGTERM)
+   if(ev->exit_signal==SIGTERM || _xephyr)
      {
        PT("stopping server");
        ecore_main_loop_quit();
@@ -129,7 +129,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
            while (!entrance_signal &&
                   ( waitpid(session_pid, NULL, 0) > 0 ));
          }
-       if(!entrance_signal)
+       if(!entrance_signal && !_xephyr)
          {
            PT("restarting client");
            _entrance_start(entrance_display);
