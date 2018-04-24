@@ -78,4 +78,7 @@ group "Entrance_Config" struct {
 
     /* Run/start entrance under this user */
     value "start_user" string: "nobody";
+
+    /* Ecore Connection Port Number */
+    value "port" ushort: 42;
 }
