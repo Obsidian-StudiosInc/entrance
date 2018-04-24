@@ -13,6 +13,7 @@ static Eet_Data_Descriptor *_entrance_config_descriptor;
 static void
 _defaults_set(Entrance_Config *config)
 {
+   config->port = 42;
    config->session_path = eina_stringshare_add("/bin:/usr/bin:/usr/local/bin");
    config->command.xinit_path = eina_stringshare_add("/usr/bin/X");
    config->command.xinit_args = eina_stringshare_add("-nolisten tcp -br vt7");
@@ -150,6 +151,7 @@ entrance_config_init()
 
    EET_EINA_STREAM_DATA_DESCRIPTOR_CLASS_SET(&eddc, Entrance_Config);
    edd = eet_data_descriptor_stream_new(&eddc);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "port", port, EET_T_USHORT);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "session_path", session_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "xinit_path", command.xinit_path, EET_T_STRING);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "xinit_args", command.xinit_args, EET_T_STRING);
