@@ -113,8 +113,8 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
    entrance_pam_env_set("DISPLAY", _dname);
    entrance_pam_env_set("MAIL=/var/mail/%s", pwd->pw_name);
    entrance_pam_env_set("XAUTHORITY", cookie);
-   entrance_pam_env_set("XDG_SESSION_CLASS", "greeter");
    entrance_pam_env_set("XDG_SEAT", "seat0");
+   entrance_pam_env_set("XDG_SESSION_CLASS", "user");
    entrance_pam_env_set("XDG_VTNR", vtnr);
 #endif
    return EINA_TRUE;
@@ -136,7 +136,7 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 #else
         int n = 0;
         char *term = getenv("TERM");
-        env = (char **)malloc(11 * sizeof(char *));
+        env = (char **)malloc(12 * sizeof(char *));
         if(term)
           {
             char *t = NULL;
@@ -163,6 +163,8 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
         snprintf(buf, sizeof(buf), "MAIL=/var/mail/%s", pwd->pw_name);
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "XAUTHORITY=%s", cookie);
+        env[n++]=strdup(buf);
+        snprintf(buf, sizeof(buf), "XDG_SESSION_CLASS=user");
         env[n++]=strdup(buf);
         snprintf(buf, sizeof(buf), "XDG_VTNR=%d", entrance_config->command.vtnr);
         env[n++]=strdup(buf);
