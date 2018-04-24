@@ -15,7 +15,16 @@ meson \
 	-Ddebug=true \
 	$@ . build
 scan-build ninja -C build
-mv -v build/entrance.conf build/data
+
+# sed to change
+# 1. display for xephyr
+# 2. connection number
+# 3. auth, pid, and log file locations
+sed -i -e "s|:0|:1.0|" \
+	-e "s|42|43|" \
+	-e "s:/var/\(log\|run\):${PWD}/build:g" \
+	build/entrance.conf
+
 cd build
 
 DIRS=( test/entrance/themes )
@@ -26,7 +35,7 @@ done
 
 [[ ! -L  test/elementary ]] && ln -s /usr/share/elementary test/elementary
 
-cp data/entrance.conf \
+cp entrance.conf \
 	../data/Xsession \
 	src/bin/entrance_client \
 	test/entrance
