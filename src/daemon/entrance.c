@@ -202,10 +202,10 @@ _entrance_start(const char *entrance_display)
        snprintf(buf, sizeof(buf),
                 "export HOME=%s; export USER=%s;"
                 "export LD_LIBRARY_PATH="PACKAGE_LIB_DIR";%s "
-                PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d",
+                PACKAGE_BIN_DIR"/entrance_client -d %s -t %s -g %d -u %d -p %d",
                 home_path, entrance_user, entrance_config->command.session_login,
                 entrance_display, entrance_config->theme,
-                entrance_gid,entrance_uid);
+                entrance_gid,entrance_uid, entrance_config->port);
        PT("Exec entrance_client: %s", buf);
 
        _entrance_client =
