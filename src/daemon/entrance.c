@@ -265,6 +265,7 @@ _entrance_uid_gid_init()
                   chown(ENTRANCE_CONFIG_HOME_PATH, entrance_uid, entrance_gid);
                }
           }
+        entrance_home_path = strdup(ENTRANCE_CONFIG_HOME_PATH);
      }
    else
      entrance_home_path = strdup(pwd->pw_dir);
