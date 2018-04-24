@@ -7,6 +7,7 @@ typedef struct _Entrance_Config Entrance_Config;
 
 struct _Entrance_Config
 {
+   unsigned short port;
    const char *session_path;
    struct
      {
