@@ -17,6 +17,7 @@ static const Ecore_Getopt options =
    {
       ECORE_GETOPT_STORE_STR('d', "display", "specify the display to use"),
       ECORE_GETOPT_STORE_INT('g', "gid", "specify the group to run under"),
+      ECORE_GETOPT_STORE_USHORT('p', "port", "specify the port to use"),
       ECORE_GETOPT_STORE_STR('t', "theme", "specify the theme to use"),
       ECORE_GETOPT_STORE_INT('u', "uid", "specify the user to run under"),
       ECORE_GETOPT_HELP ('h', "help"),
@@ -30,17 +31,19 @@ static const Ecore_Getopt options =
 int
 main(int argc, char **argv)
 {
-   int args;
-   unsigned char quit_option = 0;
    char *display = NULL;
    char *theme = NULL;
+   int args;
    int gid = 0;
+   int port = 0;
    int uid = 0;
+   unsigned char quit_option = 0;
 
    Ecore_Getopt_Value values[] =
      {
         ECORE_GETOPT_VALUE_STR(display),
         ECORE_GETOPT_VALUE_INT(gid),
+        ECORE_GETOPT_VALUE_INT(port),
         ECORE_GETOPT_VALUE_STR(theme),
         ECORE_GETOPT_VALUE_INT(uid),
         ECORE_GETOPT_VALUE_BOOL(quit_option),
@@ -74,6 +77,8 @@ main(int argc, char **argv)
         eina_shutdown();
         return EXIT_FAILURE;
      }
+   if(!port)
+     port = 42;
    if (!theme)
      theme = "default";
    ecore_init();
@@ -84,7 +89,7 @@ main(int argc, char **argv)
    PT("gui init");
    if (!entrance_gui_init(theme)) return EXIT_FAILURE;
    PT("connect init");
-   entrance_connect_init();
+   entrance_connect_init(port);
    elm_run();
    PT("connect shutdown");
    entrance_connect_shutdown();

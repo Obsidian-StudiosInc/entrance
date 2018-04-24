@@ -199,7 +199,7 @@ entrance_connect_auth_cb_del(void *auth)
 }
 
 void
-entrance_connect_init(void)
+entrance_connect_init(int port)
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
@@ -207,7 +207,7 @@ entrance_connect_init(void)
                        _entrance_connect_write_cb,
                        NULL);
    _entrance_connect = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
-                                                "entrance", 42, NULL);
+                                                "entrance", port, NULL);
    if (_entrance_connect)
      PT("client server init ok");
    else
