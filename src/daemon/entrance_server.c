@@ -144,22 +144,28 @@ void
 entrance_server_init(gid_t uid, uid_t gid)
 {
    Ecore_Event_Handler *h;
+   char path[1024] = {0};
+
    ecore_con_init();
    entrance_event_init(_entrance_server_read_cb,
                        _entrance_server_write_cb,
                        NULL);
 
    _entrance_server = ecore_con_server_add(ECORE_CON_LOCAL_SYSTEM,
-                                        "entrance", 42, NULL);
+                                           "entrance", 
+                                           entrance_config->port,
+                                           NULL);
+   snprintf(path, sizeof(path),
+            "/tmp/.ecore_service|entrance|%d", entrance_config->port);
    if (!_entrance_server)
      PT("server init fail");
    else
-     PT("chown client socket uid %d gid %d",uid,gid);
-   if(chown("/tmp/.ecore_service|entrance|42",uid,gid)!=0) {
+     PT("chown %d:%d %s",uid,gid, path);
+   if(chown(path,uid,gid)!=0) {
      if(errno==ENOENT)
-       PT("chown failed, socket does not exist");
+       PT("chown failed, file does not exist %s", path);
      else
-       PT("chown failed");
+       PT("chown failed %s", path);
    }
 
    h = ecore_event_handler_add(ECORE_CON_EVENT_CLIENT_ADD,
