@@ -1,12 +1,15 @@
 group "Entrance_Config" struct {
     value "session_path" string: "/bin:/usr/bin:/usr/local/bin";
 
+    /* Virtual Terminal number */
+    value "vtnr" ushort: 7;
+
     /* X server path */
     value "xinit_path" string: "/usr/bin/X";
     /* X display for client, server, and session */
     value "xdisplay" string: ":0";
-    /* X server args, xdisplay is appended at the end */
-    value "xinit_args" string: "-nolisten tcp -br vt7";
+    /* X server args, vtnr and xdisplay are appended at the end */
+    value "xinit_args" string: "-nolisten tcp -br";
 
     /* xauth path binary */
     value "xauth_path" string: "/usr/bin/xauth";
