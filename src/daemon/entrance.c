@@ -172,7 +172,6 @@ _entrance_start(const char *entrance_display)
    int home_dir;
    struct stat st;
 
-   PT("starting...");
    if (entrance_config->autologin)
      {
        ecore_main_loop_quit();
@@ -180,6 +179,7 @@ _entrance_start(const char *entrance_display)
      }
    if (_entrance_client)
      return;
+   PT("starting client...");
    ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
