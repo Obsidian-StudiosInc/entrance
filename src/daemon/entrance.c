@@ -19,7 +19,7 @@ static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
 static void _entrance_session_wait();
-static void _entrance_start(const char *entrance_display);
+static void _entrance_start_client(const char *entrance_display);
 static void _entrance_uid_gid_init();
 static void _remove_lock();
 static void _signal_cb(int sig);
@@ -127,7 +127,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
       if(!entrance_signal && !_xephyr)
         {
           PT("restarting client");
-          _entrance_start(entrance_display);
+          _entrance_start_client(entrance_display);
         }
     }
    return ECORE_CALLBACK_DONE;
@@ -165,7 +165,7 @@ _entrance_session_wait()
 }
 
 static void
-_entrance_start(const char *entrance_display)
+_entrance_start_client(const char *entrance_display)
 {
    char buf[PATH_MAX];
    char *home_path = ENTRANCE_CONFIG_HOME_PATH;
@@ -530,12 +530,12 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("xserver init");
-        pid = entrance_xserver_init(_entrance_start, entrance_display);
+        pid = entrance_xserver_init(_entrance_start_client, entrance_display);
      }
    else
      {
         putenv(strdup("ENTRANCE_XPID=-1"));
-        _entrance_start(entrance_display);
+        _entrance_start_client(entrance_display);
      }
 
    PT("history init");
