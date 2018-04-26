@@ -18,6 +18,7 @@ static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
+static void _entrance_session_wait();
 static void _entrance_start(const char *entrance_display);
 static void _entrance_uid_gid_init();
 static void _remove_lock();
@@ -109,7 +110,6 @@ static Eina_Bool
 _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
 {
    Ecore_Exe_Event_Del *ev;
-   pid_t session_pid = 0;
 
    ev = event;
    if (ev->exe != _entrance_client)
@@ -122,19 +122,14 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
        ecore_main_loop_quit();
      }
    else
-     {
-       if((session_pid = entrance_session_pid_get())>0)
-         {
-           PT("session running pid %d, waiting...", session_pid);
-           while (!entrance_signal &&
-                  ( waitpid(session_pid, NULL, 0) > 0 ));
-         }
-       if(!entrance_signal && !_xephyr)
-         {
-           PT("restarting client");
-           _entrance_start(entrance_display);
-         }
-     }
+    {
+       _entrance_session_wait();
+      if(!entrance_signal && !_xephyr)
+        {
+          PT("restarting client");
+          _entrance_start(entrance_display);
+        }
+    }
    return ECORE_CALLBACK_DONE;
 }
 
@@ -154,6 +149,19 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
    strncpy(buf, (char*)ev->data, size);
    EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
+}
+
+static void
+_entrance_session_wait()
+{
+  pid_t session_pid = 0;
+
+  if((session_pid = entrance_session_pid_get())>0)
+    {
+      PT("session running pid %d, waiting...", session_pid);
+      while (!entrance_signal &&
+             ( waitpid(session_pid, NULL, 0) > 0 ));
+    }
 }
 
 static void
@@ -537,10 +545,10 @@ main (int argc, char ** argv)
         PT("autologin init");
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(entrance_display, NULL);
-        PT("main loop begin");
+        PT("starting main loop");
         ecore_main_loop_begin();
-        PT("auth user");
 #ifdef HAVE_PAM
+        PT("pam init");
         entrance_pam_init(PACKAGE, entrance_display, entrance_config->userlogin);
 #endif
         PT("login user");
@@ -549,6 +557,7 @@ main (int argc, char ** argv)
            EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
+        _entrance_session_wait();
      }
    else
      {
