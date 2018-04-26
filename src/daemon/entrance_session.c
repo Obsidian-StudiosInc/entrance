@@ -400,6 +400,8 @@ entrance_session_login(const char *session, Eina_Bool push)
         PT("Error !!! No command to launch, can't open a session :'(");
         return EINA_FALSE;
      }
+   if(!_login && entrance_config->autologin)
+     _login = strdup(entrance_config->userlogin);
    PT("launching session %s for user %s", cmd, _login);
    _entrance_session_run(pwd, cmd, buf);
    snprintf(buf, sizeof(buf), "ENTRANCE_USER=%s", pwd->pw_name);
