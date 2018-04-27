@@ -406,6 +406,7 @@ entrance_session_login(const char *session, Eina_Bool push)
    _entrance_session_run(pwd, cmd, buf);
    snprintf(buf, sizeof(buf), "ENTRANCE_USER=%s", pwd->pw_name);
    putenv(buf);
+   free(_login);
    return EINA_TRUE;
 }
 
