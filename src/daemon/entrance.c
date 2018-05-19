@@ -8,7 +8,7 @@
 #include "Ecore_Getopt.h"
 #include <xcb/xcb.h>
 
-#define ENTRANCE_CONFIG_HOME_PATH "/var/cache/entrance/client"
+#define ENTRANCE_CONFIG_HOME_PATH PACKAGE_CACHE"/client"
 #define ENTRANCE_USER_MAX 33
 
 static Eina_Bool _entrance_autologin_lock_get(void);
@@ -83,7 +83,7 @@ _entrance_autologin_lock_get(void)
 static void
 _entrance_autologin_lock_set(void)
 {
-   system("touch /var/cache/entrance/login");
+   system("touch "PACKAGE_CACHE"/login");
 }
 
 static Eina_Bool
