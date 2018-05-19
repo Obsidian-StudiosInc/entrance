@@ -47,12 +47,12 @@ _users_get(void)
    int textlen;
    char *text = NULL;
 
-   if (!ecore_file_is_dir("/var/cache/"PACKAGE))
-     ecore_file_mkdir("/var/cache/"PACKAGE);
-   ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+   if (!ecore_file_is_dir(PACKAGE_CACHE))
+     ecore_file_mkdir(PACKAGE_CACHE);
+   ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE,
                  EET_FILE_MODE_READ_WRITE);
    if (!ef)
-     ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+     ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE,
                    EET_FILE_MODE_WRITE);
    f = fopen(SYSTEM_CONFIG_DIR"/entrance/entrance.conf", "rb");
    if (!f)
@@ -94,11 +94,11 @@ _cache_get(void)
    Entrance_Config *config = NULL;
    Eet_File *file;
 
-   file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+   file = eet_open(PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE,
                    EET_FILE_MODE_READ);
    if (!file)
      {
-        PT("Error!!! On read /var/cache"PACKAGE"/"ENTRANCE_CONFIG_FILE);
+        PT("Error!!! On read "PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE);
         return NULL;
      }
 
@@ -181,7 +181,7 @@ entrance_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "start_user", start_user, EET_T_STRING);
    _entrance_config_descriptor = edd;
 
-   if (stat( "/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
+   if (stat( PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
      _users_get();
    else
      {
@@ -237,16 +237,16 @@ entrance_config_set(const Entrance_Conf_Gui_Event *conf)
    if (update)
      {
         PT("Config save");
-        if (!ecore_file_is_dir("/var/cache/"PACKAGE))
-          ecore_file_mkdir("/var/cache/"PACKAGE);
-        file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+        if (!ecore_file_is_dir(PACKAGE_CACHE))
+          ecore_file_mkdir(PACKAGE_CACHE);
+        file = eet_open(PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE,
                         EET_FILE_MODE_READ_WRITE);
         if (!file)
-          file = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE,
+          file = eet_open(PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE,
                         EET_FILE_MODE_WRITE);
         if (!file)
           {
-             PT("Warning can't open /var/cache/"PACKAGE"/"ENTRANCE_CONFIG_FILE);
+             PT("Warning can't open "PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE);
              return;
           }
         eet_data_write(file, _entrance_config_descriptor, ENTRANCE_CONFIG_KEY,
