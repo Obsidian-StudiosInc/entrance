@@ -63,7 +63,7 @@ _entrance_history_read(void)
 {
    Eet_File *ef;
 
-   ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
+   ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_HISTORY_FILE,
                  EET_FILE_MODE_READ_WRITE);
    if (ef)
      {
@@ -85,10 +85,10 @@ _entrance_history_write(void)
    if (_history_update)
      {
         PT("writing history file");
-        ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
+        ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_HISTORY_FILE,
                       EET_FILE_MODE_READ_WRITE);
         if (!ef)
-          ef = eet_open("/var/cache/"PACKAGE"/"ENTRANCE_HISTORY_FILE,
+          ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_HISTORY_FILE,
                         EET_FILE_MODE_WRITE);
 
         if (!eet_data_write(ef, _eddh, ENTRANCE_SESSION_KEY,
