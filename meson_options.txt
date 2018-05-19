@@ -1,3 +1,7 @@
+option('cachedir',
+       type       : 'string',
+       value      : '/var/cache',
+       description: 'Path to cache dir, entrance subdir will be appended')
 option('consolekit',
        type       : 'boolean',
        value      : true,
