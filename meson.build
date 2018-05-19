@@ -43,6 +43,7 @@ endif
 
 ##### dir locations
 dir_prefix = get_option('prefix')
+dir_cache  = join_paths(dir_prefix, get_option('cachedir'), proj)
 dir_lib    = join_paths(dir_prefix, get_option('libdir'), proj)
 dir_data   = join_paths(dir_prefix, get_option('datadir'))
 dir_sbin   = join_paths(dir_prefix, get_option('sbindir'))
@@ -81,6 +82,7 @@ endif
 # config.h
 cfg = configuration_data()
 cfg.set_quoted('PACKAGE'		, proj)
+cfg.set_quoted('PACKAGE_CACHE'  	, dir_cache)
 cfg.set_quoted('PACKAGE_NAME'		, proj)
 cfg.set_quoted('PACKAGE_STRING'		, proj + ' ' + ver)
 cfg.set_quoted('PACKAGE_URL'		, base_url + proj)
