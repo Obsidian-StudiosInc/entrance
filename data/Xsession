@@ -21,7 +21,7 @@ for fn in "/etc/X11/" "/etc/X11/xinit/" "/etc/X11/xdm/" "$HOME/."; do
 	fn="${fn}Xresources"
 	if [[ -f "${fn}" ]]; then
 		echo "Loading X resource: ${fn}"
-		xrdb -nocpp -merge "${fn}"
+		xrdb -merge "${fn}"
 	fi
 done
 
