@@ -9,7 +9,6 @@
 #include <xcb/xcb.h>
 
 #define ENTRANCE_CONFIG_HOME_PATH PACKAGE_CACHE"/client"
-#define ENTRANCE_USER_MAX 33
 
 static Eina_Bool _entrance_autologin_lock_get(void);
 static Eina_Bool _entrance_client_error(void *data, int type, void *event);
@@ -487,19 +486,6 @@ main (int argc, char ** argv)
         exit(1);
      }
 
-   entrance_user = getenv("ENTRANCE_USER");
-   if (entrance_user)
-     {
-        char *user = NULL;
-        user = strndup(entrance_user,ENTRANCE_USER_MAX);
-        if(user)
-          {
-            entrance_xserver_wait();
-            entrance_session_init(entrance_display);
-            entrance_session_end(user);
-            free(user);
-          }
-     }
    PT("Welcome");
    /* Initialise event handler */
 
