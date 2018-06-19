@@ -214,7 +214,7 @@ void
 entrance_session_end(const char *user)
 {
 #ifdef HAVE_PAM
-   entrance_pam_init(PACKAGE, _dname, user);
+   entrance_pam_init(_dname, user);
 #endif
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s %s %s",
@@ -334,7 +334,7 @@ entrance_session_authenticate(const char *login, const char *passwd)
    Eina_Bool auth;
    _login = strdup(login);
 #ifdef HAVE_PAM
-   entrance_pam_init(PACKAGE, _dname, login);
+   entrance_pam_init(_dname, login);
    auth = !!(!entrance_pam_passwd_set(passwd)
              && !entrance_pam_authenticate());
 #else

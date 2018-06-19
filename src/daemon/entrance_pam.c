@@ -165,18 +165,17 @@ entrance_pam_authenticate(void)
 }
 
 int
-entrance_pam_init(const char *service, const char *display, const char *user)
+entrance_pam_init(const char *display, const char *user)
 {
    int status;
 
-   if (!service || !*service) goto pam_error;
    if (!display || !*display) goto pam_error;
 
    _pam_conversation.conv = _entrance_pam_conv;
    _pam_conversation.appdata_ptr = NULL;
 
    if (_pam_handle) entrance_pam_end();
-   status = pam_start(service, user, &_pam_conversation, &_pam_handle);
+   status = pam_start(PACKAGE, user, &_pam_conversation, &_pam_handle);
    if (status != 0) goto pam_error;
    status = entrance_pam_item_set(ENTRANCE_PAM_ITEM_TTY, display);
    if (status != 0) goto pam_error;

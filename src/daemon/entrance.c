@@ -527,7 +527,7 @@ main (int argc, char ** argv)
         ecore_main_loop_begin();
 #ifdef HAVE_PAM
         PT("pam init");
-        entrance_pam_init(PACKAGE, entrance_display, entrance_config->userlogin);
+        entrance_pam_init(entrance_display, entrance_config->userlogin);
 #endif
         PT("login user");
         entrance_session_login(
