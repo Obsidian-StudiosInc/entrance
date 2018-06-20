@@ -530,9 +530,7 @@ main (int argc, char ** argv)
         entrance_pam_init(entrance_display, entrance_config->userlogin);
 #endif
         PT("login user");
-        entrance_session_login(
-           entrance_history_user_session_get(entrance_config->userlogin),
-           EINA_FALSE);
+        entrance_session_login(entrance_config->session, EINA_FALSE);
         sleep(30);
         xcb_disconnect(disp);
         _entrance_session_wait();
