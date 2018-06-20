@@ -96,12 +96,16 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
                   PT("opening session now ...");
                   entrance_session_login(eev->event.auth.session, EINA_TRUE);
                }
+#ifdef HAVE_PAM
              else
                entrance_pam_end();
+#endif
           }
         else
           {
+#ifdef HAVE_PAM
              entrance_pam_end();
+#endif
              neev.event.status.login = NULL;
              neev.event.status.granted = EINA_FALSE;
              PT("server authenticate error");
