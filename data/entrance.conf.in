@@ -53,6 +53,9 @@ group "Entrance_Config" struct {
     /* The name of the user to use when autologin are enabled */
     value "userlogin" string: "myusername";
 
+    /* The desktop session to use when autologin is enabled */
+    value "session" string: "Enlightenment";
+
     /* Lock file */
     value "lockfile" string: "/var/run/entrance.pid";
 
