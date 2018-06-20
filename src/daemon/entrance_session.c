@@ -211,20 +211,6 @@ _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 }
 
 void
-entrance_session_end(const char *user)
-{
-#ifdef HAVE_PAM
-   entrance_pam_init(_dname, user);
-#endif
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s %s %s",
-            entrance_config->command.session_stop, _dname, user);
-   if (-1 == system(buf))
-     PT("Error on session stop command");
-   entrance_session_close(EINA_TRUE);
-}
-
-void
 entrance_session_close(const Eina_Bool opened)
 {
 #ifdef HAVE_PAM
