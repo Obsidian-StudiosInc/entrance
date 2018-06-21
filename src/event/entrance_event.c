@@ -17,8 +17,8 @@
 #define EET_LOGIN_ADD(NAME, TYPE) \
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
 
-static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow);
-static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknow);
+static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknown);
+static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknown);
 static Eet_Data_Descriptor *_entrance_event_auth_dd(void);
 static Eet_Data_Descriptor *_entrance_event_status_dd(void);
 static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
@@ -42,10 +42,10 @@ typedef struct _Entrance_Event_Private {
 static Entrance_Event_Private *_eep = NULL;
 
 static Eina_Bool
-_entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
+_entrance_event_type_set(const char *type, void *data, Eina_Bool unknown)
 {
    Entrance_Event_Type *ev = data;
-   if (unknow)
+   if (unknown)
      return EINA_FALSE;
    if (!strcmp(type, ENTRANCE_EVENT_AUTH_NAME))
      *ev = ENTRANCE_EVENT_AUTH;
@@ -79,7 +79,7 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
 }
 
 static const char *
-_entrance_event_type_get(const void *data, Eina_Bool *unknow)
+_entrance_event_type_get(const void *data, Eina_Bool *unknown)
 {
   const Entrance_Event_Type *ev = data;
   switch(*ev)
@@ -109,8 +109,8 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknow)
       default: 
         {  
           printf("error on type get %d\n", *ev);
-          if (unknow)
-            *unknow = EINA_TRUE;
+          if (unknown)
+            *unknown = EINA_TRUE;
           break;
         }
     }
