@@ -1,16 +1,16 @@
-##### Description
+## Description
 Description of issue
 
-##### Steps to reproduce
+## Steps to reproduce
 1.
 2.
 3.
 ...
 
-##### How entrance is started
+## How entrance is started
 init script, systemd service, cli, script, etc
 
-##### System information
+## System information
 - OS/Distro
 - Pam enabled
 - Consolekit enabled
