@@ -81,36 +81,40 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknow)
 static const char *
 _entrance_event_type_get(const void *data, Eina_Bool *unknow)
 {
-   const Entrance_Event_Type *ev = data;
-   if (*ev == ENTRANCE_EVENT_AUTH)
-     return ENTRANCE_EVENT_AUTH_NAME;
-   else if (*ev == ENTRANCE_EVENT_MAXTRIES)
-     return ENTRANCE_EVENT_MAXTRIES_NAME;
-   else if (*ev == ENTRANCE_EVENT_STATUS)
-     return ENTRANCE_EVENT_STATUS_NAME;
-   else if (*ev == ENTRANCE_EVENT_XSESSIONS)
-     return ENTRANCE_EVENT_XSESSIONS_NAME;
-   else if (*ev == ENTRANCE_EVENT_USERS)
-     return ENTRANCE_EVENT_USERS_NAME;
-   else if (*ev == ENTRANCE_EVENT_CONF_USER)
-     return ENTRANCE_EVENT_CONF_USER_NAME;
-   else if (*ev == ENTRANCE_EVENT_ACTIONS)
-     return ENTRANCE_EVENT_ACTIONS_NAME;
-   else if (*ev == ENTRANCE_EVENT_ACTION)
-     return ENTRANCE_EVENT_ACTION_NAME;
-   else if (*ev == ENTRANCE_EVENT_CONF_GUI)
-     return ENTRANCE_EVENT_CONF_GUI_NAME;
-   else if (*ev == ENTRANCE_EVENT_POOLS)
-     return ENTRANCE_EVENT_POOLS_NAME;
-   else if (*ev == ENTRANCE_EVENT_THEMES)
-     return ENTRANCE_EVENT_THEMES_NAME;
-   else
-     {
-        printf("error on type get %d\n", *ev);
-        if (unknow)
-          *unknow = EINA_TRUE;
-     }
-   return NULL;
+  const Entrance_Event_Type *ev = data;
+  switch(*ev)
+    {
+      case ENTRANCE_EVENT_AUTH:
+        return ENTRANCE_EVENT_AUTH_NAME;
+      case ENTRANCE_EVENT_MAXTRIES:
+        return ENTRANCE_EVENT_MAXTRIES_NAME;
+      case ENTRANCE_EVENT_STATUS:
+        return ENTRANCE_EVENT_STATUS_NAME;
+      case ENTRANCE_EVENT_XSESSIONS:
+        return ENTRANCE_EVENT_XSESSIONS_NAME;
+      case ENTRANCE_EVENT_USERS:
+        return ENTRANCE_EVENT_USERS_NAME;
+      case ENTRANCE_EVENT_CONF_USER:
+        return ENTRANCE_EVENT_CONF_USER_NAME;
+      case ENTRANCE_EVENT_ACTIONS:
+        return ENTRANCE_EVENT_ACTIONS_NAME;
+      case ENTRANCE_EVENT_ACTION:
+        return ENTRANCE_EVENT_ACTION_NAME;
+      case ENTRANCE_EVENT_CONF_GUI:
+        return ENTRANCE_EVENT_CONF_GUI_NAME;
+      case ENTRANCE_EVENT_POOLS:
+        return ENTRANCE_EVENT_POOLS_NAME;
+      case ENTRANCE_EVENT_THEMES:
+        return ENTRANCE_EVENT_THEMES_NAME;
+      default: 
+        {  
+          printf("error on type get %d\n", *ev);
+          if (unknow)
+            *unknow = EINA_TRUE;
+          break;
+        }
+    }
+  return NULL;
 }
 
 static Eet_Data_Descriptor *
