@@ -170,11 +170,6 @@ _entrance_start_client(const char *entrance_display)
    int home_dir;
    struct stat st;
 
-   if (entrance_config->autologin)
-     {
-       ecore_main_loop_quit();
-       return;
-     }
    if (_entrance_client)
      return;
    PT("starting client...");
@@ -502,19 +497,15 @@ main (int argc, char ** argv)
    entrance_session_init(entrance_display);
    entrance_session_cookie();
 
-   if(!entrance_config->autologin)
-     _entrance_uid_gid_init();
-
    if (!_xephyr)
      {
+        if(!entrance_config->autologin)
+          _entrance_uid_gid_init();
         PT("xserver init");
         pid = entrance_xserver_init(_entrance_start_client, entrance_display);
      }
    else
-     {
-        putenv(strdup("ENTRANCE_XPID=-1"));
-        _entrance_start_client(entrance_display);
-     }
+     putenv(strdup("ENTRANCE_XPID=-1"));
 
    PT("history init");
    entrance_history_init();
@@ -523,8 +514,11 @@ main (int argc, char ** argv)
         PT("autologin init");
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(entrance_display, NULL);
-        PT("starting main loop");
-        ecore_main_loop_begin();
+        if(!_xephyr) 
+          {
+            PT("starting main loop");
+            ecore_main_loop_begin();
+          }
 #ifdef HAVE_PAM
         PT("pam init");
         entrance_pam_init(entrance_display, entrance_config->userlogin);
@@ -534,21 +528,25 @@ main (int argc, char ** argv)
         sleep(30);
         xcb_disconnect(disp);
         _entrance_session_wait();
+ 
+        if(!entrance_signal)
+          {
+             _entrance_uid_gid_init();
+             _entrance_start_client(entrance_display);
+          }
      }
-   else
-     {
-        PT("action init");
-        entrance_action_init();
-        PT("server init");
-        entrance_server_init(entrance_uid, entrance_gid);
-        PT("starting main loop");
-        ecore_main_loop_begin();
-        PT("main loop end");
-        entrance_server_shutdown();
-        PT("server shutdown");
-        entrance_action_shutdown();
-        PT("action shutdown");
-     }
+
+   PT("action init");
+   entrance_action_init();
+   PT("server init");
+   entrance_server_init(entrance_uid, entrance_gid);
+   PT("starting main loop");
+   ecore_main_loop_begin();
+   PT("main loop end");
+   entrance_server_shutdown();
+   PT("server shutdown");
+   entrance_action_shutdown();
+   PT("action shutdown");
    entrance_history_shutdown();
    PT("history shutdown");
    if (_xephyr)
