@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SOCKET="/tmp/.ecore_service|entrance|43"
+
+[[ -e "${SOCKET}" ]] && rm -v "${SOCKET}"
+
 #export XDG_RUNTIME_DIR="/tmp/entrance"
 
 #[[ -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
