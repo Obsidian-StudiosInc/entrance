@@ -514,11 +514,6 @@ main (int argc, char ** argv)
         PT("autologin init");
         xcb_connection_t *disp = NULL;
         disp = xcb_connect(entrance_display, NULL);
-        if(!_xephyr) 
-          {
-            PT("starting main loop");
-            ecore_main_loop_begin();
-          }
 #ifdef HAVE_PAM
         PT("pam init");
         entrance_pam_init(entrance_display, entrance_config->userlogin);
