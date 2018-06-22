@@ -55,6 +55,8 @@ _entrance_connect_auth(const char *login, Eina_Bool granted)
         if (auth->func)
           auth->func(auth->data, login, granted);
      }
+   if(granted)
+     elm_exit();
 }
 
 static Eina_Bool
