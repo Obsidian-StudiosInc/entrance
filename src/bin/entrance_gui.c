@@ -8,7 +8,6 @@
 typedef struct Entrance_Gui_ Entrance_Gui;
 typedef struct Entrance_Screen_ Entrance_Screen;
 
-static Eina_Bool _entrance_gui_cb_window_property(void *data, int type, void *event_info);
 static void _entrance_gui_user_sel_cb(void *data, Evas_Object *obj, void *event_info);
 static char *_entrance_gui_user_text_get(void *data, Evas_Object *obj, const char *part);
 static Evas_Object *_entrance_gui_user_content_get(void *data, Evas_Object *obj, const char *part);
@@ -41,7 +40,6 @@ struct Entrance_Gui_
    Eina_List *theme_icon_pool;
    Eina_List *themes;
    Entrance_Xsession *selected_session;
-   Ecore_Event_Handler *handler;
    const char *theme;
    struct
      {
@@ -179,9 +177,6 @@ entrance_gui_init(const char *theme)
    ecore_x_window_move(xw, 0, 0);
    ecore_x_event_mask_set(ecore_x_window_root_get(xw),
                           ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
-   _gui->handler =
-      ecore_event_handler_add(ECORE_X_EVENT_WINDOW_PROPERTY,
-                              _entrance_gui_cb_window_property, NULL);
    evas_object_resize(_gui->win, ww, hh);
    evas_object_show(_gui->win);
      {
@@ -244,7 +239,6 @@ entrance_gui_shutdown(void)
         eina_stringshare_del(xsession->command);
         eina_stringshare_del(xsession->icon);
      }
-   ecore_event_handler_del(_gui->handler);
    EINA_LIST_FREE(_gui->background_pool, img)
      {
        eina_stringshare_del(img->path);
@@ -841,21 +835,4 @@ _entrance_gui_actions_populate()
         edje_object_signal_emit(elm_layout_edje_get(screen->edj),
                                 ENTRANCE_EDJE_SIGNAL_ACTION_ENABLED, "");
      }
-}
-
-static Eina_Bool
-_entrance_gui_cb_window_property(void *data EINA_UNUSED,
-                                 int type EINA_UNUSED,
-                                 void *event_info)
-{
-   Ecore_X_Event_Window_Property *ev;
-
-   ev = event_info;
-   if (ev->atom == ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK)
-     {
-        PT("screen managed");
-        elm_exit();
-     }
-
-   return ECORE_CALLBACK_DONE;
 }
