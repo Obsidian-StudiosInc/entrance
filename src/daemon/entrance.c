@@ -544,9 +544,7 @@ main (int argc, char ** argv)
    PT("action shutdown");
    entrance_history_shutdown();
    PT("history shutdown");
-   if (_xephyr)
-     PT("Xephyr shutdown");
-   else
+   if (!_xephyr)
      {
         entrance_xserver_shutdown();
         PT("xserver shutdown");
