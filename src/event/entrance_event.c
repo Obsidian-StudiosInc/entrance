@@ -106,13 +106,11 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknown)
         return ENTRANCE_EVENT_POOLS_NAME;
       case ENTRANCE_EVENT_THEMES:
         return ENTRANCE_EVENT_THEMES_NAME;
-      default: 
-        {  
-          printf("error on type get %d\n", *ev);
-          if (unknown)
-            *unknown = EINA_TRUE;
-          break;
-        }
+      default:
+        printf("error on type get %d\n", *ev);
+        if (unknown)
+          *unknown = EINA_TRUE;
+        break;
     }
   return NULL;
 }
