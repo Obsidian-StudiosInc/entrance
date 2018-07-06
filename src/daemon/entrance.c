@@ -497,15 +497,18 @@ main (int argc, char ** argv)
    entrance_session_init(entrance_display);
    entrance_session_cookie();
 
+   if(!entrance_config->autologin)
+     _entrance_uid_gid_init();
+
    if (!_xephyr)
      {
-        if(!entrance_config->autologin)
-          _entrance_uid_gid_init();
         PT("xserver init");
         pid = entrance_xserver_init(_entrance_start_client, entrance_display);
      }
-   else
+   else {
      putenv(strdup("ENTRANCE_XPID=-1"));
+     _entrance_start_client(entrance_display);
+   }
 
    PT("history init");
    entrance_history_init();
