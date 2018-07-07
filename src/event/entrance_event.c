@@ -2,34 +2,34 @@
 #include <Eet.h>
 #include "entrance_event.h"
 
-
-#define ENTRANCE_EVENT_AUTH_NAME "EntranceEventAuth"
-#define ENTRANCE_EVENT_MAXTRIES_NAME "EntranceEventMaxtries"
-#define ENTRANCE_EVENT_XSESSIONS_NAME "EntranceEventSession"
-#define ENTRANCE_EVENT_STATUS_NAME "EntranceEventStatus"
-#define ENTRANCE_EVENT_USERS_NAME "EntranceEventUsers"
-#define ENTRANCE_EVENT_ACTIONS_NAME "EntranceEventActions"
-#define ENTRANCE_EVENT_ACTION_NAME "EntranceEventAction"
-#define ENTRANCE_EVENT_CONF_GUI_NAME "EntranceEventConfGui"
-#define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
-#define ENTRANCE_EVENT_POOLS_NAME "EntranceEventPools"
-#define ENTRANCE_EVENT_THEMES_NAME "EntranceEventThemes"
 #define EET_LOGIN_ADD(NAME, TYPE) \
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Login, # NAME, NAME, TYPE);
 
-static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknown);
+#define ENTRANCE_EVENT_ACTION_NAME "EntranceEventAction"
+#define ENTRANCE_EVENT_ACTIONS_NAME "EntranceEventActions"
+#define ENTRANCE_EVENT_AUTH_NAME "EntranceEventAuth"
+#define ENTRANCE_EVENT_CONF_GUI_NAME "EntranceEventConfGui"
+#define ENTRANCE_EVENT_CONF_USER_NAME "EntranceEventConfUser"
+#define ENTRANCE_EVENT_MAXTRIES_NAME "EntranceEventMaxtries"
+#define ENTRANCE_EVENT_POOLS_NAME "EntranceEventPools"
+#define ENTRANCE_EVENT_STATUS_NAME "EntranceEventStatus"
+#define ENTRANCE_EVENT_THEMES_NAME "EntranceEventThemes"
+#define ENTRANCE_EVENT_USERS_NAME "EntranceEventUsers"
+#define ENTRANCE_EVENT_XSESSIONS_NAME "EntranceEventSession"
+
 static const char *_entrance_event_type_get(const void *data, Eina_Bool *unknown);
-static Eet_Data_Descriptor *_entrance_event_auth_dd(void);
-static Eet_Data_Descriptor *_entrance_event_status_dd(void);
-static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
-static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
-static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
-static Eet_Data_Descriptor *_entrance_event_users_dd(void);
-static Eet_Data_Descriptor *_entrance_event_image_dd(void);
-static Eet_Data_Descriptor *_entrance_event_conf_user_dd(Eina_Bool stream);
-static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
+static Eina_Bool _entrance_event_type_set(const char *type, void *data, Eina_Bool unknown);
 static Eet_Data_Descriptor *_entrance_event_action_dd(void);
+static Eet_Data_Descriptor *_entrance_event_actions_dd(void);
+static Eet_Data_Descriptor *_entrance_event_auth_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_gui_dd(void);
+static Eet_Data_Descriptor *_entrance_event_conf_user_dd(Eina_Bool stream);
+static Eet_Data_Descriptor *_entrance_event_image_dd(void);
+static Eet_Data_Descriptor *_entrance_event_maxtries_dd(void);
 static Eet_Data_Descriptor *_entrance_event_new(void);
+static Eet_Data_Descriptor *_entrance_event_status_dd(void);
+static Eet_Data_Descriptor *_entrance_event_users_dd(void);
+static Eet_Data_Descriptor *_entrance_event_xsessions_dd(void);
 static Eina_Bool _entrance_event_read_cb(const void *data, size_t size, void *user_data);
 
 
@@ -47,28 +47,28 @@ _entrance_event_type_set(const char *type, void *data, Eina_Bool unknown)
    Entrance_Event_Type *ev = data;
    if (unknown)
      return EINA_FALSE;
-   if (!strcmp(type, ENTRANCE_EVENT_AUTH_NAME))
-     *ev = ENTRANCE_EVENT_AUTH;
-   else if (!strcmp(type, ENTRANCE_EVENT_MAXTRIES_NAME))
-     *ev = ENTRANCE_EVENT_MAXTRIES;
-   else if (!strcmp(type, ENTRANCE_EVENT_STATUS_NAME))
-     *ev = ENTRANCE_EVENT_STATUS;
-   else if (!strcmp(type, ENTRANCE_EVENT_XSESSIONS_NAME))
-     *ev = ENTRANCE_EVENT_XSESSIONS;
-   else if (!strcmp(type, ENTRANCE_EVENT_USERS_NAME))
-     *ev = ENTRANCE_EVENT_USERS;
-   else if (!strcmp(type, ENTRANCE_EVENT_CONF_USER_NAME))
-     *ev = ENTRANCE_EVENT_CONF_USER;
+   if (!strcmp(type, ENTRANCE_EVENT_ACTION_NAME))
+     *ev = ENTRANCE_EVENT_ACTION;
    else if (!strcmp(type, ENTRANCE_EVENT_ACTIONS_NAME))
      *ev = ENTRANCE_EVENT_ACTIONS;
-   else if (!strcmp(type, ENTRANCE_EVENT_ACTION_NAME))
-     *ev = ENTRANCE_EVENT_ACTION;
+   else if (!strcmp(type, ENTRANCE_EVENT_AUTH_NAME))
+     *ev = ENTRANCE_EVENT_AUTH;
    else if (!strcmp(type, ENTRANCE_EVENT_CONF_GUI_NAME))
      *ev = ENTRANCE_EVENT_CONF_GUI;
+   else if (!strcmp(type, ENTRANCE_EVENT_CONF_USER_NAME))
+     *ev = ENTRANCE_EVENT_CONF_USER;
+   else if (!strcmp(type, ENTRANCE_EVENT_MAXTRIES_NAME))
+     *ev = ENTRANCE_EVENT_MAXTRIES;
    else if (!strcmp(type, ENTRANCE_EVENT_POOLS_NAME))
      *ev = ENTRANCE_EVENT_POOLS;
+   else if (!strcmp(type, ENTRANCE_EVENT_STATUS_NAME))
+     *ev = ENTRANCE_EVENT_STATUS;
    else if (!strcmp(type, ENTRANCE_EVENT_THEMES_NAME))
      *ev = ENTRANCE_EVENT_THEMES;
+   else if (!strcmp(type, ENTRANCE_EVENT_USERS_NAME))
+     *ev = ENTRANCE_EVENT_USERS;
+   else if (!strcmp(type, ENTRANCE_EVENT_XSESSIONS_NAME))
+     *ev = ENTRANCE_EVENT_XSESSIONS;
    else
      {
         printf("error on type set %s\n", type);
@@ -84,28 +84,28 @@ _entrance_event_type_get(const void *data, Eina_Bool *unknown)
   const Entrance_Event_Type *ev = data;
   switch(*ev)
     {
-      case ENTRANCE_EVENT_AUTH:
-        return ENTRANCE_EVENT_AUTH_NAME;
-      case ENTRANCE_EVENT_MAXTRIES:
-        return ENTRANCE_EVENT_MAXTRIES_NAME;
-      case ENTRANCE_EVENT_STATUS:
-        return ENTRANCE_EVENT_STATUS_NAME;
-      case ENTRANCE_EVENT_XSESSIONS:
-        return ENTRANCE_EVENT_XSESSIONS_NAME;
-      case ENTRANCE_EVENT_USERS:
-        return ENTRANCE_EVENT_USERS_NAME;
-      case ENTRANCE_EVENT_CONF_USER:
-        return ENTRANCE_EVENT_CONF_USER_NAME;
-      case ENTRANCE_EVENT_ACTIONS:
-        return ENTRANCE_EVENT_ACTIONS_NAME;
       case ENTRANCE_EVENT_ACTION:
         return ENTRANCE_EVENT_ACTION_NAME;
+      case ENTRANCE_EVENT_ACTIONS:
+        return ENTRANCE_EVENT_ACTIONS_NAME;
+      case ENTRANCE_EVENT_AUTH:
+        return ENTRANCE_EVENT_AUTH_NAME;
       case ENTRANCE_EVENT_CONF_GUI:
         return ENTRANCE_EVENT_CONF_GUI_NAME;
+      case ENTRANCE_EVENT_CONF_USER:
+        return ENTRANCE_EVENT_CONF_USER_NAME;
+      case ENTRANCE_EVENT_MAXTRIES:
+        return ENTRANCE_EVENT_MAXTRIES_NAME;
       case ENTRANCE_EVENT_POOLS:
         return ENTRANCE_EVENT_POOLS_NAME;
+      case ENTRANCE_EVENT_STATUS:
+        return ENTRANCE_EVENT_STATUS_NAME;
       case ENTRANCE_EVENT_THEMES:
         return ENTRANCE_EVENT_THEMES_NAME;
+      case ENTRANCE_EVENT_USERS:
+        return ENTRANCE_EVENT_USERS_NAME;
+      case ENTRANCE_EVENT_XSESSIONS:
+        return ENTRANCE_EVENT_XSESSIONS_NAME;
       default:
         printf("error on type get %d\n", *ev);
         if (unknown)
@@ -340,28 +340,28 @@ _entrance_event_new(void)
    eddc.func.type_set = _entrance_event_type_set;
    unified = eet_data_descriptor_stream_new(&eddc);
 
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_XSESSIONS_NAME,
-                                   _entrance_event_xsessions_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTION_NAME,
+                                   _entrance_event_action_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTIONS_NAME,
+                                   _entrance_event_actions_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_AUTH_NAME,
                                    _entrance_event_auth_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_GUI_NAME,
+                                   _entrance_event_conf_gui_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_USER_NAME,
+                                   _entrance_event_conf_user_dd(EINA_TRUE));
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_MAXTRIES_NAME,
                                    _entrance_event_maxtries_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_POOLS_NAME,
+                                   _entrance_event_pools_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_STATUS_NAME,
                                    _entrance_event_status_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_USERS_NAME,
                                    _entrance_event_users_dd());
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_USER_NAME,
-                                   _entrance_event_conf_user_dd(EINA_TRUE));
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTIONS_NAME,
-                                   _entrance_event_actions_dd());
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_ACTION_NAME,
-                                   _entrance_event_action_dd());
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_CONF_GUI_NAME,
-                                   _entrance_event_conf_gui_dd());
-   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_POOLS_NAME,
-                                   _entrance_event_pools_dd());
    EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_THEMES_NAME,
                                    _entrance_event_themes_dd());
+   EET_DATA_DESCRIPTOR_ADD_MAPPING(unified, ENTRANCE_EVENT_XSESSIONS_NAME,
+                                   _entrance_event_xsessions_dd());
 
    EET_DATA_DESCRIPTOR_ADD_UNION(edd, Entrance_Event, "event",
                                  event, type, unified);
