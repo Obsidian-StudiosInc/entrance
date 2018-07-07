@@ -17,17 +17,22 @@ typedef enum Entrance_Event_Type_
    ENTRANCE_EVENT_XSESSIONS
 } Entrance_Event_Type;
 
-typedef struct Entrance_Xsession_
+typedef struct Entrance_Action_
 {
-    const char *name;
-    const char *command;
-    const char *icon;
-} Entrance_Xsession;
+   unsigned char id;
+   const char *label;
+   const char *icon;
+} Entrance_Action;
 
-typedef struct Entrance_Xsessions_Event_
+typedef struct Entrance_Action_Event_
 {
-   Eina_List *xsessions;
-} Entrance_Xsessions_Event;
+   unsigned char action;
+} Entrance_Action_Event;
+
+typedef struct Entrance_Actions_Event_
+{
+   Eina_List *actions;
+} Entrance_Actions_Event;
 
 typedef struct Entrance_Auth_Event_
 {
@@ -36,39 +41,6 @@ typedef struct Entrance_Auth_Event_
    const char *session;
    Eina_Bool open_session;
 } Entrance_Auth_Event;
-
-typedef struct Entrance_Maxtries_Event_
-{
-   int maxtries;
-} Entrance_Maxtries_Event;
-
-typedef struct Entrance_Status_Event_
-{
-   const char *login;
-   int granted;
-} Entrance_Status_Event;
-
-typedef struct Entrance_Action_Event_
-{
-   unsigned char action;
-} Entrance_Action_Event;
-
-typedef struct Entrance_Users_Event_
-{
-   Eina_List *users;
-} Entrance_Users_Event;
-
-typedef struct Entrance_Action_
-{
-   unsigned char id;
-   const char *label;
-   const char *icon;
-} Entrance_Action;
-
-typedef struct Entrance_Actions_Event_
-{
-   Eina_List *actions;
-} Entrance_Actions_Event;
 
 typedef struct Entrance_Conf_Gui_Event_
 {
@@ -82,17 +54,11 @@ typedef struct Entrance_Conf_Gui_Event_
    Eina_Bool vkbd_enabled;
 } Entrance_Conf_Gui_Event;
 
-
 typedef struct Entrance_Image_
 {
    const char *group;
    const char *path;
 } Entrance_Image;
-
-typedef struct Entrance_Themes_
-{
-   Eina_List *themes;
-} Entrance_Themes;
 
 typedef struct Entrance_Login_
 {
@@ -106,11 +72,44 @@ typedef struct Entrance_Login_
    Eina_List *background_pool;
 } Entrance_Login;
 
+typedef struct Entrance_Maxtries_Event_
+{
+   int maxtries;
+} Entrance_Maxtries_Event;
+
 typedef struct Entrance_Pools_
 {
    Eina_List *icon_pool;
    Eina_List *background_pool;
 } Entrance_Pools;
+
+typedef struct Entrance_Status_Event_
+{
+   const char *login;
+   int granted;
+} Entrance_Status_Event;
+
+typedef struct Entrance_Themes_
+{
+   Eina_List *themes;
+} Entrance_Themes;
+
+typedef struct Entrance_Users_Event_
+{
+   Eina_List *users;
+} Entrance_Users_Event;
+
+typedef struct Entrance_Xsession_
+{
+    const char *name;
+    const char *command;
+    const char *icon;
+} Entrance_Xsession;
+
+typedef struct Entrance_Xsessions_Event_
+{
+   Eina_List *xsessions;
+} Entrance_Xsessions_Event;
 
 typedef struct Entrance_Event_
 {
