@@ -354,7 +354,8 @@ _signal_cb(int sig)
    if (_entrance_client)
      {
        PT("terminate client");
-       kill(entrance_client_pid,SIGTERM);
+       // not ideal! either look up pid from /proc or send from client in event
+       system("killall entrance_client");
      }
    else
      {
