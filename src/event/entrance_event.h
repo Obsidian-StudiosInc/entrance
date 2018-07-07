@@ -3,18 +3,18 @@
 
 typedef enum Entrance_Event_Type_
 {
-   ENTRANCE_EVENT_UNKNOWN,
-   ENTRANCE_EVENT_AUTH,
-   ENTRANCE_EVENT_STATUS,
-   ENTRANCE_EVENT_XSESSIONS,
-   ENTRANCE_EVENT_USERS,
-   ENTRANCE_EVENT_CONF_USER,
    ENTRANCE_EVENT_ACTIONS,
    ENTRANCE_EVENT_ACTION,
-   ENTRANCE_EVENT_MAXTRIES,
+   ENTRANCE_EVENT_AUTH,
    ENTRANCE_EVENT_CONF_GUI,
+   ENTRANCE_EVENT_CONF_USER,
+   ENTRANCE_EVENT_MAXTRIES,
    ENTRANCE_EVENT_POOLS,
-   ENTRANCE_EVENT_THEMES
+   ENTRANCE_EVENT_STATUS,
+   ENTRANCE_EVENT_THEMES,
+   ENTRANCE_EVENT_UNKNOWN,
+   ENTRANCE_EVENT_USERS,
+   ENTRANCE_EVENT_XSESSIONS
 } Entrance_Event_Type;
 
 typedef struct Entrance_Xsession_
@@ -117,17 +117,17 @@ typedef struct Entrance_Event_
    Entrance_Event_Type type;
    union
      {
-        Entrance_Xsessions_Event xsessions;
-        Entrance_Auth_Event auth;
-        Entrance_Maxtries_Event maxtries;
-        Entrance_Status_Event status;
-        Entrance_Users_Event users;
-        Entrance_Login conf_user;
-        Entrance_Actions_Event actions;
         Entrance_Action_Event action;
+        Entrance_Actions_Event actions;
+        Entrance_Auth_Event auth;
         Entrance_Conf_Gui_Event conf_gui;
+        Entrance_Login conf_user;
+        Entrance_Maxtries_Event maxtries;
         Entrance_Pools pools;
+        Entrance_Status_Event status;
         Entrance_Themes themes;
+        Entrance_Users_Event users;
+        Entrance_Xsessions_Event xsessions;
      } event;
 } Entrance_Event;
 
