@@ -126,9 +126,10 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
       _entrance_session_wait();
       if(!entrance_signal && !_xephyr)
         {
-          PT("restarting xserver");
+          PT("stopping X server");
           entrance_xserver_shutdown();
           _entrance_xserver_end();
+          PT("restarting X server");
           entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
                                                        entrance_display);
         }
@@ -158,7 +159,6 @@ static void
 _entrance_xserver_end()
 {
   kill(entrance_xserver_pid, SIGTERM);
-  entrance_xserver_end_wait();
 }
 
 static void
