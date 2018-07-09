@@ -574,8 +574,7 @@ main (int argc, char ** argv)
      {
         PT("ending xserver");
         kill(pid, SIGTERM);
-        entrance_xserver_end();
-        entrance_xserver_wait();
+        entrance_xserver_end_wait();
      }
    else
      PT("No session to wait, exiting");
