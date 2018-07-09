@@ -19,6 +19,7 @@ static void _entrance_autologin_lock_set(void);
 static void _entrance_session_wait();
 static void _entrance_start_client(const char *entrance_display);
 static void _entrance_uid_gid_init();
+static void _entrance_xserver_end();
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
@@ -122,11 +123,14 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
      }
    else
     {
-       _entrance_session_wait();
+      _entrance_session_wait();
       if(!entrance_signal && !_xephyr)
         {
-          PT("restarting client");
-          _entrance_start_client(entrance_display);
+          PT("restarting xserver");
+          entrance_xserver_shutdown();
+          _entrance_xserver_end();
+          entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
+                                                       entrance_display);
         }
     }
    return ECORE_CALLBACK_DONE;
@@ -148,6 +152,13 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
    strncpy(buf, (char*)ev->data, size);
    EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
+}
+
+static void
+_entrance_xserver_end()
+{
+  kill(entrance_xserver_pid, SIGTERM);
+  entrance_xserver_end_wait();
 }
 
 static void
@@ -574,8 +585,7 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("ending xserver");
-        kill(entrance_xserver_pid, SIGTERM);
-        entrance_xserver_end_wait();
+        _entrance_xserver_end();
      }
    else
      PT("No session to wait, exiting");
