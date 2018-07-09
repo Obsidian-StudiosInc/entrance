@@ -33,6 +33,7 @@ static int entrance_signal = 0;
 static pid_t entrance_client_pid = 0;
 static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
+static pid_t entrance_xserver_pid = 0;
 
 static const Ecore_Getopt options =
 {
@@ -401,7 +402,6 @@ int
 main (int argc, char ** argv)
 {
    int args;
-   int pid = -1;
    unsigned char nodaemon = 0;
    unsigned char quit_option = 0;
 
@@ -504,7 +504,8 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("xserver init");
-        pid = entrance_xserver_init(_entrance_start_client, entrance_display);
+        entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
+                                                     entrance_display);
      }
    else {
      putenv(strdup("ENTRANCE_XPID=-1"));
@@ -573,7 +574,7 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("ending xserver");
-        kill(pid, SIGTERM);
+        kill(entrance_xserver_pid, SIGTERM);
         entrance_xserver_end_wait();
      }
    else
