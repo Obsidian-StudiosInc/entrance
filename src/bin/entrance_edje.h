@@ -57,8 +57,6 @@
 #define ENTRANCE_EDJE_SIGNAL_AUTH_VALID         "entrance,auth,valid"
 #define ENTRANCE_EDJE_SIGNAL_CONF_ENABLED       "entrance,conf,enabled"
 #define ENTRANCE_EDJE_SIGNAL_CONF_DISABLED      "entrance,conf,disabled"
-#define ENTRANCE_EDJE_SIGNAL_CONFIG_ENABLED     "entrance,config,enabled"
-#define ENTRANCE_EDJE_SIGNAL_CONFIG_DISABLED    "entrance,config,disabled"
 #define ENTRANCE_EDJE_SIGNAL_USERS_ENABLED      "entrance,users,enabled"
 #define ENTRANCE_EDJE_SIGNAL_USERS_DISABLED     "entrance,users,disabled"
 #define ENTRANCE_EDJE_SIGNAL_WALLPAPER_DEFAULT  "entrance,wallpaper,default"
