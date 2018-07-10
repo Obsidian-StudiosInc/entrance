@@ -182,7 +182,6 @@ entrance_gui_init(const char *theme)
      {
         /* tricky situation. we are not normally running with a wm and thus
          * have to set focus to our window so things work right */
-        screen = _gui->screens->data;
         ecore_evas_focus_set
            (ecore_evas_ecore_evas_get(evas_object_evas_get(_gui->win)), 1);
         /* need to hide and show the cursor */
