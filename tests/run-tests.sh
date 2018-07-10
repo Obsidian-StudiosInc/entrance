@@ -31,14 +31,3 @@ killall -v entrance_client
 sleep 5
 
 killall -v entrance
-
-EPID="$(pgrep entrance)"
-
-kill_counter=0
-while sleep 1
-	"${kill_counter}" -lt 20
-	kill -0 "${EPID}" >/dev/null 2>&1
-do
-	kill_counter=$((kill_counter+1))
-	[[ "${kill_counter}" -eq 10 ]] && killall -v entrance
-done
