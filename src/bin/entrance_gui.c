@@ -179,17 +179,15 @@ entrance_gui_init(const char *theme)
                           ECORE_X_EVENT_MASK_WINDOW_PROPERTY);
    evas_object_resize(_gui->win, ww, hh);
    evas_object_show(_gui->win);
-     {
-        /* tricky situation. we are not normally running with a wm and thus
-         * have to set focus to our window so things work right */
-        ecore_evas_focus_set
-           (ecore_evas_ecore_evas_get(evas_object_evas_get(_gui->win)), 1);
-        /* need to hide and show the cursor */
-        ecore_x_window_cursor_show(elm_win_xwindow_get(_gui->win),
-                                   EINA_FALSE);
-        ecore_x_window_cursor_show(elm_win_xwindow_get(_gui->win),
-                                   EINA_TRUE);
-     }
+   /* tricky situation. we are not normally running with a wm and thus
+    * have to set focus to our window so things work right */
+   ecore_evas_focus_set
+      (ecore_evas_ecore_evas_get(evas_object_evas_get(_gui->win)), 1);
+   /* need to hide and show the cursor */
+   ecore_x_window_cursor_show(elm_win_xwindow_get(_gui->win),
+                              EINA_FALSE);
+   ecore_x_window_cursor_show(elm_win_xwindow_get(_gui->win),
+                              EINA_TRUE);
    return j;
 }
 
