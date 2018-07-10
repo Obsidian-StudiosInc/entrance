@@ -72,11 +72,7 @@ main(int argc, char **argv)
      }
    eina_init();
    if (!display)
-     {
-        PT("A display is required!");
-        eina_shutdown();
-        return EXIT_FAILURE;
-     }
+     display = ":0";
    if(!port)
      port = 42;
    if (!theme)
