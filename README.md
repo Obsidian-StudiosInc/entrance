@@ -15,10 +15,12 @@ It is ALIVE! IT WORKS! (for me ©)
 [Issue #6](https://github.com/Obsidian-StudiosInc/entrance/issues/6)
 
 ## About
-Entrance is EFL Unix Display Manager. Entrance allows a user to choose a 
-X WM/Desktop session to launch. Entrance is alive and working again for 
-logging into X sessions! The project has been resurrected from the dead 
-to live on once again...
+Entrance is a Unix Display/Login Manager written in Enlightenment Foundation 
+Libraries (EFL). Entrance allows a user to choose a X WM/Desktop 
+session to launch upon successful login. Entrance is alive and working 
+again for logging into X sessions and eventually Wayland sessions!
+
+The project has been resurrected from the dead to live on once again...
 
 ## History
 Entrance is a long story. There has been 2 different code bases and 
@@ -30,9 +32,8 @@ base. With a lot of fixes, and initial removal of incomplete and/or
 broken code. Rather than fix as is, looking to replace functionality 
 with new code and different ways of accomplishing similar functionality.
 
-This generation is currently in development, and should be usable. 
-Please open issues for any problems encountered. Which should be 
-expected given the state of the project.
+This generation is currently in development, and should be usable.
+Please open issues for any problems encountered. 
 
 ### 2nd Generation 
 Sometime later another came along,
