@@ -367,8 +367,8 @@ _signal_cb(int sig)
      {
        if((session_pid = entrance_session_pid_get())>0)
            kill(session_pid,SIGTERM);
-       ecore_main_loop_quit();
      }
+   ecore_main_loop_quit();
 }
 
 static void
