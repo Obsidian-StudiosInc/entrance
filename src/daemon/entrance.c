@@ -132,6 +132,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
           PT("restarting X server");
           entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
                                                        entrance_display);
+          PT("X server restarted pid %d",entrance_xserver_pid);
         }
     }
    return ECORE_CALLBACK_DONE;
@@ -159,6 +160,11 @@ static void
 _entrance_xserver_end()
 {
   kill(entrance_xserver_pid, SIGTERM);
+  while (waitpid(entrance_xserver_pid, NULL, WUNTRACED | WCONTINUED) > 0)
+  {
+     PT("Waiting ...");
+     sleep(1);
+  }
 }
 
 static void
@@ -517,6 +523,7 @@ main (int argc, char ** argv)
         PT("xserver init");
         entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
                                                      entrance_display);
+        PT("X server started pid %d",entrance_xserver_pid);
      }
    else {
      putenv(strdup("ENTRANCE_XPID=-1"));
