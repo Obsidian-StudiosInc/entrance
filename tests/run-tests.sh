@@ -20,20 +20,25 @@ sed -i -e "s|nobody|travis|" /etc/entrance/entrance.conf
 
 /usr/sbin/entrance
 
-EPID="$(pgrep entrance)"
-
 SLEEP=180
 
 echo "${0} Going to sleep for ${SLEEP}"
 sleep ${SLEEP}
 echo "${0} Waking up"
 
-killall entrance_client
+killall -v entrance_client
 
 sleep 5
 
-kill ${EPID}
+killall -v entrance
 
-while kill -0 ${EPID} >/dev/null 2>&1 ;do
-	sleep 1
+EPID="$(pgrep entrance)"
+
+kill_counter=0
+while sleep 1
+	"${kill_counter}" -lt 20
+	kill -0 "${EPID}" >/dev/null 2>&1
+do
+	kill_counter=$((kill_counter+1))
+	[[ "${kill_counter}" -eq 10 ]] && killall -v entrance
 done
