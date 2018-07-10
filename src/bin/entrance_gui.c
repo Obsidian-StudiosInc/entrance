@@ -617,6 +617,7 @@ _entrance_gui_background_obj_get(Evas_Object *par,
 static void
 _entrance_gui_update(void)
 {
+   Eina_Bool primary = EINA_TRUE;
    Eina_List *l;
    Entrance_Screen *screen;
 
@@ -643,12 +644,16 @@ _entrance_gui_update(void)
              evas_object_del(screen->background);
              screen->background = bg;
           }
-        if (_gui->conf_enabled)
-          elm_object_signal_emit(screen->edj,
-                                 ENTRANCE_EDJE_SIGNAL_CONF_ENABLED, "");
-        else
-          elm_object_signal_emit(screen->edj,
-                                 ENTRANCE_EDJE_SIGNAL_CONF_DISABLED, "");
+        if(primary)
+          {
+            primary = EINA_FALSE;
+            if (_gui->conf_enabled)
+              elm_object_signal_emit(screen->edj,
+                                     ENTRANCE_EDJE_SIGNAL_CONF_ENABLED, "");
+            else
+              elm_object_signal_emit(screen->edj,
+                                     ENTRANCE_EDJE_SIGNAL_CONF_DISABLED, "");
+          }
      }
    _gui->changed = 0;
 }
