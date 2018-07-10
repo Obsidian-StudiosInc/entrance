@@ -219,7 +219,7 @@ entrance_fill(Evas_Object *obj,
         else if (!strcasecmp(type, "Elm.Hoversel"))
           _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
-          PT("Unknow object type to fill %s", type);
+          PT("Unknown object type to fill %s", type);
      }
 }
 
