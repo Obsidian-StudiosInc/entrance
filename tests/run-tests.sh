@@ -37,8 +37,9 @@ echo "${0} Additional client tests"
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
 
 echo "${0} Test autologin"
+useradd -g users -m -p 1234 -s /bin/bash myusername
 sed -i -e "s|autologin\" uchar: 0|autologin\" uchar: 1|" \
-	-e "s|myusername|travis|" /etc/entrance/entrance.conf
+	/etc/entrance/entrance.conf
 
 /usr/sbin/entrance
 
