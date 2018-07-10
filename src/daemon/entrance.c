@@ -128,7 +128,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
         {
           PT("stopping X server");
           entrance_xserver_shutdown();
-          _entrance_xserver_end();
+          entrance_xserver_end_wait();
           PT("restarting X server");
           entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
                                                        entrance_display);
@@ -154,17 +154,6 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
    strncpy(buf, (char*)ev->data, size);
    EINA_LOG_DOM_ERR(_entrance_client_log, "%s", buf);
    return ECORE_CALLBACK_DONE;
-}
-
-static void
-_entrance_xserver_end()
-{
-  kill(entrance_xserver_pid, SIGTERM);
-  while (waitpid(entrance_xserver_pid, NULL, WUNTRACED | WCONTINUED) > 0)
-  {
-     PT("Waiting ...");
-     sleep(1);
-  }
 }
 
 static void
@@ -592,7 +581,7 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("ending xserver");
-        _entrance_xserver_end();
+        entrance_xserver_end_wait();
      }
    else
      PT("No session to wait, exiting");
