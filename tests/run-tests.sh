@@ -28,10 +28,10 @@ echo "${0} Going to sleep for ${SLEEP}"
 sleep ${SLEEP}
 echo "${0} Waking up"
 
-killall entrance_client
+kill ${EPID}
 
 sleep 5
 
-kill ${EPID}
+killall entrance_client
 
 sleep 5
