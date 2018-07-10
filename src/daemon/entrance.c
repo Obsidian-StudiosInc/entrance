@@ -19,7 +19,6 @@ static void _entrance_autologin_lock_set(void);
 static void _entrance_session_wait();
 static void _entrance_start_client(const char *entrance_display);
 static void _entrance_uid_gid_init();
-static void _entrance_xserver_end();
 static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
@@ -128,7 +127,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
         {
           PT("stopping X server");
           entrance_xserver_shutdown();
-          entrance_xserver_end_wait();
+          entrance_xserver_end_wait(entrance_xserver_pid);
           PT("restarting X server");
           entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
                                                        entrance_display);
@@ -581,7 +580,7 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("ending xserver");
-        entrance_xserver_end_wait();
+        entrance_xserver_end_wait(entrance_xserver_pid);
      }
    else
      PT("No session to wait, exiting");
