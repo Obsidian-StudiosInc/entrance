@@ -645,10 +645,10 @@ _entrance_gui_update(void)
           }
         if (_gui->conf_enabled)
           elm_object_signal_emit(screen->edj,
-                                 ENTRANCE_EDJE_SIGNAL_CONFIG_ENABLED, "");
+                                 ENTRANCE_EDJE_SIGNAL_CONF_ENABLED, "");
         else
           elm_object_signal_emit(screen->edj,
-                                 ENTRANCE_EDJE_SIGNAL_CONFIG_DISABLED, "");
+                                 ENTRANCE_EDJE_SIGNAL_CONF_DISABLED, "");
      }
    _gui->changed = 0;
 }
