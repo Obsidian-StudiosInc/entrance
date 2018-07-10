@@ -31,3 +31,6 @@ killall -v entrance_client
 sleep 5
 
 killall -v entrance
+
+/usr/lib/x86_64-linux-gnu/entrance/entrance_client
+/usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
