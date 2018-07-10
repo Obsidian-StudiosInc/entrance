@@ -32,5 +32,20 @@ sleep 5
 
 killall -v entrance
 
+echo "${0} Additional client tests"
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
+
+echo "${0} Test autologin"
+sed -i -e "s|autologin\" uchar: 0|autologin\" uchar: 1|" \
+	-e "s|myusername|travis|" /etc/entrance/entrance.conf
+
+/usr/sbin/entrance
+
+SLEEP=60
+
+echo "${0} Going to sleep for ${SLEEP}"
+sleep ${SLEEP}
+echo "${0} Waking up"
+
+killall -v entrance
