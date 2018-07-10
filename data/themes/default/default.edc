@@ -237,7 +237,7 @@ collections {
          }
          program {
             name: "conf_enabled";
-            signal: ENTRANCE_EDJE_SIGNAL_USERS_DISABLED;
+            signal: ENTRANCE_EDJE_SIGNAL_CONF_ENABLED;
             source: "";
             action: STATE_SET "enabled" 0.0;
             target: ENTRANCE_EDJE_PART_CONF;
