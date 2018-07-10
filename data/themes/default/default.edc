@@ -246,7 +246,7 @@ collections {
             name: "conf_disabled";
             signal: ENTRANCE_EDJE_SIGNAL_CONF_DISABLED;
             source: "";
-            action: STATE_SET "default" 0.0;
+            action: STATE_SET "default" 0.5;
             target: ENTRANCE_EDJE_PART_CONF;
          }
       }
