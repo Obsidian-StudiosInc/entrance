@@ -34,4 +34,6 @@ sleep 5
 
 kill ${EPID}
 
-sleep 5
+while kill -0 ${EPID} >/dev/null 2>&1 ;do
+	sleep 1
+done
