@@ -3,7 +3,7 @@
 
 typedef void (*Entrance_Connect_Auth_Cb)(void *data, const char *login, Eina_Bool granted);
 
-void entrance_connect_init(int port);
+Eina_Bool entrance_connect(int port);
 void entrance_connect_auth_send(const char *login, const char *password, const char *session, Eina_Bool open_session);
 void entrance_connect_action_send(unsigned char id);
 void entrance_connect_conf_gui_send(Entrance_Conf_Gui_Event *conf);

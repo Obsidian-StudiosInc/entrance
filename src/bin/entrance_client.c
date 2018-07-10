@@ -89,8 +89,8 @@ main(int argc, char **argv)
    PT("gui init");
    if (!entrance_gui_init(theme)) return EXIT_FAILURE;
    PT("connect init");
-   entrance_connect_init(port);
-   elm_run();
+   if(entrance_connect(port))
+     elm_run();
    PT("connect shutdown");
    entrance_connect_shutdown();
    PT("gui shutdown");

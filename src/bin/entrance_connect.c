@@ -200,8 +200,8 @@ entrance_connect_auth_cb_del(void *auth)
    _auth_list = eina_list_remove(_auth_list, auth);
 }
 
-void
-entrance_connect_init(int port)
+Eina_Bool
+entrance_connect(int port)
 {
    Ecore_Event_Handler *h;
    ecore_con_init();
@@ -210,10 +210,13 @@ entrance_connect_init(int port)
                        NULL);
    _entrance_connect = ecore_con_server_connect(ECORE_CON_LOCAL_SYSTEM,
                                                 "entrance", port, NULL);
-   if (_entrance_connect)
-     PT("client server init ok");
-   else
-     PT("client server init fail");
+   if (!_entrance_connect)
+     {
+       PT("client failed to connect to server");
+       return(EINA_FALSE);
+     }
+
+   PT("client connected to server");
    h = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_ADD,
                                _entrance_connect_add, NULL);
    _handlers = eina_list_append(_handlers, h);
@@ -223,6 +226,7 @@ entrance_connect_init(int port)
    h = ecore_event_handler_add(ECORE_CON_EVENT_SERVER_DATA,
                                _entrance_connect_data, NULL);
    _handlers = eina_list_append(_handlers, h);
+   return(EINA_TRUE);
 }
 
 void
