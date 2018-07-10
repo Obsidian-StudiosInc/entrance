@@ -115,7 +115,7 @@ entrance_pam_authenticate(void)
          entrance_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         PT("PAM user unknow error !");
+         PT("PAM user unknown error !");
          return 1;
       case PAM_MAXTRIES:
          PT("PAM max tries error !");
@@ -144,7 +144,7 @@ entrance_pam_authenticate(void)
          entrance_pam_end();
          return 1;
       case PAM_USER_UNKNOWN:
-         PT("PAM user unknow error");
+         PT("PAM user unknown error");
          entrance_pam_end();
          return 1;
       case PAM_AUTH_ERR:

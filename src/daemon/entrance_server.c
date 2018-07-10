@@ -129,7 +129,7 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
         entrance_history_user_update(&eev->event.conf_user);
      }
    else
-     PT("UNKNOW signal server");
+     PT("UNKNOWN signal server");
    return EINA_TRUE;
 }
 
