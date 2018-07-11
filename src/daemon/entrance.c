@@ -487,7 +487,13 @@ main (int argc, char ** argv)
         exit(1);
      }
 
-   PT("Starting "PACKAGE_STRING);
+   time_t t = time(0);
+   struct tm local_tm;
+   struct tm tm = *localtime_r(&t, &local_tm);
+   char date[32];
+   strftime(date,32,"%a %b %d %T %Y",&tm);
+
+   PT("Starting "PACKAGE_STRING" %s",date);
    /* Initialise event handler */
 
    signal(SIGQUIT, _signal_cb);
