@@ -32,6 +32,8 @@ sleep 5
 
 killall -v entrance
 
+sleep 5
+
 echo "${0} Additional client tests"
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
