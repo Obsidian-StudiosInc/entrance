@@ -45,7 +45,7 @@ static const Ecore_Getopt options =
   "Entrance is a login manager, written using core efl libraries",
   EINA_TRUE,
   {
-    ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Don't daemonize."),
+    ECORE_GETOPT_STORE_TRUE('n', "nodaemon", "Do not daemonize."),
     ECORE_GETOPT_STORE_TRUE('x', "xephyr", "run under Xephyr."),
     ECORE_GETOPT_HELP ('h', "help"),
     ECORE_GETOPT_VERSION('V', "version"),
@@ -264,9 +264,9 @@ _entrance_uid_gid_init()
           {
              if (!ecore_file_is_dir(ENTRANCE_CONFIG_HOME_PATH))
                {
-                  PT("Hum a file already exists here "
-                     ENTRANCE_CONFIG_HOME_PATH" sorry but"
-                     "I remove it, I need it ^^");
+                  PT("Replacing existing file "
+                     ENTRANCE_CONFIG_HOME_PATH
+                     " with a directory");
                   ecore_file_remove(ENTRANCE_CONFIG_HOME_PATH);
                   ecore_file_mkdir(ENTRANCE_CONFIG_HOME_PATH);
                   chown(ENTRANCE_CONFIG_HOME_PATH, entrance_uid, entrance_gid);
@@ -294,14 +294,14 @@ _get_lock()
         f = fopen(entrance_config->lockfile, "w");
         if (!f)
           {
-             PT("Couldn't create lockfile!");
+             PT("Could n0t create lockfile!");
              return (EINA_FALSE);
           }
         snprintf(buf, sizeof(buf), "%d", my_pid);
         if (!fwrite(buf, strlen(buf), 1, f))
           {
              fclose(f);
-             PT("Couldn't write the lockfile");
+             PT("Could not write the lockfile");
              return EINA_FALSE;
           }
         fclose(f);
@@ -316,7 +316,7 @@ _get_lock()
         if (pid == my_pid)
           return EINA_TRUE;
 
-        PT("A lock file are present another instance are present ?");
+        PT("A lock file is present, another instance may exist ?");
         return EINA_FALSE;
      }
 
@@ -482,7 +482,7 @@ main (int argc, char ** argv)
 
    if (!_open_log())
      {
-        PT("Can't open log file !!!!");
+        PT("Unable to open log file !!!!");
         entrance_config_shutdown();
         exit(1);
      }
@@ -494,7 +494,7 @@ main (int argc, char ** argv)
    strftime(date,32,"%a %b %d %T %Y",&tm);
 
    PT("Starting "PACKAGE_STRING" %s",date);
-   /* Initialise event handler */
+   /* initialize event handler */
 
    signal(SIGQUIT, _signal_cb);
    signal(SIGTERM, _signal_cb);
