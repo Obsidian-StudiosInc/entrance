@@ -35,6 +35,9 @@ killall -v entrance
 sleep 5
 
 echo "${0} Additional client tests"
+if [[ ${TRAVIS} ]]; then
+	mkdir -p -v -m 777 ~/.{cache/efreet,elementary/config/standard}
+fi
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
 
