@@ -513,10 +513,8 @@ main (int argc, char ** argv)
                                                      entrance_display);
         PT("X server started pid %d",entrance_xserver_pid);
      }
-   else {
-     putenv(strdup("ENTRANCE_XPID=-1"));
+   else
      _entrance_start_client(entrance_display);
-   }
 
    PT("history init");
    entrance_history_init();
