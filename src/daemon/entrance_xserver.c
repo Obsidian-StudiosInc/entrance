@@ -124,7 +124,6 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
    _xserver->dname = eina_stringshare_add(dname);
    _xserver->start = start;
    pid = _xserver_start();
-   setenv("ENTRANCE_XPID", (char *)&pid, 1);
    PT("xserver adding signal user handler");
    _handler_start = ecore_event_handler_add(ECORE_EVENT_SIGNAL_USER,
                                             _xserver_started,
