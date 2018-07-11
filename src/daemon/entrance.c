@@ -582,7 +582,7 @@ main (int argc, char ** argv)
      }
    else
      PT("No session to wait, exiting");
-   PT("close log and exit");
+   PT("close log and exit\n\n");
    entrance_close_log();
    efreet_shutdown();
    return 0;
