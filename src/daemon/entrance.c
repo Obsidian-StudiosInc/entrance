@@ -487,7 +487,7 @@ main (int argc, char ** argv)
         exit(1);
      }
 
-   PT("Welcome");
+   PT("Starting "PACKAGE_STRING);
    /* Initialise event handler */
 
    signal(SIGQUIT, _signal_cb);
