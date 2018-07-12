@@ -11,12 +11,13 @@ _entrance_image_readdir(const char *path)
    Eina_Iterator *files;
    Eina_List *targets = NULL;
    Eina_File_Direct_Info *file_stat;
-   char *buf;
 
    files = eina_file_stat_ls(path);
    if (!files) return NULL;
    EINA_ITERATOR_FOREACH(files, file_stat)
      {
+        char *buf;
+
         buf = file_stat->path;
         if (file_stat->path[file_stat->name_start] != '.'
             && file_stat->type == EINA_FILE_REG
@@ -33,7 +34,6 @@ _entrance_image_get(Eina_List *src, char *stdfile, char *mask)
    //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
    Eina_List *result = NULL;
    char *src_str;
-   char path[PATH_MAX];
    Entrance_Image *img;
    EINA_LIST_FREE(src, src_str)
      {
@@ -42,6 +42,8 @@ _entrance_image_get(Eina_List *src, char *stdfile, char *mask)
           {
             if (mask)
               {
+                 char path[PATH_MAX];
+
                  snprintf(path, sizeof(path), mask, src_str);
                  img->group = eina_stringshare_add(path);
                  eina_stringshare_del(src_str);
