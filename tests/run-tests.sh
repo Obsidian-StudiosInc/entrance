@@ -1,6 +1,11 @@
 #!/bin/bash
 # wrapper to run entrance with env vars
 
+if [[ ! -d /home/travis ]]; then
+	echo "Only meant to be run by Travis-CI"
+	exit 1
+fi
+
 export XDG_RUNTIME_DIR="/tmp/ecore"
 
 for d in "${XDG_RUNTIME_DIR}"{,/.ecore} /usr/share/xsessions; do
@@ -35,12 +40,10 @@ killall -v entrance
 sleep 5
 
 echo "${0} Additional client tests"
-if [[ -d /home/travis ]]; then
-	mkdir -p -v -m 777 \
-		/home/travis/.{cache/efreet,elementary/config/standard}
-fi
+export HOME=/tmp
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client
 /usr/lib/x86_64-linux-gnu/entrance/entrance_client --help
+export HOME=/home/travis
 
 echo "${0} Test autologin"
 useradd -g users -m -p 1234 -s /bin/bash myusername
