@@ -265,16 +265,19 @@ _entrance_gui_string_to_entrance_image(Eina_List *src, char *stdfile, char *mask
 {
    //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
    Eina_List *result = NULL;
-   char path[PATH_MAX];
    char *src_str;
-   Entrance_Image *img;
+
    EINA_LIST_FREE(src, src_str)
      {
+        Entrance_Image *img;
+
         img = calloc(1, sizeof(Entrance_Image));
         if (stdfile)
           {
             if (mask)
               {
+                 char path[PATH_MAX];
+
                  snprintf(path, PATH_MAX, mask, src_str);
                  img->group = eina_stringshare_add(path);
                  eina_stringshare_del(src_str);
@@ -748,11 +751,13 @@ _entrance_gui_user_content_get(void *data EINA_UNUSED,
                                const char *part)
 {
    Evas_Object *ic = NULL;
-   Evas_Object *o;
    Entrance_Login *eu;
+
    eu = data;
    if (eu && !strcmp(part, "elm.swallow.icon"))
      {
+        Evas_Object *o;
+
         ic = entrance_gui_theme_get(obj, ENTRANCE_EDJE_GROUP_USER);
         if ((!eu->image.path) && (!eu->image.group))
           {
