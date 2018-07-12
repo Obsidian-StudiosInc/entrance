@@ -123,11 +123,11 @@ _entrance_session_begin(struct passwd *pwd, const char *cookie)
 static void
 _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie)
 {
-   char buf[PATH_MAX];
    pid_t pid;
    pid = fork();
    if (pid == 0)
      {
+        char buf[PATH_MAX];
 
         PT("Session Run");
 #ifdef HAVE_PAM
@@ -397,11 +397,12 @@ entrance_session_login(const char *session, Eina_Bool push)
 static const char *
 _entrance_session_find_command(const char *path, const char *session)
 {
-   Eina_List *l;
    Entrance_Xsession *xsession = NULL;
    char buf[PATH_MAX];
    if (session)
      {
+        Eina_List *l;
+
         EINA_LIST_FOREACH(_xsessions, l, xsession)
           {
              if (!strcmp(xsession->name, session) && xsession->command)
@@ -469,12 +470,12 @@ _entrance_session_desktops_init(void)
 static void
 _entrance_session_desktops_scan(const char *dir)
 {
-   Eina_List *files;
-   char *filename;
-   char path[PATH_MAX];
-
    if (ecore_file_is_dir(dir))
      {
+        Eina_List *files;
+        char *filename;
+        char path[PATH_MAX];
+
         files = ecore_file_ls(dir);
         EINA_LIST_FREE(files, filename)
           {
