@@ -6,13 +6,13 @@ entrance_theme_themes_get(void)
    Eina_Iterator *themes;
    Eina_List *targets = NULL;
    Eina_File_Direct_Info *file_stat;
-   char *basename;
 
    themes = eina_file_stat_ls(PACKAGE_DATA_DIR"/themes/");
    if (!themes)
      return NULL;
    EINA_ITERATOR_FOREACH(themes, file_stat)
      {
+        char *basename;
         basename = eina_str_split(&file_stat->path[file_stat->name_start], ".",2)[0];
         if (basename[0] != '.'
             && file_stat->type == EINA_FILE_REG
