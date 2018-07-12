@@ -80,10 +80,10 @@ _entrance_history_read(void)
 static void
 _entrance_history_write(void)
 {
-   Eet_File *ef;
-
    if (_history_update)
      {
+        Eet_File *ef;
+
         PT("writing history file");
         ef = eet_open(PACKAGE_CACHE"/"ENTRANCE_HISTORY_FILE,
                       EET_FILE_MODE_READ_WRITE);
@@ -224,19 +224,19 @@ _entrance_history_match(const char *login)
 static void
 _entrance_user_init(void)
 {
-   char buf[PATH_MAX];
    FILE *f;
-   Entrance_Login *eu;
    Eina_List *lu = NULL;
    char *saveptr;
    char *token;
    char *user;
-   int uid;
 
    PT("scan for users");
    f = fopen("/etc/passwd", "r");
    if (f)
      {
+        char buf[PATH_MAX];
+        int uid;
+
         while (fgets(buf, sizeof(buf), f))
           {
              user = strtok_r(buf, ":", &saveptr);
@@ -250,6 +250,8 @@ _entrance_user_init(void)
      }
    EINA_LIST_FREE(lu, user)
      {
+        Entrance_Login *eu;
+
         eu = _entrance_history_match(user);
         if (!eu)
           {
