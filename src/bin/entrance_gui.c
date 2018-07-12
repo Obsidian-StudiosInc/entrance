@@ -67,7 +67,6 @@ entrance_gui_init(const char *theme)
 {
 
    Ecore_X_Window xw;
-   Entrance_Screen *screen;
    int i;
    int j;
    int x;
@@ -101,8 +100,9 @@ entrance_gui_init(const char *theme)
    elm_win_title_set(_gui->win, PACKAGE);
    for(j = 0; j < i; ++j)
      {
+        Entrance_Screen *screen;
         Evas_Object *o;
-        Evas_Object *ol;
+
         screen = calloc(1, sizeof(Entrance_Screen));
         if (!screen) return 1;
 
@@ -111,6 +111,8 @@ entrance_gui_init(const char *theme)
          screen->transition = o;
          if(j<1)
            {
+             Evas_Object *ol;
+
              ol = entrance_gui_theme_get(_gui->win, ENTRANCE_EDJE_GROUP_ENTRANCE);
              if (!ol)
                {
@@ -403,7 +405,7 @@ entrance_gui_auth_max_tries(void)
 }
 
 static void
-_entrance_gui_users_populate(void)
+_entrance_gui_users_populate(void)  
 {
    Entrance_Screen *screen;
    Eina_List *l;
