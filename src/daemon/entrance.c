@@ -60,7 +60,6 @@ static Eina_Bool
 _entrance_autologin_lock_get(void)
 {
    FILE *f;
-   char buf[4096];
    double sleep_time;
    double uptime;
    struct stat st_login;
@@ -68,6 +67,8 @@ _entrance_autologin_lock_get(void)
    f = fopen("/proc/uptime", "r");
    if (f)
      {
+        char buf[4096];
+
         fgets(buf,  sizeof(buf), f);
         if(fscanf(f, "%lf %lf", &uptime, &sleep_time) <= 0)
           PT("Could not read uptime input stream");
@@ -171,7 +172,6 @@ _entrance_session_wait()
 static void
 _entrance_start_client(const char *entrance_display)
 {
-   char buf[PATH_MAX];
    char *home_path = ENTRANCE_CONFIG_HOME_PATH;
    int home_dir;
    struct stat st;
@@ -200,6 +200,8 @@ _entrance_start_client(const char *entrance_display)
      }
    if(fstat(home_dir, &st)!= -1)
      {
+       char buf[PATH_MAX];
+
        if ((st.st_uid != entrance_uid)
            || (st.st_gid != entrance_gid))
          {
