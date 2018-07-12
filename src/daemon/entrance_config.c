@@ -206,7 +206,6 @@ entrance_config_shutdown()
 void
 entrance_config_set(const Entrance_Conf_Gui_Event *conf)
 {
-   Eet_File *file;
    Eina_Bool update = EINA_FALSE;
    if (conf->bg.path && conf->bg.path != entrance_config->bg.path)
      {
@@ -239,6 +238,8 @@ entrance_config_set(const Entrance_Conf_Gui_Event *conf)
      }
    if (update)
      {
+        Eet_File *file;
+
         PT("Config save");
         if (!ecore_file_is_dir(PACKAGE_CACHE))
           ecore_file_mkdir(PACKAGE_CACHE);
