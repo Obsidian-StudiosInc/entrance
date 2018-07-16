@@ -34,9 +34,9 @@ _entrance_image_get(Eina_List *src, char *stdfile, char *mask)
    //If srdfile is NULL we will set the src string to file, if not we will set the stdfile. And the src as group.
    Eina_List *result = NULL;
    char *src_str;
-   Entrance_Image *img;
    EINA_LIST_FREE(src, src_str)
      {
+        Entrance_Image *img;
         img = calloc(1, sizeof(Entrance_Image));
         if (stdfile)
           {
