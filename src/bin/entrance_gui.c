@@ -85,14 +85,6 @@ entrance_gui_init(const char *theme)
      }
    _gui->theme = eina_stringshare_add(theme);
 
-#ifdef XNEST_DEBUG
-   char *tmp = getenv("DISPLAY");
-   if (tmp && *tmp)
-     {
-        PT("client Using display name %s", tmp);
-     }
-#endif
-
    i = ecore_x_xinerama_screen_count_get();
    if (i < 1) i = 1;
    _gui->win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
