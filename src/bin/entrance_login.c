@@ -222,7 +222,11 @@ _login_auth_cb(void *data, const char *user, Eina_Bool granted)
         _login->auth = NULL;
         if (!granted)
           {
+            Evas_Object *o;
+
             ALERT_ERROR(data, _("Login failed"));
+            o = elm_object_part_content_get(data, ENTRANCE_EDJE_PART_PASSWORD);
+            elm_object_text_set(o, "");
           }
         else
           elm_object_signal_emit(data, ENTRANCE_EDJE_SIGNAL_AUTH_VALID, "");
