@@ -17,14 +17,18 @@ static Eina_List *_handlers = NULL;
 static Eina_List *_auth_list = NULL;
 
 static Eina_Bool
-_entrance_connect_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
+_entrance_connect_add(void *data EINA_UNUSED,
+                      int type EINA_UNUSED,
+                      void *event EINA_UNUSED)
 {
    PT("connected");
    return ECORE_CALLBACK_RENEW;
 }
 
 static Eina_Bool
-_entrance_connect_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event EINA_UNUSED)
+_entrance_connect_del(void *data EINA_UNUSED,
+                      int type EINA_UNUSED,
+                      void *event EINA_UNUSED)
 {
    PT("disconnected");
    _entrance_connect = NULL;
@@ -33,7 +37,9 @@ _entrance_connect_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event 
 }
 
 static Eina_Bool
-_entrance_connect_data(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
+_entrance_connect_data(void *data EINA_UNUSED,
+                       int type EINA_UNUSED,
+                       void *event)
 {
    Ecore_Con_Event_Server_Data *ev;
    ev = event;
@@ -60,7 +66,9 @@ _entrance_connect_auth(const char *login, Eina_Bool granted)
 }
 
 static Eina_Bool
-_entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_data EINA_UNUSED)
+_entrance_connect_read_cb(const void *data,
+                          size_t size EINA_UNUSED,
+                          void *user_data EINA_UNUSED)
 {
    const Entrance_Event *eev;
    eev = data;
@@ -119,14 +127,19 @@ _entrance_connect_read_cb(const void *data, size_t size EINA_UNUSED, void *user_
 }
 
 static Eina_Bool
-_entrance_connect_write_cb(const void *data, size_t size, void *user_data EINA_UNUSED)
+_entrance_connect_write_cb(const void *data,
+                           size_t size,
+                           void *user_data EINA_UNUSED)
 {
    ecore_con_server_send(_entrance_connect, data, size);
    return ECORE_CALLBACK_RENEW;
 }
 
 void
-entrance_connect_auth_send(const char *login, const char *password, const char *session, Eina_Bool open_session)
+entrance_connect_auth_send(const char *login,
+                           const char *password,
+                           const char *session,
+                           Eina_Bool open_session)
 {
    Entrance_Event eev;
 
