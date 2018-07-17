@@ -130,7 +130,7 @@ entrance_connect_auth_send(const char *login, const char *password, const char *
 {
    Entrance_Event eev;
 
-   PT("Request auth");
+   PT("Request auth for %s", login);
    eev.event.auth.login = login;
    eev.event.auth.password = password;
    eev.event.auth.session = session;
