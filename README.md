@@ -85,8 +85,7 @@ further information.
 ## Configuration
 Most things can be configured in entrance.conf, /etc/entrance/entrance.conf
 Various aspects do no work. Please file issues for anything that is not 
-configurable or does not work. It is known that things like background 
-do not work.
+configurable or does not work.
 
 ## Usage
 In order to start entrance you need a system init script or systemd (untested). 
