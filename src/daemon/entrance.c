@@ -16,6 +16,7 @@ static Eina_Bool _entrance_client_data(void *data, int type, void *event);
 static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
+static void _entrance_client_handlers_del();
 static void _entrance_session_wait();
 static void _entrance_start_client(const char *entrance_display);
 static void _entrance_uid_gid_init();
@@ -25,6 +26,7 @@ static void _signal_log(int sig);
 
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
+static Eina_List *_entrance_client_handlers = NULL;
 
 static char *entrance_display = NULL;
 static char *entrance_home_path = NULL;
@@ -162,6 +164,15 @@ _entrance_client_error(void *data EINA_UNUSED, int type EINA_UNUSED, void *event
 }
 
 static void
+_entrance_client_handlers_del()
+{
+  Ecore_Event_Handler *h;
+
+  EINA_LIST_FREE(_entrance_client_handlers, h)
+    ecore_event_handler_del(h);
+}
+
+static void
 _entrance_session_wait()
 {
   pid_t session_pid = 0;
@@ -180,13 +191,18 @@ _entrance_start_client(const char *entrance_display)
    char *home_path = ENTRANCE_CONFIG_HOME_PATH;
    int home_dir;
    struct stat st;
+   Ecore_Event_Handler *h;
 
    if (_entrance_client)
      return;
    PT("starting client...");
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
-   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
+   _entrance_client_handlers_del();
+   h = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _entrance_client_del, NULL);
+   _entrance_client_handlers = eina_list_append(_entrance_client_handlers, h);
+   h = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, _entrance_client_error, NULL);
+   _entrance_client_handlers = eina_list_append(_entrance_client_handlers, h);
+   h = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _entrance_client_data, NULL);
+   _entrance_client_handlers = eina_list_append(_entrance_client_handlers, h);
    if(entrance_home_path)
        home_path = entrance_home_path;
    home_dir = open(home_path, O_RDONLY);
@@ -560,6 +576,7 @@ main (int argc, char ** argv)
    PT("starting main loop");
    ecore_main_loop_begin();
    PT("main loop end");
+   _entrance_client_handlers_del();
    entrance_server_shutdown();
    PT("server shutdown");
    entrance_action_shutdown();
