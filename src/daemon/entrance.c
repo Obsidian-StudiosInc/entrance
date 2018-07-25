@@ -17,6 +17,7 @@ static Eina_Bool _entrance_client_del(void *data, int type, void *event);
 static Eina_Bool _open_log();
 static void _entrance_autologin_lock_set(void);
 static void _entrance_client_handlers_del();
+static void _entrance_kill_and_wait(const char *desc, pid_t pid);
 static void _entrance_session_wait();
 static void _entrance_start_client(const char *entrance_display);
 static void _entrance_uid_gid_init();
@@ -130,7 +131,7 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
         {
           PT("stopping X server");
           entrance_xserver_shutdown();
-          entrance_xserver_end_wait(entrance_xserver_pid);
+          _entrance_kill_and_wait("xserver", entrance_xserver_pid);
           PT("session shutdown");
           entrance_session_shutdown();
           PT("session init");
@@ -170,6 +171,18 @@ _entrance_client_handlers_del()
 
   EINA_LIST_FREE(_entrance_client_handlers, h)
     ecore_event_handler_del(h);
+}
+
+static void
+_entrance_kill_and_wait(const char *desc, pid_t pid)
+{
+  PT("kill %s",desc);
+  kill(pid, SIGTERM);
+  while (waitpid(pid, NULL, WUNTRACED | WCONTINUED) > 0)
+    {
+       PT("Waiting on %s...", desc);
+       sleep(1);
+    }
 }
 
 static void
@@ -383,12 +396,12 @@ _signal_cb(int sig)
    if (_entrance_client)
      {
        PT("terminate client");
-       kill(entrance_client_pid,SIGTERM);
+       _entrance_kill_and_wait("entrance_client", entrance_client_pid);
      }
    else
      {
        if((session_pid = entrance_session_pid_get())>0)
-           kill(session_pid,SIGTERM);
+           _entrance_kill_and_wait("session", session_pid);
      }
    ecore_main_loop_quit();
 }
@@ -613,7 +626,7 @@ main (int argc, char ** argv)
    if (!_xephyr)
      {
         PT("ending xserver");
-        entrance_xserver_end_wait(entrance_xserver_pid);
+        _entrance_kill_and_wait("xserver", entrance_xserver_pid);
      }
    else
      PT("No session to wait, exiting");
