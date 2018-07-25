@@ -14,7 +14,7 @@ static const Ecore_Getopt options =
    "entrance_client",
    "%prog [options]",
    VERSION,
-   "(C) 2017 Obsidian-Studios, Inc. see AUTHORS.",
+   "(C) 2017-2018 Obsidian-Studios, Inc. see AUTHORS.",
    "GPL, see COPYING",
    "Launch gui client.",
    EINA_TRUE,
