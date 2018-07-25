@@ -132,18 +132,6 @@ entrance_xserver_init(Entrance_X_Cb start, const char *dname)
 }
 
 void
-entrance_xserver_end_wait(pid_t pid)
-{
-  PT("kill xserver");
-  kill(pid, SIGTERM);
-  while (waitpid(pid, NULL, WUNTRACED | WCONTINUED) > 0)
-    {
-       PT("Waiting ...");
-       sleep(1);
-    }
-}
-
-void
 entrance_xserver_shutdown(void)
 {
    eina_stringshare_del(_xserver->dname);
