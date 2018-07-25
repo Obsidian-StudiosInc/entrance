@@ -31,6 +31,4 @@ do                                                                         \
    fflush(stdout);                               \
 } while (0)
 
-int entrance_client_main(void);
-
 #endif /* ENTRANCE_H_ */
