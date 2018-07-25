@@ -9,6 +9,7 @@ typedef enum Entrance_Event_Type_
    ENTRANCE_EVENT_CONF_GUI,
    ENTRANCE_EVENT_CONF_USER,
    ENTRANCE_EVENT_MAXTRIES,
+   ENTRANCE_EVENT_PID,
    ENTRANCE_EVENT_POOLS,
    ENTRANCE_EVENT_STATUS,
    ENTRANCE_EVENT_THEMES,
@@ -77,6 +78,11 @@ typedef struct Entrance_Maxtries_Event_
    int maxtries;
 } Entrance_Maxtries_Event;
 
+typedef struct Entrance_Pid_Event_
+{
+   pid_t pid;
+} Entrance_Pid_Event;
+
 typedef struct Entrance_Pools_
 {
    Eina_List *icon_pool;
@@ -122,6 +128,7 @@ typedef struct Entrance_Event_
         Entrance_Conf_Gui_Event conf_gui;
         Entrance_Login conf_user;
         Entrance_Maxtries_Event maxtries;
+        Entrance_Pid_Event pid;
         Entrance_Pools pools;
         Entrance_Status_Event status;
         Entrance_Themes themes;
