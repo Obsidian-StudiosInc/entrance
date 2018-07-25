@@ -132,6 +132,11 @@ _entrance_server_read_cb(const void *data, size_t size EINA_UNUSED, void *user_d
         PT("Conf user received");
         entrance_history_user_update(&eev->event.conf_user);
      }
+   else if (eev->type == ENTRANCE_EVENT_PID)
+     {
+        PT("PID received");
+        entrance_client_pid_set(eev->event.pid.pid);
+     }
    else
      PT("UNKNOWN signal server");
    return EINA_TRUE;

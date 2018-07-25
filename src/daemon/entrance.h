@@ -36,5 +36,6 @@ do                                           \
 } while (0)
 
 void entrance_close_log();
+void entrance_client_pid_set(pid_t pid);
 
 #endif /* ENTRANCE_H_ */
