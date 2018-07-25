@@ -31,4 +31,6 @@ do                                                                         \
    fflush(stdout);                               \
 } while (0)
 
+void entrance_monitor_server_pid(pid_t pid);
+
 #endif /* ENTRANCE_H_ */

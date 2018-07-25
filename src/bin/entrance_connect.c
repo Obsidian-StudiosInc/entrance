@@ -108,6 +108,11 @@ _entrance_connect_read_cb(const void *data,
              PT("Gui conf received");
              entrance_gui_conf_set(&(eev->event.conf_gui));
           }
+        else if (eev->type == ENTRANCE_EVENT_PID)
+          {
+             PT("PID received");
+             entrance_monitor_server_pid(eev->event.pid.pid);
+          }
         else if (eev->type == ENTRANCE_EVENT_POOLS)
           {
              PT("Pools received");

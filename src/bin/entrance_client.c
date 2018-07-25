@@ -5,6 +5,10 @@
 
 #define NOBODY 65534
 
+static Eina_Bool _entrance_server_alive_cb(void *data EINA_UNUSED);
+static Ecore_Timer *check_timer;
+static pid_t entrance_server_pid;
+
 static const Ecore_Getopt options =
 {
    "entrance_client",
@@ -27,6 +31,26 @@ static const Ecore_Getopt options =
       ECORE_GETOPT_SENTINEL
    }
 };
+
+static Eina_Bool
+_entrance_server_alive_cb(void *data EINA_UNUSED)
+{
+  kill(entrance_server_pid,0);
+  if(errno==ESRCH)
+    {
+      fprintf(stderr,"server crashed stopping client\n");
+      kill(getpid(),SIGTERM);
+    }
+  return ECORE_CALLBACK_RENEW;
+}
+
+void
+entrance_monitor_server_pid(pid_t pid)
+{
+  PT("monitor server pid %d", pid);
+  entrance_server_pid = pid;
+  check_timer = ecore_timer_add(5.0, _entrance_server_alive_cb, NULL);
+}
 
 int
 main(int argc, char **argv)
@@ -87,6 +111,8 @@ main(int argc, char **argv)
    PT("connect init");
    if(entrance_connect(port))
      elm_run();
+   PT("stop server monitor");
+   ecore_timer_del(check_timer);
    PT("connect shutdown");
    entrance_connect_shutdown();
    PT("gui shutdown");
