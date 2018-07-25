@@ -210,13 +210,17 @@ entrance_fill(Evas_Object *obj,
    if (!obj) return;
    if ((type = elm_object_widget_type_get(obj)))
      {
-        if (!strcasecmp(type, "Elm.list"))
+        if (!strcasecmp(type, "Elm.list") ||
+            !strcasecmp(type, "Elm_List"))
           _entrance_fill_list(obj, ef, contents, fill_cb, func, data);
-        else if (!strcasecmp(type, "Elm.Genlist"))
+        else if (!strcasecmp(type, "Elm.Genlist") ||
+                 !strcasecmp(type, "Elm_Genlist"))
           _entrance_fill_genlist(obj, ef, contents, fill_cb, func, data);
-        else if (!strcasecmp(type, "Elm.Gengrid"))
+        else if (!strcasecmp(type, "Elm.Gengrid") ||
+                 !strcasecmp(type, "Elm_Gengrid"))
           _entrance_fill_gengrid(obj, ef, contents, fill_cb, func, data);
-        else if (!strcasecmp(type, "Elm.Hoversel"))
+        else if (!strcasecmp(type, "Elm.Hoversel") ||
+                 !strcasecmp(type, "Elm_Hoversel"))
           _entrance_fill_hoversell(obj, ef, contents, fill_cb, func, data);
         else
           PT("Unknown object type to fill %s", type);
