@@ -119,30 +119,27 @@ _entrance_client_del(void *data EINA_UNUSED, int type EINA_UNUSED, void *event)
      return ECORE_CALLBACK_PASS_ON;
    PT("client terminated");
    _entrance_client = NULL;
-   if(ev->exit_signal==SIGTERM || _xephyr)
-     {
-       PT("stopping server");
-       ecore_main_loop_quit();
-     }
-   else
-    {
-      _entrance_session_wait();
-      if(!entrance_signal && !_xephyr)
-        {
-          PT("stopping X server");
-          entrance_xserver_shutdown();
-          _entrance_kill_and_wait("xserver", entrance_xserver_pid);
-          PT("session shutdown");
-          entrance_session_shutdown();
-          PT("session init");
-          entrance_session_init(entrance_display);
-          entrance_session_cookie();
-          PT("restarting X server");
-          entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
-                                                       entrance_display);
-          PT("X server restarted pid %d",entrance_xserver_pid);
-        }
-    }
+   _entrance_session_wait();
+    if(!entrance_signal && !_xephyr)
+      {
+         PT("stopping X server");
+         entrance_xserver_shutdown();
+         _entrance_kill_and_wait("xserver", entrance_xserver_pid);
+         PT("session shutdown");
+         entrance_session_shutdown();
+         PT("session init");
+         entrance_session_init(entrance_display);
+         entrance_session_cookie();
+         PT("restarting X server");
+         entrance_xserver_pid = entrance_xserver_init(_entrance_start_client,
+                                                      entrance_display);
+         PT("X server restarted pid %d",entrance_xserver_pid);
+      }
+    else
+      {
+        PT("stopping server");
+        ecore_main_loop_quit();
+      }
    return ECORE_CALLBACK_DONE;
 }
 
