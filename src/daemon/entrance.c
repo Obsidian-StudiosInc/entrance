@@ -43,7 +43,7 @@ static const Ecore_Getopt options =
   PACKAGE,
   "%prog [options]",
   VERSION,
-  "(C) 201e Enlightenment, see AUTHORS",
+  "(C) 2017-2018 Obsidian-Studios, Inc. see AUTHORS.",
   "GPL, see COPYING",
   "Entrance is a login manager, written using core efl libraries",
   EINA_TRUE,
