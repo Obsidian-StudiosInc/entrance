@@ -21,7 +21,13 @@ _entrance_connect_add(void *data EINA_UNUSED,
                       int type EINA_UNUSED,
                       void *event EINA_UNUSED)
 {
+   Entrance_Event eev;
+
    PT("connected");
+   PT("Sending pid");
+   eev.type = ENTRANCE_EVENT_PID;
+   eev.event.pid.pid = getpid();
+   entrance_event_send(&eev);
    return ECORE_CALLBACK_RENEW;
 }
 
