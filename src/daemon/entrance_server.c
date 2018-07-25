@@ -42,6 +42,10 @@ _entrance_server_add(void *data EINA_UNUSED, int type EINA_UNUSED, void *event E
         eev.event.conf_gui.theme = NULL;
         entrance_event_send(&eev);
      }
+   PT("Sending pid");
+   eev.type = ENTRANCE_EVENT_PID;
+   eev.event.pid.pid = getpid();
+   entrance_event_send(&eev);
    PT("Sending pools");
    eev.type = ENTRANCE_EVENT_POOLS;
    eev.event.pools.icon_pool = entrance_image_system_icons();
