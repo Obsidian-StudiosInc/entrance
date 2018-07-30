@@ -25,6 +25,7 @@ static void _remove_lock();
 static void _signal_cb(int sig);
 static void _signal_log(int sig);
 
+static Eina_Bool _entrance_auto_login = EINA_FALSE;
 static Eina_Bool _xephyr = 0;
 static Ecore_Exe *_entrance_client = NULL;
 static Eina_List *_entrance_client_handlers = NULL;
@@ -428,6 +429,11 @@ _update_lock()
    fclose(f);
 }
 
+Eina_Bool entrance_auto_login_enabled()
+{
+  return(_entrance_auto_login);
+}
+
 void
 entrance_client_pid_set(pid_t pid)
 {
@@ -496,6 +502,7 @@ main (int argc, char ** argv)
    if (_xephyr)
      nodaemon = EINA_TRUE;
 
+   _entrance_auto_login = entrance_config->autologin;
    entrance_display = strdup(entrance_config->command.xdisplay);
 
    if (!_xephyr && !_get_lock())
@@ -547,7 +554,7 @@ main (int argc, char ** argv)
    entrance_session_init(entrance_display);
    entrance_session_cookie();
 
-   if(!entrance_config->autologin)
+   if(!_entrance_auto_login)
      _entrance_uid_gid_init();
 
    if (!_xephyr)
@@ -562,7 +569,7 @@ main (int argc, char ** argv)
 
    PT("history init");
    entrance_history_init();
-   if ((entrance_config->autologin) && _entrance_autologin_lock_get())
+   if (_entrance_auto_login && _entrance_autologin_lock_get())
      {
         PT("autologin init");
         xcb_connection_t *disp = NULL;
@@ -579,6 +586,7 @@ main (int argc, char ** argv)
  
         if(!entrance_signal)
           {
+             _entrance_auto_login = EINA_FALSE;
              _entrance_uid_gid_init();
              _entrance_start_client(entrance_display);
           }

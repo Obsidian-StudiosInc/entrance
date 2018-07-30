@@ -35,6 +35,7 @@ do                                           \
    EINA_LOG_DOM_INFO(_entrance_log, f, ##x); \
 } while (0)
 
+Eina_Bool entrance_auto_login_enabled();
 void entrance_close_log();
 void entrance_client_pid_set(pid_t pid);
 
