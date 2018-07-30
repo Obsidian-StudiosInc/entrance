@@ -312,6 +312,7 @@ entrance_session_shutdown(void)
         if (xsession->command) eina_stringshare_del(xsession->command);
         free(xsession);
      }
+   _session_pid = 0;
 }
 
 Eina_Bool
