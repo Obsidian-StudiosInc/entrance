@@ -108,7 +108,7 @@ _xserver_started(void *data EINA_UNUSED,
 {
    PT("xserver started");
    setenv("DISPLAY",_xserver->dname,1);
-   if(!entrance_config->autologin)
+   if(!entrance_auto_login_enabled())
      _xserver->start(_xserver->dname);
    return ECORE_CALLBACK_PASS_ON;
 }
