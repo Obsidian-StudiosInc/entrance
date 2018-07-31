@@ -2,8 +2,8 @@
 [![License](http://img.shields.io/badge/license-GPLv3-blue.svg?colorB=9977bb&style=plastic)](https://github.com/Obsidian-StudiosInc/entrance/blob/master/LICENSE)
 [![Build Status](https://img.shields.io/travis/Obsidian-StudiosInc/entrance/master.svg?colorA=9977bb&style=plastic)](https://travis-ci.org/Obsidian-StudiosInc/entrance)
 [![Build Status](https://img.shields.io/shippable/59415c1aa155af0700adbcb3/master.svg?colorA=9977bb&style=plastic)](https://app.shippable.com/projects/59415c1aa155af0700adbcb3/)
+[![Code Quality](https://img.shields.io/codacy/grade/5e7e4c749a3c4ceead9ba0b2c1ae2806.svg?colorA=9977bb&style=plastic)](https://app.codacy.com/app/Obsidian-StudioInc/entrance)
 [![Code Quality](https://sonarcloud.io/api/project_badges/measure?project=entrance&metric=alert_status)](https://sonarcloud.io/dashboard?id=entrance)
-
 
 This is a fork and current development version.
 It is ALIVE! IT WORKS! (for me ©)
