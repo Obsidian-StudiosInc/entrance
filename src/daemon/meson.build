@@ -1,6 +1,8 @@
 inc = include_directories('.')
 
 # entrance
+entrance_deps = [crypt, deps, ecore_x, xcb]
+entrance_incs = [inc, top_inc]
 entrance_srcs = [
 	'../../src/event/entrance_event.h',	'../../src/event/entrance_event.c',
 	'entrance_config.h',	'entrance_config.c',
@@ -13,24 +15,18 @@ entrance_srcs = [
 	'entrance_theme.h',	'entrance_theme.c',
 	'entrance.h',		'entrance.c'
 ]
-entrance_pam_srcs = ['entrance_pam.h', 'entrance_pam.c']
 
 if has_pam
-	executable('entrance',
-		sources			: [entrance_srcs, entrance_pam_srcs],
-		include_directories	: [inc, pam_inc, top_inc],
-		dependencies		: [crypt, deps, ecore_x, pam_dep, xcb],
-		gui_app			: true,
-		install			: true,
-		install_dir             : dir_sbin
-	)
-else
-	executable('entrance', 
-		sources			: [entrance_srcs],
-		include_directories	: [inc, top_inc],
-		dependencies		: [crypt, deps, ecore_x, xcb],
-		gui_app			: true,
-		install			: true,
-		install_dir             : dir_sbin
-	)
+	entrance_deps += [pam_dep]
+	entrance_incs += [pam_inc]
+	entrance_srcs += ['entrance_pam.h', 'entrance_pam.c']
 endif
+
+executable('entrance',
+	sources			: entrance_srcs,
+	include_directories	: entrance_incs,
+	dependencies		: entrance_deps,
+	gui_app			: true,
+	install			: true,
+	install_dir             : dir_sbin
+)
