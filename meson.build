@@ -82,7 +82,7 @@ endif
 # config.h
 cfg = configuration_data()
 cfg.set_quoted('PACKAGE'		, proj)
-cfg.set_quoted('PACKAGE_CACHE'  	, dir_cache)
+cfg.set_quoted('PACKAGE_CACHE'		, dir_cache)
 cfg.set_quoted('PACKAGE_NAME'		, proj)
 cfg.set_quoted('PACKAGE_STRING'		, proj + ' ' + ver)
 cfg.set_quoted('PACKAGE_URL'		, base_url + proj)
