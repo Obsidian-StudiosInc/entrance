@@ -29,13 +29,6 @@ has_ck  = get_option('consolekit')
 has_nls = get_option('nls')
 has_logind = get_option('logind')
 
-if has_logind
-	logind_dep = cc.find_library('logind', required: false)
-	if not logind_dep.found()
-		logind_dep = cc.find_library('elogind')
-	endif
-endif
-
 if has_pam
         pam_dep = cc.find_library('pam')
         pam_inc  = include_directories('/usr/include/security')
