@@ -60,24 +60,6 @@ if get_option('debug')
                               '-ftest-coverage',
                               language : 'c')
 endif
-if cc.has_header('alloca.h')
-	add_project_arguments('-DHAVE_ALLOCA_H=1', language : 'c')
-endif
-if has_ck
-	add_project_arguments('-DHAVE_CONSOLEKIT=1', language : 'c')
-endif
-if has_nls
-	add_project_arguments('-DENABLE_NLS=1', language : 'c')
-endif
-if has_pam
-	add_project_arguments('-DHAVE_PAM=1', language : 'c')
-endif
-if has_logind
-	add_project_arguments('-DHAVE_LOGIND=1', language : 'c')
-endif
-if cc.has_header('stdlib.h')
-	add_project_arguments('-DHAVE_STDLIB_H=1', language : 'c')
-endif
 
 # config.h
 cfg = configuration_data()
@@ -90,6 +72,12 @@ cfg.set_quoted('PACKAGE_LIB_DIR'	, dir_lib)
 cfg.set_quoted('PACKAGE_SBIN_DIR'	, dir_sbin)
 cfg.set_quoted('SYSTEM_CONFIG_DIR'	, dir_syscfg)
 cfg.set_quoted('VERSION'		, ver)
+
+cfg.set10('ENABLE_NLS', has_nls)
+cfg.set10('HAVE_ALLOCA_H', cc.has_header('alloca.h'))
+cfg.set10('HAVE_CONSOLEKIT', has_ck)
+cfg.set10('HAVE_LOGIND', has_logind)
+cfg.set10('HAVE_PAM', has_nls)
 
 configure_file(output: 'config.h', configuration: cfg)
 configure_file(input  : 'data/entrance.conf.in',
