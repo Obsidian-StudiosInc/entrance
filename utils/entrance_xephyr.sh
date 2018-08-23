@@ -4,11 +4,12 @@ SOCKET="/tmp/.ecore_service|entrance|43"
 
 [[ -e "${SOCKET}" ]] && rm -v "${SOCKET}"
 
-export XDG_RUNTIME_DIR="/tmp/entrance"
+export XDG_RUNTIME_DIR="${PWD}/build/test/entrance/client"
 
-[[ -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
+[[ ! -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
 
-chown nobody:nobody -R "${XDG_RUNTIME_DIR}"  build/src/bin
+# for both run and coverage
+find build -type d -exec chmod 0777 {} \;
 
 DPI=${DPI:-142}
 SCREEN=${SCREEN:-1024x768}
@@ -67,3 +68,5 @@ elif [[ ${VALGRIND} ]]; then
 else
 	"${ENTRANCE}" -x
 fi
+
+rm -r "${XDG_RUNTIME_DIR}"
