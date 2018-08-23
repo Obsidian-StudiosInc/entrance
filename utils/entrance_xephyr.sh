@@ -4,11 +4,11 @@ SOCKET="/tmp/.ecore_service|entrance|43"
 
 [[ -e "${SOCKET}" ]] && rm -v "${SOCKET}"
 
-#export XDG_RUNTIME_DIR="/tmp/entrance"
+export XDG_RUNTIME_DIR="/tmp/entrance"
 
-#[[ -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
+[[ -d "${XDG_RUNTIME_DIR}" ]] && mkdir -p "${XDG_RUNTIME_DIR}/.ecore"
 
-#chown nobody:nobody -R "${XDG_RUNTIME_DIR}"
+chown nobody:nobody -R "${XDG_RUNTIME_DIR}"  build/src/bin
 
 DPI=${DPI:-142}
 SCREEN=${SCREEN:-1024x768}
