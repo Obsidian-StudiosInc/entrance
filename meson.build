@@ -73,11 +73,21 @@ cfg.set_quoted('PACKAGE_SBIN_DIR'	, dir_sbin)
 cfg.set_quoted('SYSTEM_CONFIG_DIR'	, dir_syscfg)
 cfg.set_quoted('VERSION'		, ver)
 
-cfg.set10('ENABLE_NLS', has_nls)
-cfg.set10('HAVE_ALLOCA_H', cc.has_header('alloca.h'))
-cfg.set10('HAVE_CONSOLEKIT', has_ck)
-cfg.set10('HAVE_LOGIND', has_logind)
-cfg.set10('HAVE_PAM', has_nls)
+if has_nls
+    cfg.set10('ENABLE_NLS', has_nls)
+endif
+if cc.has_header('alloca.h')
+   cfg.set10('HAVE_ALLOCA_H', true)
+endif
+if has_ck
+   cfg.set10('HAVE_CONSOLEKIT', has_ck)
+endif
+if has_logind
+   cfg.set10('HAVE_LOGIND', has_logind)
+endif
+if has_pam
+    cfg.set10('HAVE_PAM', has_pam)
+endif
 
 configure_file(output: 'config.h', configuration: cfg)
 configure_file(input  : 'data/entrance.conf.in',
