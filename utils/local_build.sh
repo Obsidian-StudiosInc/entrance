@@ -7,13 +7,13 @@ MY_PWD="$(pwd)"
 CFLAGS=-g
 MY_PWD+="/build"
 meson \
+	--buildtype=debug \
 	--prefix "${MY_PWD}" \
 	--libdir "${MY_PWD}/test" \
 	--sbindir "${MY_PWD}/test" \
 	--datadir "${MY_PWD}/test" \
 	--sysconfdir "${MY_PWD}/test" \
 	-Dcachedir="${MY_PWD}/test" \
-	-Ddebug=true \
 	$@ . build
 scan-build ninja -C build
 
