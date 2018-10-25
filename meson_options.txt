@@ -6,10 +6,6 @@ option('consolekit',
        type       : 'boolean',
        value      : true,
        description: 'Enable support for consolekit (default=true)')
-option('debug',
-       type       : 'boolean',
-       value      : false,
-       description: 'Enable support for debugging/-g (default=false)')
 option('edje-cc',
        type       : 'string',
        description: 'A path to a edje_cc. Defaults to system edje_cc')
