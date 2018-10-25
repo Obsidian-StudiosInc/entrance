@@ -33,7 +33,7 @@ jobs:
         directories:
           - $HOME/.sonar/cache
       env:
-        - OPTS="-Ddebug=true -Dconsolekit=true -Dpam=true -Dlogind=true"
+        - OPTS="--buildtype=debug -Dconsolekit=true -Dpam=true -Dlogind=true"
         - SONAR="build-wrapper-linux-x86-64 --out-dir bw-output"
       addons:
         sonarcloud:
