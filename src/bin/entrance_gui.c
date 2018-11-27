@@ -175,8 +175,9 @@ entrance_gui_init(const char *theme)
    evas_object_show(_gui->win);
    /* tricky situation. we are not normally running with a wm and thus
     * have to set focus to our window so things work right */
-   ecore_evas_focus_set
-      (ecore_evas_ecore_evas_get(evas_object_evas_get(_gui->win)), 1);
+   Ecore_Evas *ee = ecore_evas_ecore_evas_get(evas_object_evas_get(_gui->win));
+   ecore_evas_override_set(ee,EINA_TRUE);
+   ecore_evas_focus_set(ee, 1);
    /* need to hide and show the cursor */
    ecore_x_window_cursor_show(elm_win_xwindow_get(_gui->win),
                               EINA_FALSE);
