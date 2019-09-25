@@ -226,6 +226,12 @@ entrance_config_set(const Entrance_Conf_Gui_Event *conf)
         if (!update)
           update = EINA_TRUE;
      }
+   if (conf->req_passwd != entrance_config->req_passwd)
+     {
+        entrance_config->req_passwd = conf->req_passwd;
+        if (!update)
+          update = EINA_TRUE;
+     }
    if (conf->vkbd_enabled != entrance_config->vkbd_enabled)
      {
         entrance_config->vkbd_enabled = conf->vkbd_enabled;

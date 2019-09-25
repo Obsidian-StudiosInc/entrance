@@ -53,6 +53,9 @@ group "Entrance_Config" struct {
     /* The name of the user to use when autologin are enabled */
     value "userlogin" string: "myusername";
 
+    /* Bool to control if password entry is required or not */
+    value "require_password" uchar: 1;
+
     /* The desktop session to use when autologin is enabled */
     value "session" string: "Enlightenment";
 
