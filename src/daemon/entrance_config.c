@@ -33,6 +33,7 @@ _defaults_set(Entrance_Config *config)
    config->xsessions = EINA_TRUE;
    config->autologin = EINA_FALSE;
    config->custom_conf = EINA_FALSE;
+   config->req_passwd = EINA_TRUE;
    config->userlogin = eina_stringshare_add("mylogintouse");
    config->lockfile = eina_stringshare_add("/var/run/entrance.pid");
    config->logfile = eina_stringshare_add("/var/log/entrance.log");
@@ -182,6 +183,7 @@ entrance_config_init()
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "virtual_keyboard", vkbd_enabled, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "custom_conf", custom_conf, EET_T_UCHAR);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "start_user", start_user, EET_T_STRING);
+   EET_DATA_DESCRIPTOR_ADD_BASIC(edd, Entrance_Config, "require_password", req_passwd, EET_T_UCHAR);
    _entrance_config_descriptor = edd;
 
    if (stat( PACKAGE_CACHE"/"ENTRANCE_CONFIG_FILE, &cache) == -1)
