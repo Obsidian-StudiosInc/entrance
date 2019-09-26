@@ -24,7 +24,8 @@ enum {
      ENTRANCE_CONF_NONE = 0,
      ENTRANCE_CONF_STATE = (1 << 0),
      ENTRANCE_CONF_WALLPAPER = (1 << 1),
-     ENTRANCE_CONF_VKBD = (1 << 2)
+     ENTRANCE_CONF_REQ_PASSWD = (1 << 2),
+     ENTRANCE_CONF_VKBD = (1 << 3)
 };
 
 
@@ -48,6 +49,7 @@ struct Entrance_Gui_
      } bg;
    unsigned char changed;
    Eina_Bool conf_enabled : 1;
+   Eina_Bool req_passwd : 1;
    Eina_Bool vkbd_enabled : 1;
 
 };
@@ -509,6 +511,11 @@ entrance_gui_conf_set(const Entrance_Conf_Gui_Event *conf)
         _gui->changed &= ENTRANCE_CONF_WALLPAPER;
      }
 
+   if (_gui->req_passwd != conf->req_passwd)
+     {
+        _gui->req_passwd = conf->req_passwd;
+        _gui->changed &= ENTRANCE_CONF_REQ_PASSWD;
+     }
    if (_gui->vkbd_enabled != conf->vkbd_enabled)
      {
         _gui->vkbd_enabled = conf->vkbd_enabled;
@@ -589,6 +596,12 @@ entrance_gui_background_get(const char **path, const char **group)
      *path = _gui->bg.path;
    if (group)
      *group = _gui->bg.group;
+}
+
+Eina_Bool
+entrance_gui_req_passwd_get(void)
+{
+   return _gui->req_passwd;
 }
 
 Eina_Bool

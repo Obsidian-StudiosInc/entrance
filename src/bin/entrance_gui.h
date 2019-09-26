@@ -25,6 +25,7 @@ void entrance_gui_stringlist_free(Eina_List *list);
 const char *entrance_gui_theme_name_get(void);
 void entrance_gui_theme_name_set(const char *theme);
 void entrance_gui_background_get(const char **path, const char **group);
+Eina_Bool entrance_gui_req_passwd_get(void);
 Eina_Bool entrance_gui_vkbd_enabled_get(void);
 const char *entrance_gui_theme_path_get(void);
 Eina_List* entrance_gui_icon_pool_get(void);
