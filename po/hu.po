@@ -1,0 +1,39 @@
+# Hungarian translation for entrance
+# Copyright (C) 2017 Obsidian-Studios, Inc.
+# This file is distributed under the same license as the entrance package.
+# Laszlo Kardos <echo bEBsYWNlc3ouYmxvZw== | base64 -d>, 2019
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: entrance\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-30 14:41-0400\n"
+"PO-Revision-Date: 2019-12-18 22:40+0100\n"
+"Last-Translator: Laszlo Kardos <echo bEBsYWNlc3ouYmxvZw== | base64 -d>\n"
+"Language-Team: Laszlo Kardos <echo bEBsYWNlc3ouYmxvZw== | base64 -d>\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.4\n"
+
+#: src/bin/entrance_login.c:52
+msgid "Please enter your user name"
+msgstr "Kérjük, adja meg a felhasználónevét"
+
+#: src/bin/entrance_login.c:59
+msgid "Please enter your password"
+msgstr "Kérjük, adja meg a jelszavát"
+
+#: src/bin/entrance_login.c:223
+msgid "Login failed"
+msgstr "A bejelentkezés nem sikerült"
+
+#: src/bin/entrance_login.c:300
+msgid "Login"
+msgstr "Belépés"
+
+#: src/bin/entrance_login.c:314
+msgid "Password"
+msgstr "Jelszó"
