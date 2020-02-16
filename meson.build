@@ -73,6 +73,7 @@ cfg.set_quoted('PACKAGE_SBIN_DIR'	, dir_sbin)
 cfg.set_quoted('SYSTEM_CONFIG_DIR'	, dir_syscfg)
 cfg.set_quoted('VERSION'		, ver)
 
+cfg.set('SYSTEM_CONFIG_DIR2'		, dir_syscfg)
 cfg.set('ENABLE_NLS', has_nls)
 cfg.set('HAVE_ALLOCA_H', cc.has_header('alloca.h'))
 cfg.set('HAVE_CONSOLEKIT', has_ck)
