@@ -20,7 +20,7 @@ group "Entrance_Config" struct {
        xdisplay is appended at the end */
     value "session_start" string: "/usr/bin/sessreg -a -l";
     /* Commands executed  to launch a session */
-    value "session_login" string: "@SYSTEM_CONFIG_DIR@/entrance/Xsession";
+    value "session_login" string: "@SYSTEM_CONFIG_DIR2@/entrance/Xsession";
     /* Commands executed when exiting a session
        xdisplay is appended at the end */
     value "session_stop" string: "/usr/bin/sessreg -d -l";
