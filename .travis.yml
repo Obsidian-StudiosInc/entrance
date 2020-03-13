@@ -10,7 +10,7 @@ env:
 install:
   - sudo add-apt-repository -y ppa:niko2040/e19
   - sudo apt-get -qq update
-  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip libpam0g-dev
+  - sudo apt-get install -y gettext libc6-dbg libpam-ck-connector libck-connector0 libck-connector-dev libefl libefl-dbg libefl-dev python3-pip python3-setuptools libpam0g-dev
   - if [ "${SONAR}" ]; then sudo apt-get install -y enlightenment xorg xserver-xorg-video-dummy ; fi
   - sudo pip3 install --upgrade pip
   - sudo pip3 install meson==0.44
