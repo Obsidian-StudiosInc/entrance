@@ -18,6 +18,7 @@ static char *_login = NULL;
 static unsigned char _logged = 0;
 static pid_t _session_pid;
 static Eina_List *_xsessions = NULL;
+static int _entrance_session_sort(Entrance_Xsession *a, Entrance_Xsession *b);
 static int _entrance_session_userid_set(struct passwd *pwd);
 
 static void _entrance_session_run(struct passwd *pwd, const char *cmd, const char *cookie);
@@ -518,10 +519,17 @@ _entrance_session_desktops_scan_file(const char *path)
         xsession->name = eina_stringshare_add(desktop->name);
         if (desktop->icon && strcmp(desktop->icon,""))
           xsession->icon = eina_stringshare_add(desktop->icon);
-        _xsessions = eina_list_append(_xsessions, xsession);
+        _xsessions = eina_list_sorted_insert(_xsessions,
+            (Eina_Compare_Cb)_entrance_session_sort,
+            xsession);
      }
    EINA_LIST_FREE(commands, command)
      free(command);
    efreet_desktop_free(desktop);
 }
 
+static int
+_entrance_session_sort(Entrance_Xsession *a, Entrance_Xsession *b)
+{
+    return strcasecmp(a->name, b->name);
+}
