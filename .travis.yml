@@ -1,7 +1,7 @@
 language: c
 compiler: gcc
-sudo: required
 dist: xenial
+os: linux
 
 env:
   global:
