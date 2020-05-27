@@ -39,6 +39,9 @@ static gid_t entrance_gid = 0;
 static uid_t entrance_uid = 0;
 static pid_t entrance_xserver_pid = 0;
 
+int _entrance_log;
+int _entrance_client_log;
+
 static const Ecore_Getopt options =
 {
   PACKAGE,

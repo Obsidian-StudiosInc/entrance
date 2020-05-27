@@ -26,8 +26,8 @@
 #include "entrance_image.h"
 #include "entrance_theme.h"
 
-int _entrance_log;
-int _entrance_client_log;
+extern int _entrance_log;
+extern int _entrance_client_log;
 
 #define PT(f, x...)                          \
 do                                           \
