@@ -49,6 +49,6 @@ void entrance_config_init(void);
 void entrance_config_shutdown(void);
 void entrance_config_set(const Entrance_Conf_Gui_Event *conf);
 
-Entrance_Config *entrance_config;
+extern Entrance_Config *entrance_config;
 
 #endif /* ENTRANCE_CONFIG_H_ */

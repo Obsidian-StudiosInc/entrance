@@ -10,6 +10,8 @@ static Entrance_Config *_cache_get(void);
 
 static Eet_Data_Descriptor *_entrance_config_descriptor;
 
+Entrance_Config *entrance_config;
+
 static void
 _defaults_set(Entrance_Config *config)
 {
