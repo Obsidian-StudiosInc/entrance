@@ -6,7 +6,7 @@
 [![Code Quality](https://sonarcloud.io/api/project_badges/measure?project=entrance&metric=alert_status)](https://sonarcloud.io/dashboard?id=entrance)
 
 This is a fork and current development version.
-It is ALIVE! IT WORKS! (for me ©)
+It is ALIVE! IT WORKS! (for me™)
 
 ![A screenshot of Entrance](https://user-images.githubusercontent.com/12835340/31921581-1c2f0d7c-b83e-11e7-8d90-1dac94ae8e5c.jpg)
 
