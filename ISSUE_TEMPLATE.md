@@ -12,7 +12,7 @@ init script, systemd service, cli, script, etc
 
 ## System information
 - OS/Distro
-- Pam enabled
-- Consolekit enabled
-- Systemd or other init (openrc, sysvinit, etc)
+- Pam enabled?
+- Consolekit enabled?
+- Init system?
 - EFL Version
