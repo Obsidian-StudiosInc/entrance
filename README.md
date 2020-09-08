@@ -26,28 +26,6 @@ The project has been resurrected from the dead to live on once again...
 Entrance is a long story. There has been 2 different code bases and 
 projects both using the name entrance.
 
-### 3rd Generation
-This project is the 3rd generation, fork of the 2nd Generation code 
-base, with a lot of fixes, and initial removal of incomplete and/or 
-broken code. Rather than fix as is, we are looking to replace functionality 
-with new code and different ways of accomplishing similar functionality.
-
-This generation is currently in development, and should be usable.
-Please open issues for any problems encountered. 
-
-### 2nd Generation 
-Sometime later another came along,
-[Michael Bouchaud](https://github.com/eyoz)/@eyoz who renamed his 
-project elsa to Entrance, which is where the current code base came 
-from. It is not known if this ever was completed or worked, but 
-does not function correctly. If it is even usable to log in at all.
-
-The broken, incomplete, unmaintained 2nd Generation Entrance 
-resides in Enlightenment's
-[entrance git 
-repository](https://git.enlightenment.org/misc/entrance.git/). A branch 
-may be added to this repository for historical purposes.
-
 ### 1st Generation
 There was a project long ago that worked, and went 
 [MIA](http://xcomputerman.com/pages/entrance.html). Copies of the 
@@ -56,6 +34,27 @@ been obtained via a PCLinuxOS src rpm. Ideally, it would be great to get a
 copy of the old entrance repo to add to this one for historical 
 purposes. If you have a copy of the old Entrance repository, please 
 open an issue and provide a link. That would be greatly appreciated!
+
+### 2nd Generation 
+Sometime later another came along,
+[Michael Bouchaud](https://github.com/eyoz)/@eyoz who renamed his 
+project elsa to Entrance, which is where the current code base came 
+from. It is not known if this was ever completed or worked, but 
+does not function correctly, if it is even usable to log in at all.
+
+The broken, incomplete, unmaintained 2nd Generation Entrance 
+resides in Enlightenment's 
+[entrance git repository](https://git.enlightenment.org/misc/entrance.git/).
+A branch may be added to this repository for historical purposes.
+
+### 3rd Generation
+This project is the 3rd generation, fork of the 2nd Generation code 
+base, with a lot of fixes, and initial removal of incomplete and/or 
+broken code. Rather than fix as is, we are looking to replace functionality 
+with new code and finding different ways of accomplishing similar functionality.
+
+This generation is currently in development, and should be usable.
+Please open [issues](https://github.com/Obsidian-StudiosInc/entrance/issues) for any problems encountered. 
 
 ## Build
 Entrance presently uses meson build system, autotools has been dropped. 
@@ -83,7 +82,7 @@ be usable and/or correct. Please see the section on logind/elogind for
 further information.
 
 ## Configuration
-Most things can be configured in entrance.conf, /etc/entrance/entrance.conf.
+Most things can be configured in entrance.conf at `/etc/entrance/entrance.conf`.
 Some settings may not work. Please file issues for anything that is not 
 configurable or does not work.
 
@@ -92,7 +91,7 @@ In order to start entrance, you need a system init script or systemd (untested).
 This may differ based on your operating system. Entrance does not 
 provide an init script at this time, it may not run or work correctly if started 
 directly. Entrance should be invoked via init script or systemd service. 
-There is a provided systemd service file for entrance. It is not know if 
+There is a provided systemd service file for entrance. It is unknown if 
 this works or not.
 
 ### Entrance User
@@ -106,8 +105,8 @@ It may be changed such that entrance runs under its own user, and does
 not setuid or run under root. This will require creation of a user 
 account and adding permissions for the user for video, etc. It may be 
 possible to accomplish this now, starting entrance under a user say 
-"entrance" by modifying the not known to work entrance.conf start_user 
-option;
+"entrance" by modifying the untested entrance.conf `start_user` 
+option:
 ```
 value "start_user" string: "entrance";
 ```
@@ -115,7 +114,7 @@ value "start_user" string: "entrance";
 You will likely also need to create a directory for entrance, and ensure 
 it has proper permissions. Since entrance will not be running under root,
 entrance will not be able to correct this, despite having code for such.
-Expect to see some errors in log file otherwise. Along with non-functional
+Expect to see some errors in log file otherwise, along with non-functional
 entrance. If started as root, entrance will create directories with proper 
 permissions as needed.
 
