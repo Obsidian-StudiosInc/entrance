@@ -1,6 +1,7 @@
 *.edj
 *.o
 *~
+*.mo
 compile
 INSTALL
 Makefile
