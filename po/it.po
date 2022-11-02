@@ -1,0 +1,38 @@
+# Italian translation for entrance
+# Copyright (C) 2022 PokeMichele
+# This file is distributed under the same license as the entrance package.
+#
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: entrance\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-31 11:40-0400\n"
+"PO-Revision-Date: 2022-10-31 11:40-0400\n"
+"Last-Translator: Michele Cenacchi alias PokeMichele <pokemichelexd@gmail.com>\n"
+"Language-Team: ND\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/bin/entrance_login.c:52
+msgid "Please enter your user name"
+msgstr "Inserisci il tuo Nome Utente"
+
+#: src/bin/entrance_login.c:59
+msgid "Please enter your password"
+msgstr "Inserisci la tua password"
+
+#: src/bin/entrance_login.c:223
+msgid "Login failed"
+msgstr "Accesso Fallito"
+
+#: src/bin/entrance_login.c:300
+msgid "Login"
+msgstr "Login"
+
+#: src/bin/entrance_login.c:314
+msgid "Password"
+msgstr "Password"
