@@ -3,3 +3,4 @@
 - wayland support, client for DM and session
 - theme for cursor
 - clean up codebase
+- clean up compilation system

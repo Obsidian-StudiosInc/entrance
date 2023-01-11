@@ -2,7 +2,7 @@
 
 struct Entrance_Fill_
 {
-   const char *item_style; //maybee need to be provided by theme ?
+   const char *item_style; //maybe need to be provided by theme ?
    struct
      {
         Entrance_Fill_Text_Get_Func text_get;
@@ -226,5 +226,3 @@ entrance_fill(Evas_Object *obj,
           PT("Unknown object type to fill %s", type);
      }
 }
-
-

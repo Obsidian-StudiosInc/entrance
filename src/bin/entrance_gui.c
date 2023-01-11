@@ -405,7 +405,7 @@ entrance_gui_auth_max_tries(void)
 }
 
 static void
-_entrance_gui_users_populate(void)  
+_entrance_gui_users_populate(void)
 {
    Entrance_Screen *screen;
    Eina_List *l;
@@ -840,7 +840,7 @@ _entrance_gui_actions_populate()
    style = edje_object_data_get(elm_layout_edje_get(screen->edj), "item_style_actions");
 
    if (!style)
-     style = "default"; //theme has not settet a style
+     style = "default"; //theme has not setted a style
 
    EINA_LIST_FOREACH(_gui->screens, l, screen)
      {
